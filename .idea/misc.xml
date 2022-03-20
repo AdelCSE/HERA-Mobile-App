@@ -3,9 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_login.xml" value="0.20416666666666666" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_main.xml" value="0.19010416666666666" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_register.xml" value="0.22" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/reset_pop.xml" value="0.22" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2115" />
       </map>
     </option>
   </component>
