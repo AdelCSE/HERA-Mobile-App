@@ -119,4 +119,5 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     //Todo: add confirm pw logic
+    //TODO: confirm valid email
 }
