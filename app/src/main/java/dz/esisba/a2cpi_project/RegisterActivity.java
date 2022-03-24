@@ -54,6 +54,14 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String email = emailEditTxt.getText().toString().trim();
                 String password = pwEditTxt.getText().toString().trim();
+                String name = nameEditTxt.getText().toString().trim();
+
+                //name processing
+                if (TextUtils.isEmpty(name))
+                {
+                    nameEditTxt.setError("Name is required!");
+                    return;
+                }
 
                 //email processing
                 if (TextUtils.isEmpty(email))
