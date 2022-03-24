@@ -35,7 +35,6 @@ public class RegisterActivity extends AppCompatActivity {
         nameEditTxt = findViewById(R.id.nameEditTxt);
         emailEditTxt = findViewById(R.id.emailEditTxt);
         pwEditTxt = findViewById(R.id.passwordEditTxt);
-        confirmPwEditTxt = findViewById(R.id.confirmPasswordEditTxt);
 
         registerBtn = findViewById(R.id.registerBtn);
 
@@ -55,7 +54,6 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String email = emailEditTxt.getText().toString().trim();
                 String password = pwEditTxt.getText().toString().trim();
-                String confirmPw = confirmPwEditTxt.getText().toString();
 
                 //email processing
                 if (TextUtils.isEmpty(email))
@@ -70,16 +68,6 @@ public class RegisterActivity extends AppCompatActivity {
                         return;
                     } else if (password.length() < 6) {
                         pwEditTxt.setError("Password must be more than 6 characters!");
-                        return;
-                    }
-                    else if(TextUtils.isEmpty(confirmPw))
-                    {
-                        confirmPwEditTxt.setError("Please confirm your password");
-                        return;
-                    }
-                    else if (!confirmPw.equals(password)) //if the user hasn't confirmed pw correctly
-                    {
-                        confirmPwEditTxt.setError("Password does not match!");
                         return;
                     }
                 }
@@ -120,4 +108,5 @@ public class RegisterActivity extends AppCompatActivity {
 
     //Todo: add confirm pw logic
     //TODO: confirm valid email
+    //TODO: USERNAME
 }
