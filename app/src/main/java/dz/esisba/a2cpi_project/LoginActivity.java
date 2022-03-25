@@ -3,6 +3,7 @@ package dz.esisba.a2cpi_project;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -38,11 +39,6 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static final int RC_SIGN_IN = 1;
-    private static final String TAG = "GOOGLEAUTH";
-    GoogleSignInClient googleSignInClient;
-    Dialog dialog;
-
     EditText emailEditTxt, pwEditTxt;
     Button lloginBtn;
     TextView singupBtn, forgotPwBtn;
@@ -75,6 +71,11 @@ public class LoginActivity extends AppCompatActivity {
         reset_alert = new AlertDialog.Builder(this);
         inflater = this.getLayoutInflater();
 
+        //if there's a user logged in go directly home
+        if (auth.getCurrentUser()!= null) { //if already logged in go directly to home
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            finish();
+        }
 
         lloginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
