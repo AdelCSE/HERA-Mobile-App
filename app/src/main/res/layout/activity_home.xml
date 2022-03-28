@@ -110,11 +110,12 @@
                 android:layout_alignParentBottom="true"
                 android:background="@drawable/actionbar">
 
-                <ImageView
+                <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="15dp"
+                    android:background="gone"
                     android:src="@drawable/ic_heart" />
 
                 <TextView
@@ -125,11 +126,13 @@
                     android:text="25"
                     android:textSize="18sp" />
 
-                <ImageView
+
+                <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10dp"
+                    android:background="gone"
                     android:src="@drawable/ic_edit" />
 
                 <TextView
@@ -140,11 +143,12 @@
                     android:text="20"
                     android:textSize="18sp" />
 
-                <ImageView
+                <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10dp"
+                    android:background="gone"
                     android:src="@drawable/ic_share" />
 
             </LinearLayout>
@@ -165,11 +169,12 @@
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/actionbar">
 
-                    <ImageView
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="15dp"
+                        android:background="gone"
                         android:src="@drawable/ic_heart" />
 
                     <TextView
@@ -180,11 +185,12 @@
                         android:text="240"
                         android:textSize="18sp" />
 
-                    <ImageView
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"
+                        android:background="gone"
                         android:src="@drawable/ic_edit" />
 
                     <TextView
@@ -195,11 +201,12 @@
                         android:text="50"
                         android:textSize="18sp" />
 
-                    <ImageView
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"
+                        android:background="gone"
                         android:src="@drawable/ic_share" />
 
                 </LinearLayout>
@@ -219,11 +226,12 @@
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/actionbar">
 
-                    <ImageView
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="15dp"
+                        android:background="gone"
                         android:src="@drawable/ic_heart" />
 
                     <TextView
@@ -234,11 +242,12 @@
                         android:text="25"
                         android:textSize="18sp" />
 
-                    <ImageView
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"
+                        android:background="gone"
                         android:src="@drawable/ic_edit" />
 
                     <TextView
@@ -249,14 +258,15 @@
                         android:text="20"
                         android:textSize="18sp" />
 
-                    <ImageView
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"
+                        android:background="gone"
                         android:src="@drawable/ic_share" />
-
                 </LinearLayout>
+
             </RelativeLayout>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

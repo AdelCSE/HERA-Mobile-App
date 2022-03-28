@@ -50,11 +50,12 @@
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/actionbar">
 
-                    <ImageView
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="15dp"
+                        android:background="gone"
                         android:src="@drawable/ic_heart" />
 
                     <TextView
@@ -65,11 +66,12 @@
                         android:text="25"
                         android:textSize="18sp" />
 
-                    <ImageView
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"
+                        android:background="gone"
                         android:src="@drawable/ic_edit" />
 
                     <TextView
@@ -80,11 +82,12 @@
                         android:text="20"
                         android:textSize="18sp" />
 
-                    <ImageView
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"
+                        android:background="gone"
                         android:src="@drawable/ic_share" />
 
                 </LinearLayout>
@@ -123,11 +126,12 @@
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/actionbar">
 
-                    <ImageView
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_heart"
                         android:layout_gravity="center_vertical"
+                        android:background="gone"
                         android:layout_marginStart="15dp"
                         />
                     <TextView
@@ -138,10 +142,11 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="5dp"
                         />
-                    <ImageView
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_share"
+                        android:background="gone"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"/>
 
@@ -162,10 +167,11 @@
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/actionbar">
 
-                    <ImageView
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_heart"
+                        android:background="gone"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="15dp"
                         />
@@ -177,10 +183,11 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="5dp"
                         />
-                    <ImageView
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_share"
+                        android:background="gone"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"/>
 
