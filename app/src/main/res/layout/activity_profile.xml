@@ -99,7 +99,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="7dp"
-                        android:text="100" />
+                        android:text="9800" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -107,7 +107,7 @@
                         android:layout_below="@+id/fllwNb"
                         android:layout_centerHorizontal="true"
 
-                        android:text="Followers" />
+                        android:text="Follower" />
 
                 </RelativeLayout>
 
@@ -132,7 +132,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/fllwingNb"
                         android:layout_centerHorizontal="true"
-                        android:text="Followers" />
+                        android:text="Following" />
                 </RelativeLayout>
 
                 <ImageButton
