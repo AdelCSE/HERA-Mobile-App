@@ -32,17 +32,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/btnBanner"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/profilebtn"
-        android:src="@drawable/ic_camera"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
 
     <ScrollView
         android:layout_width="match_parent"
@@ -115,8 +104,10 @@
                     android:layout_width="96dp"
                     android:layout_height="54dp"
                     android:layout_weight="1"
-                    android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
+
+                    android:layout_marginRight="20dp"
+                    android:layout_gravity="center_vertical"
                     android:background="@drawable/notifbox">
 
                     <TextView
@@ -134,17 +125,6 @@
                         android:layout_centerHorizontal="true"
                         android:text="Following" />
                 </RelativeLayout>
-
-                <ImageButton
-                    android:id="@+id/edit"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:background="@drawable/mainbtn"
-                    android:src="@drawable/ic_pencil"
-                    tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck,TouchTargetSizeCheck,TouchTargetSizeCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
 
             </LinearLayout>
 
@@ -166,6 +146,31 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="15dp"
+                >
+
+                <Button
+                    android:layout_width="98dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/fllwbtn"
+                    android:textColor="@color/white"
+                    android:text="Follow"
+
+                    />
+                <Button
+                    android:layout_width="98dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/fllwbtn"
+                    android:textColor="@color/white"
+                    android:layout_marginLeft="20dp"
+                    android:text="Ask"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:gravity="center_vertical"
@@ -179,7 +184,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="20"
+                    android:text="1"
                     android:textSize="15dp"
                     android:textStyle="bold"
                     android:layout_marginLeft="20dp"/>
@@ -194,7 +199,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="10"
+                    android:text="0"
                     android:textSize="15dp"
                     android:textStyle="bold"
                     android:layout_marginLeft="20dp"/>
@@ -203,21 +208,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Questions"
-                    android:textSize="15dp"
-                    android:textStyle="bold"
-                    android:layout_marginLeft="3dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="10"
-                    android:textSize="15dp"
-                    android:textStyle="bold"
-                    android:layout_marginLeft="20dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Requests"
                     android:textSize="15dp"
                     android:textStyle="bold"
                     android:layout_marginLeft="3dp" />
@@ -242,71 +232,31 @@
                     <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_heart"
-                        android:background="gone"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="15dp"
-                        />
+                        android:background="gone"
+                        android:src="@drawable/ic_heart" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="25"
-                        android:textSize="18sp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="5dp"
-                        />
+                        android:text="25"
+                        android:textSize="18sp" />
+
                     <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_share"
-                        android:background="gone"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"/>
+                        android:layout_marginLeft="10dp"
+                        android:background="gone"
+                        android:src="@drawable/ic_share" />
+
+
 
                 </LinearLayout>
 
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@drawable/notifbox"
-                android:layout_marginTop="15dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@drawable/actionbar">
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_heart"
-                        android:background="gone"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="15dp"
-                        />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="25"
-                        android:textSize="18sp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
-                        />
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_share"
-                        android:background="gone"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"/>
-
-                </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>

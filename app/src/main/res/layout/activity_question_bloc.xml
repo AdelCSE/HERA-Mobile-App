@@ -49,41 +49,46 @@
                     android:layout_height="40dp"
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/actionbar">
-                    <ImageView
+
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_heart"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="15dp"
-                        />
+                        android:background="gone"
+                        android:src="@drawable/ic_heart" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
                         android:text="25"
-                        android:textSize="18sp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
-                        />
-                    <ImageView
+                        android:textSize="18sp" />
+
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_edit"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"/>
+                        android:layout_marginLeft="10dp"
+                        android:background="gone"
+                        android:src="@drawable/ic_edit" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="20"
-                        android:textSize="18sp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="5dp"
-                        />
-                    <ImageView
+                        android:text="20"
+                        android:textSize="18sp" />
+
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_share"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"/>
+                        android:layout_marginLeft="10dp"
+                        android:background="gone"
+                        android:src="@drawable/ic_share" />
 
                 </LinearLayout>
             </RelativeLayout>
@@ -121,10 +126,52 @@
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/actionbar">
 
-                    <ImageView
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_heart"
+                        android:layout_gravity="center_vertical"
+                        android:background="gone"
+                        android:layout_marginStart="15dp"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="25"
+                        android:textSize="18sp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        />
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_share"
+                        android:background="gone"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"/>
+
+                </LinearLayout>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@drawable/notifbox"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@drawable/actionbar">
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_heart"
+                        android:background="gone"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="15dp"
                         />
@@ -136,10 +183,11 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="5dp"
                         />
-                    <ImageView
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_share"
+                        android:background="gone"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"/>
 

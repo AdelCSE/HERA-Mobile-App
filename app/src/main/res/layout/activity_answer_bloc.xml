@@ -49,10 +49,11 @@
                     android:layout_height="40dp"
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/actionbar">
-                    <ImageView
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_heart"
+                        android:background="gone"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="15dp"
                         />
@@ -64,10 +65,11 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="5dp"
                         />
-                    <ImageView
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_share"
+                        android:background="gone"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"/>
 
