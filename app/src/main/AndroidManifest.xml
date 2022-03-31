@@ -13,7 +13,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.2CPI_PROJECT">
         <activity
-            android:name=".UserProfileActivity"
+            android:name=".UserPorfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".QuestionBlocActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotificationsActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
