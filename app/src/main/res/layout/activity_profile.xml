@@ -1,54 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".ProfileActivity"
+    android:background="@drawable/back">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="215dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="#464646">
+   <com.google.android.material.appbar.AppBarLayout
+       android:id="@+id/appbarlayout"
+       android:layout_width="match_parent"
+       android:layout_height="280dp"
+       android:fitsSystemWindows="true"
+       android:theme="@style/ThemeOverlay.MaterialComponents.Dark">
+       <com.google.android.material.appbar.CollapsingToolbarLayout
+           android:id="@+id/CollapsingToolBarLayout"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:fitsSystemWindows="true"
+           app:contentScrim="@color/design_default_color_primary"
+           app:title="Name"
+           app:expandedTitleMarginStart="15dp"
+           app:expandedTitleMarginBottom="20dp"
+           app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_picture"
-            android:id="@+id/banner"/>
-    </FrameLayout>
+           <ImageView
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:contentDescription="banner"
+               android:fitsSystemWindows="true"
+               android:scaleType="centerCrop"
+               android:src="@drawable/exemple"
+               android:id="@+id/banner"
+               app:layout_collapseMode="parallax"/>
 
-    <ImageButton
-        android:id="@+id/btnReturn"
-        android:layout_width="40dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="15dp"
-        android:layout_height="40dp"
-        android:background="@drawable/profilebtn"
-        android:src="@drawable/ic_arrow"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+           <View
+               android:layout_width="match_parent"
+               android:layout_height="100dp"
+               android:layout_gravity="bottom"
+               android:background="@drawable/title_background"/>
 
-    <ImageButton
-        android:id="@+id/btnBanner"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/profilebtn"
-        android:src="@drawable/ic_camera"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+           <androidx.appcompat.widget.Toolbar
+               android:id="@+id/ToolBar"
+               android:layout_width="match_parent"
+               android:layout_height="?actionBarSize"
+               app:contentInsetStart="0dp"
+               app:contentInsetStartWithNavigation="0dp"
+               app:layout_collapseMode="pin"
+               app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"/>
 
 
-    <ScrollView
+       </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+   </com.google.android.material.appbar.AppBarLayout>
+
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="200dp"
-        android:background="@drawable/profileback">
+        android:overScrollMode="never"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -175,7 +187,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_all"
-                    android:background="gone"/>
+                    android:background="@null"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -243,7 +255,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_heart"
-                        android:background="gone"
+                        android:background="@null"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="15dp"
                         />
@@ -259,7 +271,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_share"
-                        android:background="gone"
+                        android:background="@null"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"/>
 
@@ -286,7 +298,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_heart"
-                        android:background="gone"
+                        android:background="@null"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="15dp"
                         />
@@ -302,12 +314,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_share"
-                        android:background="gone"
+                        android:background="@null"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"/>
 
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
-    </ScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -157,7 +157,7 @@
                 android:layout_height="55dp"
                 android:layout_weight="1"
 
-                android:background="gone"
+                android:background="@null"
                 tools:ignore="SpeakableTextPresentCheck"
                 android:src="@drawable/ic_home"/>
 
@@ -166,7 +166,7 @@
                 android:layout_width="40dp"
                 android:layout_height="55dp"
                 android:layout_weight="1"
-                android:background="gone"
+                android:background="@null"
                 tools:ignore="SpeakableTextPresentCheck"
                 android:src="@drawable/ic_play"/>
 
@@ -175,7 +175,7 @@
                 android:layout_width="40dp"
                 android:layout_height="55dp"
                 android:layout_weight="1"
-                android:background="gone"
+                android:background="@null"
                 tools:ignore="SpeakableTextPresentCheck"
                 android:src="@drawable/ic_plus"/>
 
@@ -184,7 +184,7 @@
                 android:layout_width="40dp"
                 android:layout_height="55dp"
                 android:layout_weight="1"
-                android:background=""
+                android:background="@null"
                 android:src="@drawable/ic_bell"
                 tools:ignore="SpeakableTextPresentCheck" />
             <ImageButton
@@ -192,7 +192,7 @@
                 android:layout_width="40dp"
                 android:layout_height="55dp"
                 android:layout_weight="1"
-                android:background=""
+                android:background="@null"
                 tools:ignore="SpeakableTextPresentCheck"
                 android:src="@drawable/userpic"
                 />
