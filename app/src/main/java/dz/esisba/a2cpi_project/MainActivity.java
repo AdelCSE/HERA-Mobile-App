@@ -25,5 +25,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+    public void profile(View view) {
+        startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+        finish();
+    }
 }

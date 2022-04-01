@@ -3,12 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/actionbar.xml" value="0.178" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/ic_arrow.xml" value="0.178" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/toolbar.xml" value="0.178" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_answer_bloc.xml" value="0.20416666666666666" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_home.xml" value="0.20416666666666666" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_login.xml" value="0.25" />
-        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_main.xml" value="0.19010416666666666" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_notifications.xml" value="0.20416666666666666" />
-        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_profile.xml" value="0.22" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_profile.xml" value="0.4666666666666667" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_register.xml" value="0.22" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_user_profile.xml" value="0.20416666666666666" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/reset_pop.xml" value="0.22" />
