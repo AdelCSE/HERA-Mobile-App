@@ -6,14 +6,17 @@
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/actionbar.xml" value="0.178" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/ic_arrow.xml" value="0.178" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/toolbar.xml" value="0.178" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_add_post.xml" value="0.25" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_answer_bloc.xml" value="0.20416666666666666" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_home.xml" value="0.20416666666666666" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_main2.xml" value="0.5" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_notifications.xml" value="0.20416666666666666" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_profile.xml" value="0.4666666666666667" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_register.xml" value="0.22" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_user_profile.xml" value="0.20416666666666666" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/item_container_onboarding.xml" value="0.264" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/reset_pop.xml" value="0.22" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2115" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/drawable/btn.xml" value="0.248" />
@@ -35,7 +38,7 @@
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
-        <option name="scale" value="0.264" />
+        <option name="scale" value="0.4666666666666667" />
       </ProjectState>
     </option>
   </component>
