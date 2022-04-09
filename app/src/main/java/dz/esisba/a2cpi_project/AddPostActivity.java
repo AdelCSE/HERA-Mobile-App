@@ -61,6 +61,7 @@ public class AddPostActivity extends AppCompatActivity {
         onlineUserId = user.getUid();
 
         askedByRef = FirebaseFirestore.getInstance().collection("Users").document(onlineUserId);
+        //get username of poster
         askedByRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,

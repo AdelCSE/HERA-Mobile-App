@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="@drawable/back"
-    tools:context=".UserPorfileActivity">
+    tools:context=".UserProfileActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbarlayout"
@@ -151,11 +151,12 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/usernameTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Username"
-                android:layout_marginTop="5dp"
                 android:layout_marginStart="20dp"
+                android:layout_marginTop="5dp"
+                android:text="Username"
                 tools:layout_editor_absoluteX="0dp"
                 tools:layout_editor_absoluteY="16dp" />
 
@@ -174,13 +175,13 @@
                 >
 
                 <Button
+                    android:id="@+id/followBtn"
                     android:layout_width="98dp"
                     android:layout_height="40dp"
                     android:background="@drawable/fllwbtn"
-                    android:textColor="@color/white"
                     android:text="Follow"
 
-                    />
+                    android:textColor="@color/white" />
                 <Button
                     android:layout_width="98dp"
                     android:layout_height="40dp"
