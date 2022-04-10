@@ -23,13 +23,20 @@ public class BottomNavigationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bottom_navigation);
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation_layout);
+
+        //setEnabled(false) for the 2nd index because we're using a floating button instead
+        bottomNav.setBackground(null);
+        bottomNav.getMenu().getItem(2).setEnabled(false);
+
         bottomNav.setOnItemSelectedListener(navListener);
 
+        //Here we're setting the home fragment as default fragment
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 new HomeFragment()).commit();
-
     }
 
+
+    //Switch between fragments
     private BottomNavigationView.OnItemSelectedListener navListener =
             new BottomNavigationView.OnItemSelectedListener() {
                 @Override
@@ -42,9 +49,6 @@ public class BottomNavigationActivity extends AppCompatActivity {
                         case R.id.nav_sr:
                             selectedFragment = new SmartRoomFragment();
                             break;
-                        case R.id.nav_addpost:
-                            selectedFragment = new AddPostFragment();
-                            break;
                         case R.id.nav_notif:
                             selectedFragment = new NotificationsFragment();
                             break;
@@ -54,7 +58,6 @@ public class BottomNavigationActivity extends AppCompatActivity {
                     }
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                             selectedFragment).commit();
-
                     return true;
                 }
             };

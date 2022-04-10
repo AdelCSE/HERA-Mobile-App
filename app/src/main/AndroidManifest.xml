@@ -15,6 +15,10 @@
         android:theme="@style/Theme.2CPI_PROJECT">
 
         <activity
+            android:name=".LoginActivity"
+            android:exported="false"/>
+
+        <activity
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity
@@ -36,7 +40,7 @@
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".BottomNavigationActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
