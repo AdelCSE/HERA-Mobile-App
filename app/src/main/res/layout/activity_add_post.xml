@@ -8,7 +8,7 @@
     android:background="@drawable/back">
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/returnBtn"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginLeft="15dp"
@@ -64,6 +64,7 @@
                 android:src="@drawable/profileimg" />
 
             <EditText
+                android:id="@+id/bodyEditTxt"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:layout_below="@+id/questionEdittxt"
@@ -111,13 +112,14 @@
     </RelativeLayout>
 
     <Button
+        android:id="@+id/postBtn"
         android:layout_width="98dp"
         android:layout_height="40dp"
-        android:layout_marginBottom="20dp"
         android:layout_marginEnd="15dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/fllwbtn"
         android:text="Publish"
         android:textColor="@color/white"
-        android:background="@drawable/fllwbtn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

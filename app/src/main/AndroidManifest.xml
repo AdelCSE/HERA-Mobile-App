@@ -22,7 +22,10 @@
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".UserPorfileActivity"
+            android:name=".AddPostActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UserProfileActivity"
             android:exported="false" />
         <activity
             android:name=".SearchActivity"

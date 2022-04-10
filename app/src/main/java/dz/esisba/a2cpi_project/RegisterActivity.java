@@ -26,10 +26,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
+
+    private static  String date = DateFormat.getInstance().format(new Date());
 
     EditText  nameEditTxt, emailEditTxt, pwEditTxt, confirmPwEditTxt;
     Button registerBtn;
@@ -114,8 +118,10 @@ public class RegisterActivity extends AppCompatActivity {
                                 DocumentReference df = fstore.collection("Users").document(user.getUid());
                                 Map<String,Object> userInfor = new HashMap<>(); //represents key, value
                                 //can be used to categorise our data and organize it
-                                userInfor.put("Username", nameEditTxt.getText().toString()); //user name categorie
+                                userInfor.put("Username", nameEditTxt.getText().toString());//user name categorie
                                 userInfor.put("Email", email); //email categorie
+                                userInfor.put("uid", user.getUid());
+                                userInfor.put("createdAt", date);
 
                                 //specify access level (if user is admin)
                                 userInfor.put("isUser","1");
