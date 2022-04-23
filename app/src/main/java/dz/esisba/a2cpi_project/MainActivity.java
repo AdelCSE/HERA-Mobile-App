@@ -82,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
                                         else if (!auth.getCurrentUser().getUid().equals(uid) && !uid.isEmpty())
                                         {
                                             Intent i = new Intent(getApplicationContext(), UserProfileActivity.class);
-                                            i.putExtra("Username", user2.getText().toString());
+                                            i.putExtra("Username", user1.getText().toString());
+                                            i.putExtra("uid", uid);
                                             startActivity(i);
                                             finish();
                                         }
