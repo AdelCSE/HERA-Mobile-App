@@ -40,7 +40,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/imageButton2"
+                android:id="@+id/confirmButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="10dp"
@@ -84,7 +84,7 @@
                         android:src="@drawable/profileimg" />
 
                     <TextView
-                        android:id="@+id/name"
+                        android:id="@+id/nameEditText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/question"
@@ -96,7 +96,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/name"
+                        android:layout_below="@+id/nameEditText"
                         android:layout_marginLeft="5dp"
                         android:layout_marginTop="3dp"
                         android:layout_toRightOf="@+id/img"
