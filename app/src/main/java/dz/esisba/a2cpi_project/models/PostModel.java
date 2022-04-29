@@ -1,10 +1,10 @@
 package dz.esisba.a2cpi_project.models;
 
 public class PostModel {
-    String Name,Username,Question,Details,Likes,Answers;
+    String Name,Username,Question,Details,Likes,Answers,Date;
     int Image;
 
-    public PostModel(int image, String name, String username, String question, String details, String likes, String answers) {
+    public PostModel(int image, String name, String username, String question, String details, String likes, String answers,String date) {
         Image = image;
         Name = name;
         Username = username;
@@ -12,6 +12,7 @@ public class PostModel {
         Details = details;
         Likes = likes;
         Answers = answers;
+        Date = date;
 
 
     }
@@ -70,5 +71,13 @@ public class PostModel {
 
     public void setAnswers(String answers) {
         Answers = answers;
+    }
+
+    public String getDate() {
+        return Date;
+    }
+
+    public void setDate(String date) {
+        Date = date;
     }
 }

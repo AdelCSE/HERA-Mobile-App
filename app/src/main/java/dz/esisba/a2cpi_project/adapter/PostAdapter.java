@@ -38,6 +38,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
         holder.Details.setText(PostsHolder.get(position).getDetails());
         holder.Likes.setText(PostsHolder.get(position).getLikes());
         holder.Answers.setText(PostsHolder.get(position).getAnswers());
+        holder.Date.setText(PostsHolder.get(position).getDate());
     }
 
     @Override
@@ -48,7 +49,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
     class myviewholder extends RecyclerView.ViewHolder {
 
         ImageView img;
-        TextView Question,Details,Name,Username,Likes,Answers;
+        TextView Question,Details,Name,Username,Likes,Answers,Date;
 
         public myviewholder (@NonNull View itemView){
             super(itemView);
@@ -59,6 +60,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
             Details = itemView.findViewById(R.id.details);
             Likes = itemView.findViewById(R.id.likes);
             Answers = itemView.findViewById(R.id.answers);
+            Date = itemView.findViewById(R.id.postDate);
 
         }
     }

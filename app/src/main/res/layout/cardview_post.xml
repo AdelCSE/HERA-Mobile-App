@@ -3,9 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginBottom="15dp"
     app:cardCornerRadius="20dp"
-    android:elevation="4dp"
-    app:cardUseCompatPadding="true">
+    android:elevation="4dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -22,6 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="15dp"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:text="What's your Question ?"
@@ -52,6 +55,8 @@
                         android:layout_below="@+id/question"
                         android:layout_toRightOf="@+id/img"
                         android:text="Name"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
                         android:id="@+id/name"/>
 
                     <TextView
@@ -72,64 +77,82 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="15dp"
-                android:text="details here details
-                here details here details here details
-                here details here details here details
-                here details here details here details
-                here details here details here details here details here details here "
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:text="details here "
                 android:id="@+id/details"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="date"
+                android:layout_marginLeft="15dp"
+                android:textSize="11sp"
+                android:id="@+id/postDate"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="5dp"
                 android:background="@drawable/actionbar"
                 android:layout_alignParentBottom="true">
 
-                <ImageButton
-                    android:id="@+id/likeBtn"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="15dp"
-                    android:background="@null"
-                    android:src="@drawable/ic_heart" />
+                    android:layout_weight="1"
 
-                <TextView
-                    android:id="@+id/likes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="5dp"
-                    android:text="Likes"
-                    android:textSize="18sp" />
+                    android:layout_gravity="center_vertical">
+                    <ImageButton
+                        android:id="@+id/likeBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="15dp"
+                        android:background="@null"
+                        android:src="@drawable/ic_heart" />
 
-                <ImageButton
-                    android:id="@+id/answerBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
-                    android:background="@null"
-                    android:src="@drawable/ic_edit" />
+                    <TextView
+                        android:id="@+id/likes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textStyle="bold"
+                        android:layout_marginLeft="5dp"
+                        android:text="Likes"
+                        android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/answers"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="5dp"
-                    android:text="Answers"
-                    android:textSize="18sp" />
+                    <ImageButton
+                        android:id="@+id/answerBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:background="@null"
+                        android:src="@drawable/ic_edit" />
 
-                <ImageButton
-                    android:id="@+id/shareBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
-                    android:background="@null"
-                    android:src="@drawable/ic_share" />
+                    <TextView
+                        android:id="@+id/answers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:textStyle="bold"
+                        android:text="Answers"
+                        android:textSize="12sp" />
+
+                    <ImageButton
+                        android:id="@+id/shareBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:background="@null"
+                        android:src="@drawable/ic_share" />
+
+                </LinearLayout>
+
+
 
                 <ImageButton
                     android:id="@+id/postMenu"
@@ -139,9 +162,13 @@
                     android:layout_marginEnd="15dp"
                     android:background="@null"
                     android:src="@drawable/ic_post_menu" />
+
+
             </LinearLayout>
 
+
         </LinearLayout>
+
 
     </RelativeLayout>
 
