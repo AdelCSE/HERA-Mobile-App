@@ -106,7 +106,7 @@
                     android:background="@drawable/notifbox">
 
                     <TextView
-                        android:id="@+id/fllwNb"
+                        android:id="@+id/fllwNb2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
@@ -116,7 +116,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/fllwNb"
+                        android:layout_below="@+id/fllwNb2"
                         android:layout_centerHorizontal="true"
 
                         android:text="Follower" />
@@ -132,7 +132,7 @@
                     android:background="@drawable/notifbox">
 
                     <TextView
-                        android:id="@+id/fllwingNb"
+                        android:id="@+id/fllwingNb2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
@@ -142,7 +142,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/fllwingNb"
+                        android:layout_below="@+id/fllwingNb2"
                         android:layout_centerHorizontal="true"
                         android:text="Following" />
                 </RelativeLayout>

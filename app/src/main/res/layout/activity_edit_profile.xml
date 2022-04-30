@@ -7,8 +7,8 @@
     android:background="@drawable/back"
     tools:context=".EditProfileActivity">
 
-    <ImageView
-        android:id="@+id/img"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profilePic"
         android:layout_width="165dp"
         android:layout_height="168dp"
         android:layout_marginTop="100dp"
@@ -59,10 +59,12 @@
         android:text="Change profile picture"
         android:textColor="@color/button"
         android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img" />
+        app:layout_constraintTop_toBottomOf="@+id/profilePic"
+        app:layout_constraintVertical_bias="0.0" />
 
     <View
         android:id="@+id/view"

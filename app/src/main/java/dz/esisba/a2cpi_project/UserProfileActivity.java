@@ -12,11 +12,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -25,10 +27,11 @@ import java.util.Map;
 
 public class UserProfileActivity extends AppCompatActivity {
     private static String username,uid,currentUsername = "";
-    private TextView usernameTxt;
+    private TextView usernameTxt,name, bio, followersCount, followingCount;
     private Button followBtn;
     private static  String date = DateFormat.getInstance().format(new Date());
     private static Boolean following = false;
+    private CollapsingToolbarLayout toolbarLayout;
 
     FirebaseAuth auth;
     FirebaseUser user;
@@ -42,13 +45,68 @@ public class UserProfileActivity extends AppCompatActivity {
         uid = getIntent().getStringExtra("uid");
         usernameTxt = findViewById(R.id.usernameTxt);
         followBtn = findViewById(R.id.followBtn);
+        name = findViewById(R.id.profileName);
+        bio = findViewById(R.id.profileBio);
+        followersCount = findViewById(R.id.fllwNb2);
+        followingCount = findViewById(R.id.fllwingNb2);
+        toolbarLayout = findViewById(R.id.CollapsingToolBarLayout2);
+
         usernameTxt.setText("@"+username);
+        toolbarLayout.setTitle(username);
+
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         fstore = FirebaseFirestore.getInstance();
 
         GetCurrentUsername();
+
+        DocumentReference df = fstore.collection("Users").document(uid);
+        df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful())
+                {
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc.exists())
+                    {
+                        if (doc.get("Name")!= null && doc.get("Bio")!=null) {
+                            name.setText(doc.get("Name").toString());
+                            bio.setText(doc.get("Bio").toString());
+                        }
+                    }
+                }
+            }
+        });
+
+        Task<QuerySnapshot> followingReference = df.collection("following").
+                get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful())
+                {
+                    if (task.getResult().size()>0) {
+                        int size = task.getResult().size();
+                        followingCount.setText(Integer.toString(size));
+                    }
+                }
+            }
+        });
+
+
+        Task<QuerySnapshot> followerReference = df.collection("followers").
+                get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful())
+                {
+                    if (task.getResult().size()>0) {
+                        int size = task.getResult().size();
+                        followersCount.setText(Integer.toString(size));
+                    }
+                }
+            }
+        });
 
         RunCheck(); //check if the current user (logged in) if following the user (user we're looking at) or not
         //if he's following him then he will get the option to follow
@@ -147,3 +205,5 @@ public class UserProfileActivity extends AppCompatActivity {
         });
     }
 }
+
+//TODO: retrieve the name
