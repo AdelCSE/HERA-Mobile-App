@@ -7,17 +7,15 @@ android:layout_height="match_parent"
 android:id="@+id/body_container"
 android:background="@drawable/back">
 
-
-<ScrollView
-    android:id="@+id/scrollView4"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="60dp"
+        android:background="#EEEEEE"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:layout_width="40dp"
@@ -25,7 +23,7 @@ android:background="@drawable/back">
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/mainbtn"
-            android:src="@drawable/ic_arrow"
+            android:src="@drawable/ic_menu_burger"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -49,239 +47,17 @@ android:background="@drawable/back">
             android:src="@drawable/ic_searchmain"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <LinearLayout
-            android:id="@+id/linearLayout3"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="65dp"
-                android:layout_marginEnd="15dp"
-                android:background="@drawable/notifbox">
-
-                <TextView
-                    android:id="@+id/question"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="10dp"
-                    android:text="What's your question ?"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:id="@+id/img"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
-                    android:layout_below="@+id/question"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="5dp"
-                    android:src="@drawable/profileimg" />
-
-                <TextView
-                    android:id="@+id/nameEditText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/question"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_toRightOf="@+id/img"
-                    android:text="Name" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/nameEditText"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="3dp"
-                    android:layout_toRightOf="@+id/img"
-                    android:text="username" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/img"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="15dp"
-                    android:text="details here details
-                here details here details here details
-                here details here details here details
-                here details here details here details
-                here details here details here details here details here details here " />
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@drawable/actionbar">
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="15dp"
-                        android:background="@null"
-                        android:src="@drawable/ic_heart" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
-                        android:text="25"
-                        android:textSize="18sp" />
-
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"
-                        android:background="@null"
-                        android:src="@drawable/ic_edit" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
-                        android:text="20"
-                        android:textSize="18sp" />
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"
-                        android:background="@null"
-                        android:src="@drawable/ic_share" />
-
-                </LinearLayout>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="15dp"
-                android:background="@drawable/notifbox">
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@drawable/actionbar">
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="15dp"
-                        android:background="@null"
-                        android:src="@drawable/ic_heart" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
-                        android:text="240"
-                        android:textSize="18sp" />
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"
-                        android:background="@null"
-                        android:src="@drawable/ic_edit" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
-                        android:text="50"
-                        android:textSize="18sp" />
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"
-                        android:background="@null"
-                        android:src="@drawable/ic_share" />
-
-                </LinearLayout>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="15dp"
-                android:background="@drawable/notifbox">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@drawable/actionbar">
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="15dp"
-                        android:background="@null"
-                        android:src="@drawable/ic_heart" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
-                        android:text="25"
-                        android:textSize="18sp" />
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"
-                        android:background="@null"
-                        android:src="@drawable/ic_edit" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
-                        android:text="20"
-                        android:textSize="18sp" />
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"
-                        android:background="@null"
-                        android:src="@drawable/ic_share" />
-                </LinearLayout>
-
-            </RelativeLayout>
-        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
