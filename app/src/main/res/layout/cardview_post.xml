@@ -26,7 +26,7 @@
                 android:layout_marginLeft="15dp"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:text="What's your Question ?"
                 android:id="@+id/question"/>
 
@@ -35,9 +35,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp">
 
-                <ImageView
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:layout_marginLeft="15dp"
                     android:src="@drawable/profileimg"
                     android:id="@+id/img"/>
@@ -55,6 +55,7 @@
                         android:layout_below="@+id/question"
                         android:layout_toRightOf="@+id/img"
                         android:text="Name"
+                        android:textSize="12sp"
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         android:id="@+id/name"/>
@@ -64,6 +65,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/name"
+                        android:textSize="11sp"
                         android:layout_marginTop="3dp"
                         android:layout_toRightOf="@+id/img"
                         android:text="username" />
@@ -77,7 +79,7 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="15dp"
-                android:textSize="18sp"
+                android:textSize="14sp"
                 android:textColor="@color/black"
                 android:text="details here "
                 android:id="@+id/details"/>
@@ -87,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:text="date"
                 android:layout_marginLeft="15dp"
-                android:textSize="11sp"
+                android:textSize="9sp"
                 android:id="@+id/postDate"/>
 
             <LinearLayout

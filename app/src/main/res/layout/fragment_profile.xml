@@ -57,8 +57,10 @@
 
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nest_scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         android:overScrollMode="never"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
@@ -88,8 +90,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <ImageView
-                    android:id="@+id/img"
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profileImg"
                     android:layout_width="75dp"
                     android:layout_height="75dp"
                     android:layout_marginLeft="20dp"
@@ -111,14 +113,13 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="7dp"
-                        android:text="9800" />
+                        android:text="0" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/fllwNb"
                         android:layout_centerHorizontal="true"
-
                         android:text="Follower" />
 
                 </RelativeLayout>
@@ -132,17 +133,17 @@
                     android:background="@drawable/notifbox">
 
                     <TextView
-                        android:id="@+id/fllwingNb"
+                        android:id="@+id/fllwNb2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="7dp"
-                        android:text="100" />
+                        android:text="0" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/fllwingNb"
+                        android:layout_below="@+id/fllwNb2"
                         android:layout_centerHorizontal="true"
                         android:text="Following" />
                 </RelativeLayout>
@@ -176,151 +177,39 @@
                 android:layout_marginLeft="20dp"
                 android:text="BIO HERE"/>
 
-            <LinearLayout
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/barLayoutp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:gravity="center_vertical"
-                android:layout_marginTop="15dp">
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_all"
-                    android:background="@null"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="20"
-                    android:textSize="15dp"
-                    android:textStyle="bold"
-                    android:layout_marginLeft="20dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Answers"
-                    android:textSize="15dp"
-                    android:textStyle="bold"
-                    android:layout_marginLeft="3dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="10"
-                    android:textSize="15dp"
-                    android:textStyle="bold"
-                    android:layout_marginLeft="20dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Questions"
-                    android:textSize="15dp"
-                    android:textStyle="bold"
-                    android:layout_marginLeft="3dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="10"
-                    android:textSize="15dp"
-                    android:textStyle="bold"
-                    android:layout_marginLeft="20dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Requests"
-                    android:textSize="15dp"
-                    android:textStyle="bold"
-                    android:layout_marginLeft="3dp" />
-
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@drawable/notifbox"
                 android:layout_marginTop="15dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                >
+                android:stateListAnimator="@null"
+                android:background="@null"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <LinearLayout
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayoutp"
+                    app:tabTextAppearance="@style/MineCustomTabText"
+                    android:background="@android:color/transparent"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@drawable/actionbar">
+                    android:layout_height="match_parent" />
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_heart"
-                        android:background="@null"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="15dp"
-                        />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="25"
-                        android:textSize="18sp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
-                        />
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_share"
-                        android:background="@null"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"/>
+            </com.google.android.material.appbar.AppBarLayout>
 
-                </LinearLayout>
-
-            </RelativeLayout>
-
-            <RelativeLayout
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPagerp"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@drawable/notifbox"
-                android:layout_marginTop="15dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@drawable/actionbar">
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_heart"
-                        android:background="@null"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="15dp"
-                        />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="25"
-                        android:textSize="18sp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
-                        />
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_share"
-                        android:background="@null"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"/>
-
-                </LinearLayout>
-            </RelativeLayout>
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </LinearLayout>
 
+
     </androidx.core.widget.NestedScrollView>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
