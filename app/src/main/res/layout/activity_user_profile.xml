@@ -16,7 +16,7 @@
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/CollapsingToolBarLayout"
+            android:id="@+id/CollapsingToolBarLayout2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
@@ -67,7 +67,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/nameEditText"
+                android:id="@+id/profileName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -105,17 +105,17 @@
                     android:background="@drawable/notifbox">
 
                     <TextView
-                        android:id="@+id/fllwNb"
+                        android:id="@+id/fllwNb2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="7dp"
-                        android:text="9800" />
+                        android:text="0" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/fllwNb"
+                        android:layout_below="@+id/fllwNb2"
                         android:layout_centerHorizontal="true"
 
                         android:text="Follower" />
@@ -133,17 +133,17 @@
                     android:background="@drawable/notifbox">
 
                     <TextView
-                        android:id="@+id/fllwingNb"
+                        android:id="@+id/fllwingNb2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="7dp"
-                        android:text="100" />
+                        android:text="0" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/fllwingNb"
+                        android:layout_below="@+id/fllwingNb2"
                         android:layout_centerHorizontal="true"
                         android:text="Following" />
                 </RelativeLayout>
@@ -161,6 +161,7 @@
                 tools:layout_editor_absoluteY="16dp" />
 
             <TextView
+                android:id="@+id/profileBio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"

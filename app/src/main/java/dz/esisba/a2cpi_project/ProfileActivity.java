@@ -9,33 +9,42 @@ import androidx.palette.graphics.Palette;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 
 import java.util.Objects;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ProfileActivity extends AppCompatActivity {
 
-    FirebaseAuth auth;
-    FirebaseUser user;
-    FirebaseFirestore fstore;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+    private FirebaseFirestore fstore;
+    private StorageReference storageReference;
+    private Uri resultUri;
 
     private TextView username, name, bio, followersCount, followingCount;
     private ImageButton editProfile;
+    private CollapsingToolbarLayout toolbarLayout;
+    private CircleImageView profileImg;
 
 
     @Override
@@ -46,9 +55,11 @@ public class ProfileActivity extends AppCompatActivity {
         username = findViewById(R.id.usernameTxt);
         name = findViewById(R.id.nameText);
         bio = findViewById(R.id.bioText);
-        followersCount = findViewById(R.id.fllwNb);
-        followingCount = findViewById(R.id.fllwingNb);
+        followersCount = findViewById(R.id.fllwNb2);
+        followingCount = findViewById(R.id.fllwingNb2);
         editProfile = findViewById(R.id.editProfile);
+        toolbarLayout = findViewById(R.id.CollapsingToolBarLayout);
+        profileImg = findViewById(R.id.profileImg);
 
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +72,7 @@ public class ProfileActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         fstore = FirebaseFirestore.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference().child("profileImages");
 
         DocumentReference df = fstore.collection("Users").document(user.getUid());
         df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -72,6 +84,9 @@ public class ProfileActivity extends AppCompatActivity {
                     if (doc.exists())
                     {
                         username.setText("@"+ doc.get("Username").toString());
+                        toolbarLayout.setTitle(doc.get("Username").toString());
+                        String downloadUrl = doc.get("profilePictureUrl").toString();
+                        Glide.with(ProfileActivity.this).load(downloadUrl).into(profileImg);
                         if (doc.get("Name")!= null && doc.get("Bio")!=null) {
                             name.setText(doc.get("Name").toString());
                             bio.setText(doc.get("Bio").toString());
