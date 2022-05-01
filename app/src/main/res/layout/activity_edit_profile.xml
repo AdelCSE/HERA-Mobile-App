@@ -85,6 +85,8 @@
 
     <EditText
         android:id="@+id/nameEditText"
+        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
+        android:inputType="textFilter"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:layout_marginStart="37dp"
@@ -115,6 +117,9 @@
 
     <EditText
         android:id="@+id/nameEditText2"
+        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+        android:inputType="textFilter"
+
         android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:layout_marginTop="50dp"

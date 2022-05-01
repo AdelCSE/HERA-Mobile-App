@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -70,6 +71,45 @@ public class EditProfileActivity extends AppCompatActivity {
         storageReference = FirebaseStorage.getInstance().getReference().child("profileImages");
         DocumentReference df = fstore.collection("Users").document(user.getUid());
 
+        //grab the existing info
+        df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful())
+                {
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc.exists())
+                    {
+                        if (doc.get("profilePictureUrl")!= null) {
+                            String downloadUrl = doc.get("profilePictureUrl").toString();
+                            Glide.with(EditProfileActivity.this).load(downloadUrl).into(profilePic);
+                        }
+                        if (doc.get("Name")!= null) {
+                            String n = doc.get("Name").toString();
+                            String n1 = "";
+                            if (n.equals(" ") || n.isEmpty()) {
+                                name1.setText(n); // put them in name1
+                                name2.setText(n); //put last string in name2
+                            }
+                            else
+                            {
+                                String[] splitStr = n.split("\\s+"); //split words into spaces
+                                for (int i = 0; i < splitStr.length - 1; i++) { //get all strings from first to before last
+                                    n1 += splitStr[i] + " ";
+                                }
+                                name1.setText(n1); // put them in name1
+                                name2.setText(splitStr[splitStr.length - 1]); //put last string in name2
+                            }
+                        }
+                        if(doc.get("Bio")!=null)
+                        {
+                            bio.setText(doc.get("Bio").toString());
+                        }
+                    }
+                }
+            }
+        });
+
         profilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,23 +137,27 @@ public class EditProfileActivity extends AppCompatActivity {
                                 userInfor.put("Bio", bio.getText().toString());
                                 StorageReference fileReference = storageReference.child(user.getUid());
                                 if(resultUri!=null) {
-                                    fileReference.putFile(resultUri);
-                                    fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    fileReference.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                         @Override
-                                        public void onSuccess(Uri uri) {
-                                            String imageUrl = uri.toString();
-                                            Map<String,Object> hashMap = new HashMap();
-                                            hashMap.put("profilePictureUrl", imageUrl);
-                                            df.update(hashMap);
-                                            imageUploaded = true;
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(EditProfileActivity.this, "Unknow error occured please try again later", Toast.LENGTH_SHORT).show();
-                                            return;
+                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                            fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                    String imageUrl = uri.toString();
+                                                    Map<String,Object> hashMap = new HashMap();
+                                                    hashMap.put("profilePictureUrl", imageUrl);
+                                                    df.update(hashMap);
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(EditProfileActivity.this, "Unknow error occured please try again later", Toast.LENGTH_SHORT).show();
+                                                    return;
+                                                }
+                                            });
                                         }
                                     });
+
                                 }
                                 df.update(userInfor);
                                 Toast.makeText(EditProfileActivity.this, "Information updated!", Toast.LENGTH_SHORT).show();
@@ -175,5 +219,4 @@ public class EditProfileActivity extends AppCompatActivity {
     }*/
 }
 
-//TODO: add picture
 //TODO: change all profile pictures to circular image view
