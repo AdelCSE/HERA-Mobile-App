@@ -85,10 +85,15 @@ public class ProfileActivity extends AppCompatActivity {
                     {
                         username.setText("@"+ doc.get("Username").toString());
                         toolbarLayout.setTitle(doc.get("Username").toString());
-                        String downloadUrl = doc.get("profilePictureUrl").toString();
-                        Glide.with(ProfileActivity.this).load(downloadUrl).into(profileImg);
-                        if (doc.get("Name")!= null && doc.get("Bio")!=null) {
+                        if (doc.get("profilePictureUrl")!= null) {
+                            String downloadUrl = doc.get("profilePictureUrl").toString();
+                            Glide.with(ProfileActivity.this).load(downloadUrl).into(profileImg);
+                        }
+                        if (doc.get("Name")!= null) {
                             name.setText(doc.get("Name").toString());
+                        }
+                        if(doc.get("Bio")!=null)
+                        {
                             bio.setText(doc.get("Bio").toString());
                         }
                     }
