@@ -28,10 +28,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="match_parent"
         android:layout_marginTop="65dp"
+        android:layout_marginBottom="70dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
         android:background="@drawable/notifbox"
@@ -55,6 +56,7 @@
                 android:hint="Type your Question..."
                 android:inputType="text"
                 android:paddingLeft="15dp"
+                android:paddingRight="15dp"
                 android:textColor="@color/black" />
 
             <ImageView
@@ -66,57 +68,270 @@
             <EditText
                 android:id="@+id/bodyEditTxt"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_below="@+id/questionEdittxt"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="63dp"
-                android:layout_marginEnd="15dp"
-                android:background="@drawable/edittxtshape"
-                android:hint="Add details to your Question..."
+                android:layout_height="wrap_content"
+                android:minHeight="100dp"
+                android:hint="Add details to your Question"
+                android:layout_marginTop="60dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
                 android:paddingLeft="15dp"
-                android:paddingBottom="200dp" />
+                android:paddingRight="15dp"
+                android:background="@drawable/edittxtshape"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tags:"
-                android:textSize="18sp"
+                android:layout_marginStart="15dp"
                 android:layout_marginTop="15dp"
-                android:layout_marginStart="15dp"/>
+                android:text="Tags (choose at least one tag):"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="5dp"
+                android:text="Age" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp">
-                <Button
+                android:layout_marginTop="5dp">
+
+                <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:background="@drawable/googlebtn"/>
-                <Button
+                    android:layout_height="36dp"
+                    android:background="@drawable/googlebtn"
+                    android:text="#newborn"
+                    android:textAllCaps="false"
+                    android:textSize="14dp" />
+
+                <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:background="@drawable/googlebtn"/>
-                <Button
+                    android:layout_height="36dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/googlebtn"
+                    android:minWidth="70dp"
+                    android:text="#baby"
+                    android:textAllCaps="false"
+                    android:textSize="14dp" />
+
+                <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:background="@drawable/googlebtn"/>
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:background="@drawable/googlebtn"/>
+                    android:layout_height="36dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/googlebtn"
+                    android:minWidth="70dp"
+                    android:text="#kid"
+                    android:textAllCaps="false"
+                    android:textSize="14dp" />
 
             </LinearLayout>
-        </LinearLayout>
-    </RelativeLayout>
 
-    <Button
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:text="Health &amp; Care " />
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:background="@drawable/googlebtn"
+                        android:text="#sleeping"
+                        android:textAllCaps="false"
+                        android:textSize="14dp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/googlebtn"
+                        android:text="#health_care"
+                        android:textAllCaps="false"
+                        android:textSize="14dp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/googlebtn"
+                        android:text="#breastfeeding"
+                        android:textAllCaps="false"
+                        android:textSize="14dp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/googlebtn"
+                        android:minWidth="70dp"
+                        android:text="#needs"
+                        android:textAllCaps="false"
+                        android:textSize="14dp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/googlebtn"
+                        android:text="#circumcision"
+                        android:textAllCaps="false"
+                        android:textSize="14dp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/googlebtn"
+                        android:minWidth="70dp"
+                        android:text="#routine"
+                        android:textAllCaps="false"
+                        android:textSize="14dp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/googlebtn"
+                        android:minWidth="70dp"
+                        android:text="#food"
+                        android:textAllCaps="false"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:text="Illness" />
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:background="@drawable/googlebtn"
+                        android:minWidth="70dp"
+                        android:text="#fever"
+                        android:textAllCaps="false"
+                        android:textSize="14dp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/googlebtn"
+                        android:text="#influenza"
+                        android:textAllCaps="false"
+                        android:textSize="14dp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/googlebtn"
+                        android:text="#hepatitis"
+                        android:textAllCaps="false"
+                        android:textSize="14dp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/googlebtn"
+                        android:minWidth="70dp"
+                        android:text="#conjunctivitis"
+                        android:textAllCaps="false"
+                        android:textSize="14dp" />
+                </LinearLayout>
+
+            </HorizontalScrollView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:text="Tips &amp; Help" />
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:background="@drawable/googlebtn"
+                        android:text="#experience"
+                        android:textAllCaps="false"
+                        android:textSize="14dp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/googlebtn"
+                        android:minWidth="70dp"
+                        android:text="#motherhood"
+                        android:textAllCaps="false"
+                        android:textSize="14dp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/googlebtn"
+                        android:minWidth="70dp"
+                        android:text="#Tools"
+                        android:textAllCaps="false"
+                        android:textSize="14dp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/googlebtn"
+                        android:text="#guidance"
+                        android:textAllCaps="false"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/postBtn"
         android:layout_width="98dp"
         android:layout_height="40dp"
         android:layout_marginEnd="15dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="15dp"
         android:background="@drawable/fllwbtn"
         android:text="Publish"
         android:textColor="@color/white"

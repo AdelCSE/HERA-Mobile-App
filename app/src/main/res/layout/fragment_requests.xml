@@ -5,10 +5,11 @@
     android:layout_height="match_parent"
     tools:context=".navigation_fragments.profile_fragments.RequestsFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recviewR"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Requests are here"
-        android:layout_gravity="center"/>
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="30dp"/>
 
 </FrameLayout>
