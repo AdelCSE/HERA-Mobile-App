@@ -4,7 +4,7 @@ public class PostModel {
     String Name,Username,Question,Details,Likes,Answers,Date;
     int Image;
 
-    public PostModel(int image, String name, String username, String question, String details, String likes, String answers,String date) {
+    public PostModel(int image, String name, String username, String question, String details, String likes, String answers, String date) {
         Image = image;
         Name = name;
         Username = username;
