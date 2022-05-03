@@ -27,7 +27,7 @@ public class QuestionBlocActivity extends AppCompatActivity {
 
         PostsDataHolder = new ArrayList<>();
 
-        PostModel Post1 = new PostModel(R.drawable.exemple, "Adel Mokadem" , "@addy1001" , "What's your Question1" , "details here","1000","500","11:11 AM • 29 APR 22");
+        /*PostModel Post1 = new PostModel(R.drawable.exemple, "Adel Mokadem" , "@addy1001" , "What's your Question1" , "details here","1000","500","11:11 AM • 29 APR 22");
         PostsDataHolder.add(Post1);
         PostModel Post2 = new PostModel(R.drawable.exemple, "Yassine Benyamina" , "@yassine" , "What's your Question2" , "details here","1000",null,"11:08 AM • 29 APR 22");
         PostsDataHolder.add(Post2);
@@ -38,7 +38,7 @@ public class QuestionBlocActivity extends AppCompatActivity {
         PostModel Post5 = new PostModel(R.drawable.exemple, "Rachid Benayad" , "@rachide" , "What's your Question5" , "details here","1000",null,"08:25 AM • 29 APR 22");
         PostsDataHolder.add(Post5);
         PostModel Post6 = new PostModel(R.drawable.exemple, "Rachid Benayad" , "@rachide" , "What's your Question5" , "details here","1000",null,"08:25 AM • 29 APR 22");
-        PostsDataHolder.add(Post6);
+        PostsDataHolder.add(Post6);*/
 
         recyclerView.setAdapter(new AllPostsAdapter(PostsDataHolder));
 

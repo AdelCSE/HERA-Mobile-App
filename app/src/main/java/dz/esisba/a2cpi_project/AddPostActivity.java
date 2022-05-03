@@ -46,7 +46,7 @@ public class AddPostActivity extends AppCompatActivity {
                  fever, influenza,hepatitis,conjunctivitis,other,
                  experience,motherhood,tools,guidance;
 
-    private String askedByName = "";
+    private String askedByName,askedByUsername = "";
     private DocumentReference askedByRef;
     private ProgressDialog loader;
 
@@ -56,6 +56,7 @@ public class AddPostActivity extends AppCompatActivity {
     private FirebaseUser user;
     private FirebaseFirestore fstore;
     private String onlineUserId = "";
+    private String downloadUrl;
 
 
     @Override
@@ -89,10 +90,14 @@ public class AddPostActivity extends AppCompatActivity {
                 }
 
                 if (snapshot != null && snapshot.exists()) {
-                    askedByName = snapshot.get("Username").toString();
+                    askedByUsername = snapshot.get("Username").toString();
                     if (snapshot.get("profilePictureUrl") != null) {
-                        String downloadUrl = snapshot.get("profilePictureUrl").toString();
+                         downloadUrl = snapshot.get("profilePictureUrl").toString();
                         Glide.with(AddPostActivity.this).load(downloadUrl).into(profileImg);
+                    }
+                    if (snapshot.get("Name")!= null)
+                    {
+                        askedByName = snapshot.get("Name").toString();
                     }
                 }
                 else {
@@ -200,19 +205,22 @@ public class AddPostActivity extends AppCompatActivity {
     private void performValidation()
     {
         if (getQuestionEditTxt().isEmpty()) questionEditTxt.setError("Enter your question");
-        else if (getBodyEditTxt().isEmpty()) bodyEditTxt.setError("Please describe your question");
         else
         {
             startLoader();
             String postId = ref.getId();
             HashMap<String, Object> data = new HashMap<>();
             data.put("postid", postId);
+            data.put("publisherPic", downloadUrl);
             data.put("question", getQuestionEditTxt());
             data.put("body", getBodyEditTxt());
             data.put("publisher", onlineUserId);
             data.put("askedBy", askedByName);
+            data.put("Username", askedByUsername);
             data.put("Date", date);
             data.put("tags",selectedTags);
+            data.put("likesCount", 0);
+            data.put("answersCount", 0);
 
            DocumentReference df = fstore.collection("Posts").document(postId);
            df.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
