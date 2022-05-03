@@ -10,12 +10,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.chip.Chip;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -25,18 +28,29 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AddPostActivity extends AppCompatActivity {
 
     private EditText questionEditTxt, bodyEditTxt;
     private ImageButton returnButton;
     private Button postButton;
+    private CircleImageView profileImg;
+
+    private Chip newborn, kid, baby,
+                 sleeping,healthcare,breastfeeding,needs,circumcision,routine,food,
+                 fever, influenza,hepatitis,conjunctivitis,other,
+                 experience,motherhood,tools,guidance;
 
     private String askedByName = "";
     private DocumentReference askedByRef;
     private ProgressDialog loader;
+
+    private ArrayList<String> selectedTags = new ArrayList<>();
 
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -53,6 +67,9 @@ public class AddPostActivity extends AppCompatActivity {
         bodyEditTxt = findViewById(R.id.bodyEditTxt);
         returnButton = findViewById(R.id.returnBtn);
         postButton = findViewById(R.id.postBtn);
+        profileImg = findViewById(R.id.profileImg);
+
+        InitChips();
 
         loader = new ProgressDialog(this);
         auth = FirebaseAuth.getInstance();
@@ -72,12 +89,19 @@ public class AddPostActivity extends AppCompatActivity {
                 }
 
                 if (snapshot != null && snapshot.exists()) {
-                  askedByName =  snapshot.get("Username").toString();
-                } else {
+                    askedByName = snapshot.get("Username").toString();
+                    if (snapshot.get("profilePictureUrl") != null) {
+                        String downloadUrl = snapshot.get("profilePictureUrl").toString();
+                        Glide.with(AddPostActivity.this).load(downloadUrl).into(profileImg);
+                    }
+                }
+                else {
                     Log.d(this.toString(), "Current data: null");
                 }
             }
         });
+
+        SetCheckedChips();
 
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,6 +116,74 @@ public class AddPostActivity extends AppCompatActivity {
                 performValidation();
             }
         });
+
+
+    }
+
+    private void SetCheckedChips()
+    {
+        CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b)
+                {
+                    selectedTags.add(compoundButton.getText().toString());
+                }
+                else
+                {
+                    selectedTags.remove(compoundButton.getText().toString());
+                }
+            }
+        };
+
+        newborn.setOnCheckedChangeListener(checkedChangeListener);
+        baby.setOnCheckedChangeListener(checkedChangeListener);
+        kid.setOnCheckedChangeListener(checkedChangeListener);
+        /*sleeping,healthcare,breastfeeding,needs,circumcision,routine,food,
+                fever, influenza,hepatitis,conjunctivitis,other,
+                experience,motherhood,tools,guidance;*/
+        sleeping.setOnCheckedChangeListener(checkedChangeListener);
+        healthcare.setOnCheckedChangeListener(checkedChangeListener);
+        breastfeeding.setOnCheckedChangeListener(checkedChangeListener);
+        needs.setOnCheckedChangeListener(checkedChangeListener); // i love programming v2
+        circumcision.setOnCheckedChangeListener(checkedChangeListener);
+        routine.setOnCheckedChangeListener(checkedChangeListener);
+        fever.setOnCheckedChangeListener(checkedChangeListener);
+        influenza.setOnCheckedChangeListener(checkedChangeListener);
+        hepatitis.setOnCheckedChangeListener(checkedChangeListener);
+        conjunctivitis.setOnCheckedChangeListener(checkedChangeListener);
+        other.setOnCheckedChangeListener(checkedChangeListener);
+        experience.setOnCheckedChangeListener(checkedChangeListener);
+        motherhood.setOnCheckedChangeListener(checkedChangeListener);
+        food.setOnCheckedChangeListener(checkedChangeListener);
+        tools.setOnCheckedChangeListener(checkedChangeListener);
+        guidance.setOnCheckedChangeListener(checkedChangeListener);
+    }
+
+    private void InitChips() {
+
+        newborn = findViewById(R.id.newborn);
+        kid = findViewById(R.id.kid);
+        baby = findViewById(R.id.baby);
+        /*sleeping,healthcare,breastfeeding,needs,circumcision,routine,food,
+                fever, influenza,hepatitis,conjunctivitis,other,
+                experience,motherhood,tools,guidance;*/
+        sleeping = findViewById(R.id.sleeping);
+        healthcare = findViewById(R.id.healthcare);
+        breastfeeding = findViewById(R.id.breastfeeding);
+        needs = findViewById(R.id.needs);
+        circumcision = findViewById(R.id.circumcision);
+        routine = findViewById(R.id.routine);
+        food = findViewById(R.id.food);
+        fever = findViewById(R.id.fever);
+        influenza = findViewById(R.id.influenza); // i love programming :)
+        hepatitis = findViewById(R.id.hepatitis);
+        conjunctivitis = findViewById(R.id.conjunctivitis);
+        other = findViewById(R.id.other);
+        experience = findViewById(R.id.experience); //is there no other fucking better way to do this shit???
+        motherhood = findViewById(R.id.motherhood);
+        tools = findViewById(R.id.tools);
+        guidance = findViewById(R.id.guidance);
     }
 
     String getQuestionEditTxt() {
@@ -120,6 +212,7 @@ public class AddPostActivity extends AppCompatActivity {
             data.put("publisher", onlineUserId);
             data.put("askedBy", askedByName);
             data.put("Date", date);
+            data.put("tags",selectedTags);
 
            DocumentReference df = fstore.collection("Posts").document(postId);
            df.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -128,7 +221,7 @@ public class AddPostActivity extends AppCompatActivity {
                    if (task.isSuccessful()) {
                        Toast.makeText(AddPostActivity.this, "Question posted successfully", Toast.LENGTH_SHORT).show();
                        loader.dismiss();
-                       startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                       startActivity(new Intent(getApplicationContext(), BottomNavigationActivity.class));
                        finish();
                    }
                    else

@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
 
         //if there's a user logged in go directly home
         if (auth.getCurrentUser()!= null) { //if already logged in go directly to home
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            startActivity(new Intent(getApplicationContext(), BottomNavigationActivity.class));
             finish();
         }
 
@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, "LOGGED IN!", Toast.LENGTH_SHORT).show(); // for debug purposes, can be deleted later
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            startActivity(new Intent(LoginActivity.this, BottomNavigationActivity.class));
                             finish();
                         } else {
                             //if loggin in wasn't successful get the error (debugging purpose can be removed later)

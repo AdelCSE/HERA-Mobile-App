@@ -171,7 +171,7 @@ public class EditProfileActivity extends AppCompatActivity {
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
+                Intent i = new Intent(getApplicationContext(), BottomNavigationActivity.class);
                 i.putExtra("Name", name1.getText().toString()+" "+name2.getText().toString());
                 i.putExtra("Bio", bio.getText().toString());
                 startActivity(i);

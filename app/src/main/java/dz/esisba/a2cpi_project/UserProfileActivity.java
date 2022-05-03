@@ -47,8 +47,8 @@ public class UserProfileActivity extends AppCompatActivity {
         followBtn = findViewById(R.id.followBtn);
         name = findViewById(R.id.profileName);
         bio = findViewById(R.id.profileBio);
-        followersCount = findViewById(R.id.fllwNb2);
-        followingCount = findViewById(R.id.fllwingNb2);
+        followersCount = findViewById(R.id.fllwNb);
+        followingCount = findViewById(R.id.fllwingNb);
         toolbarLayout = findViewById(R.id.CollapsingToolBarLayout2);
 
         usernameTxt.setText("@"+username);

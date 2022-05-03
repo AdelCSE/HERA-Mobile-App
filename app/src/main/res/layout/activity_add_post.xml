@@ -59,11 +59,12 @@
                 android:paddingRight="15dp"
                 android:textColor="@color/black" />
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginTop="-63dp"
-                android:src="@drawable/profileimg" />
+                android:src="@drawable/profileimg"
+                android:id="@+id/profileImg"/>
 
             <EditText
                 android:id="@+id/bodyEditTxt"
@@ -93,40 +94,48 @@
                 android:layout_marginTop="5dp"
                 android:text="Age" />
 
-            <LinearLayout
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/ageCG"
+                style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                app:singleLine="true">
 
-                <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/newborn"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:background="@drawable/googlebtn"
-                    android:text="#newborn"
-                    android:textAllCaps="false"
-                    android:textSize="14dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="0dp"
+                    android:text="newborn"
+                    app:chipBackgroundColor="@color/white"
+                    app:chipStrokeColor="@color/black"
+                    app:chipStrokeWidth="1dp" />
 
-                <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/kid"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:layout_marginLeft="10dp"
-                    android:background="@drawable/googlebtn"
-                    android:minWidth="70dp"
-                    android:text="#baby"
-                    android:textAllCaps="false"
-                    android:textSize="14dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="0dp"
+                    android:text="kid"
+                    app:chipBackgroundColor="@color/white"
+                    app:chipStrokeColor="@color/black"
+                    app:chipStrokeWidth="1dp" />
 
-                <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/baby"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:layout_marginLeft="10dp"
-                    android:background="@drawable/googlebtn"
-                    android:minWidth="70dp"
-                    android:text="#kid"
-                    android:textAllCaps="false"
-                    android:textSize="14dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="0dp"
+                    android:text="baby"
+                    app:chipBackgroundColor="@color/white"
+                    app:chipStrokeColor="@color/black"
+                    app:chipStrokeWidth="1dp" />
 
-            </LinearLayout>
+            </com.google.android.material.chip.ChipGroup>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -139,77 +148,89 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/healthCG"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="15dp">
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/sleeping"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:background="@drawable/googlebtn"
-                        android:text="#sleeping"
-                        android:textAllCaps="false"
-                        android:textSize="14dp" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:text="sleeping"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/black"
+                        app:chipStrokeWidth="1dp" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/healthcare"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/googlebtn"
-                        android:text="#health_care"
-                        android:textAllCaps="false"
-                        android:textSize="14dp" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:text="health_care"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/black"
+                        app:chipStrokeWidth="1dp" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/breastfeeding"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/googlebtn"
-                        android:text="#breastfeeding"
-                        android:textAllCaps="false"
-                        android:textSize="14dp" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:text="breastfeeding"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/black"
+                        app:chipStrokeWidth="1dp" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/needs"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/googlebtn"
-                        android:minWidth="70dp"
-                        android:text="#needs"
-                        android:textAllCaps="false"
-                        android:textSize="14dp" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:text="needs"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/black"
+                        app:chipStrokeWidth="1dp" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/circumcision"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/googlebtn"
-                        android:text="#circumcision"
-                        android:textAllCaps="false"
-                        android:textSize="14dp" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:text="circumcision"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/black"
+                        app:chipStrokeWidth="1dp" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/routine"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/googlebtn"
-                        android:minWidth="70dp"
-                        android:text="#routine"
-                        android:textAllCaps="false"
-                        android:textSize="14dp" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:text="routine"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/black"
+                        app:chipStrokeWidth="1dp" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/food"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/googlebtn"
-                        android:minWidth="70dp"
-                        android:text="#food"
-                        android:textAllCaps="false"
-                        android:textSize="14dp" />
-
-                </LinearLayout>
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:text="food"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/black"
+                        app:chipStrokeWidth="1dp" />
+                </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
 
             <TextView
@@ -223,49 +244,67 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/ilnnesCG"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="15dp">
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/fever"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:background="@drawable/googlebtn"
-                        android:minWidth="70dp"
-                        android:text="#fever"
-                        android:textAllCaps="false"
-                        android:textSize="14dp" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:text="fever"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/black"
+                        app:chipStrokeWidth="1dp" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/influenza"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/googlebtn"
-                        android:text="#influenza"
-                        android:textAllCaps="false"
-                        android:textSize="14dp" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:text="influenza"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/black"
+                        app:chipStrokeWidth="1dp" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/hepatitis"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/googlebtn"
-                        android:text="#hepatitis"
-                        android:textAllCaps="false"
-                        android:textSize="14dp" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:text="hepatitis"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/black"
+                        app:chipStrokeWidth="1dp" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/conjunctivitis"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/googlebtn"
-                        android:minWidth="70dp"
-                        android:text="#conjunctivitis"
-                        android:textAllCaps="false"
-                        android:textSize="14dp" />
-                </LinearLayout>
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:text="conjunctivitis"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/black"
+                        app:chipStrokeWidth="1dp" />
 
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/other"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:text="other"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/black"
+                        app:chipStrokeWidth="1dp" />
+                </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
 
             <TextView
@@ -278,49 +317,57 @@
             <HorizontalScrollView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
 
-                    <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/tipsCG"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="15dp">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/experience"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:background="@drawable/googlebtn"
-                        android:text="#experience"
-                        android:textAllCaps="false"
-                        android:textSize="14dp" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:text="experience"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/black"
+                        app:chipStrokeWidth="1dp" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/motherhood"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/googlebtn"
-                        android:minWidth="70dp"
-                        android:text="#motherhood"
-                        android:textAllCaps="false"
-                        android:textSize="14dp" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:text="motherhood"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/black"
+                        app:chipStrokeWidth="1dp" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/tools"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/googlebtn"
-                        android:minWidth="70dp"
-                        android:text="#Tools"
-                        android:textAllCaps="false"
-                        android:textSize="14dp" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:text="tools"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/black"
+                        app:chipStrokeWidth="1dp" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/guidance"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/googlebtn"
-                        android:text="#guidance"
-                        android:textAllCaps="false"
-                        android:textSize="14dp" />
-
-                </LinearLayout>
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:text="guidance"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/black"
+                        app:chipStrokeWidth="1dp" />
+                </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
 
         </LinearLayout>
