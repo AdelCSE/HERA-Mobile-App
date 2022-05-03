@@ -1,16 +1,13 @@
 package dz.esisba.a2cpi_project;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
@@ -25,11 +22,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -52,6 +51,9 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private String ppURL;
     private boolean imageUploaded;
+    private String imageUrl;
+    private boolean ppUpdated = false;
+    private int i =0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,10 +82,10 @@ public class EditProfileActivity extends AppCompatActivity {
                     DocumentSnapshot doc = task.getResult();
                     if (doc.exists())
                     {
-                        if (doc.get("profilePictureUrl")!= null) {
+                        /*if (doc.get("profilePictureUrl")!= null) {
                             String downloadUrl = doc.get("profilePictureUrl").toString();
                             Glide.with(EditProfileActivity.this).load(downloadUrl).into(profilePic);
-                        }
+                        }*/
                         if (doc.get("Name")!= null) {
                             String n = doc.get("Name").toString();
                             String n1 = "";
@@ -110,6 +112,9 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
+        returnButton.setEnabled(false);
+        returnButton.setBackgroundResource(R.drawable.btndisabled);
+
         profilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,7 +125,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         .start();
             }
         });
-        
+
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,21 +137,48 @@ public class EditProfileActivity extends AppCompatActivity {
                             DocumentSnapshot doc = task.getResult();
                             if (doc.exists())
                             {
-                                Map<String,Object> userInfor = new HashMap<>(); //represents key, value
-                                userInfor.put("Name", name1.getText().toString()+" "+name2.getText().toString());
-                                userInfor.put("Bio", bio.getText().toString());
+                                Map<String,Object> hashMap = new HashMap(); //represents key, value
+                                hashMap.put("Name", name1.getText().toString()+" "+name2.getText().toString());
+                                hashMap.put("Bio", bio.getText().toString());
                                 StorageReference fileReference = storageReference.child(user.getUid());
                                 if(resultUri!=null) {
+                                    //upload to storage
                                     fileReference.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                         @Override
                                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                             fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                                 @Override
                                                 public void onSuccess(Uri uri) {
-                                                    String imageUrl = uri.toString();
-                                                    Map<String,Object> hashMap = new HashMap();
+                                                    imageUrl = uri.toString();
                                                     hashMap.put("profilePictureUrl", imageUrl);
-                                                    df.update(hashMap);
+                                                    fstore.collection("Posts").whereEqualTo("publisher", user.getUid())
+                                                            .get() //update picture in posts
+                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        i=0;
+                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                            DocumentReference pr = document.getReference();
+                                                                            Map<String,Object> hm = new HashMap();
+                                                                            hm.put("publisherPic", imageUrl);
+                                                                            pr.update(hm).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                @Override
+                                                                                public void onSuccess(Void unused) {
+                                                                                    df.update(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                        @Override
+                                                                                        public void onSuccess(Void unused) {
+                                                                                            returnButton.setEnabled(true);
+                                                                                            returnButton.setBackgroundResource(R.drawable.mainbtn);
+                                                                                            Toast.makeText(EditProfileActivity.this, "Information updated", Toast.LENGTH_SHORT).show();
+                                                                                        }
+                                                                                    });
+                                                                                }
+                                                                            });
+                                                                        }
+                                                                    }
+                                                                }
+                                                            });
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
@@ -159,14 +191,26 @@ public class EditProfileActivity extends AppCompatActivity {
                                     });
 
                                 }
-                                df.update(userInfor);
-                                Toast.makeText(EditProfileActivity.this, "Information updated!", Toast.LENGTH_SHORT).show();
+                                else
+                                {
+                                    df.update(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            returnButton.setEnabled(true);
+                                            returnButton.setBackgroundResource(R.drawable.mainbtn);
+                                            Toast.makeText(EditProfileActivity.this, "Information updated!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+
                             }
                         }
                     }
                 });
             }
         });
+
+
 
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,8 +222,10 @@ public class EditProfileActivity extends AppCompatActivity {
                 finish();
             }
         });
-        
+
     }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

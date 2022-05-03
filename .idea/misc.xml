@@ -4,8 +4,10 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/actionbar.xml" value="0.178" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/btndisabled.xml" value="0.1965" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/editProfileBg.xml" value="0.2045" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/ic_arrow.xml" value="0.178" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/mainbtn.xml" value="0.1965" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/navbarpp.xml" value="0.1965" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/textField.xml" value="0.2045" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/toolbar.xml" value="0.178" />

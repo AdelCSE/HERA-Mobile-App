@@ -89,30 +89,9 @@ public class HomeFragment extends Fragment{
             }
         });
 
-        askedByRef = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
-        //get username of poster
-        askedByRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.w(this.toString(), "Listen failed.", e);
-                    return;
-                }
-
-                if (snapshot != null && snapshot.exists()) {
-                    if (snapshot.get("profilePictureUrl") != null) {
-                        downloadUrl = snapshot.get("profilePictureUrl").toString();
-                    }
-                    FetchPosts();
-                }
-                else {
-                    Log.d(this.toString(), "Current data: null");
-                }
-            }
-        });
 
 
+        FetchPosts();
 
 
 
@@ -129,7 +108,6 @@ public class HomeFragment extends Fragment{
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         PostModel post = document.toObject(PostModel.class);
-                        post.setPublisherPic(downloadUrl);
                         PostsDataHolder.add(post);
                         recyclerView.setAdapter(new PostAdapter(PostsDataHolder));
                     }
