@@ -34,6 +34,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 
 import dz.esisba.a2cpi_project.AddPostActivity;
+import dz.esisba.a2cpi_project.LoginActivity;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.SearchActivity;
 import dz.esisba.a2cpi_project.adapter.PostAdapter;
@@ -43,6 +44,8 @@ public class HomeFragment extends Fragment{
     View parentHolder;
     RecyclerView recyclerView;
     ArrayList<PostModel> PostsDataHolder;
+
+    private ImageButton imageButton;
 
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -58,6 +61,7 @@ public class HomeFragment extends Fragment{
 
         recyclerView = parentHolder.findViewById(R.id.recview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        imageButton = parentHolder.findViewById(R.id.logoutBtn);
 
 
         /*PostModel Post1 = new PostModel(R.drawable.exemple, "Adel Mokadem" , "@addy1001" , "What's your Question1" , "details here","1000","500","11:11 AM • 29 APR 22");
@@ -71,9 +75,19 @@ public class HomeFragment extends Fragment{
         PostModel Post5 = new PostModel(R.drawable.exemple, "Rachid Benayad" , "@rachide" , "What's your Question5" , "details here","1000","500","08:25 AM • 29 APR 22");
         PostsDataHolder.add(Post5);*/
 
+
+
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
+
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getActivity(), LoginActivity.class));
+            }
+        });
 
         askedByRef = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
         //get username of poster
