@@ -55,8 +55,8 @@ public class ProfileActivity extends AppCompatActivity {
         username = findViewById(R.id.usernameTxt);
         name = findViewById(R.id.nameText);
         bio = findViewById(R.id.bioText);
-        followersCount = findViewById(R.id.fllwNb2);
-        followingCount = findViewById(R.id.fllwingNb2);
+        followersCount = findViewById(R.id.pfllwNb2);
+        followingCount = findViewById(R.id.pfllwingNb2);
         editProfile = findViewById(R.id.editProfile);
         toolbarLayout = findViewById(R.id.CollapsingToolBarLayout);
         profileImg = findViewById(R.id.profileImg);

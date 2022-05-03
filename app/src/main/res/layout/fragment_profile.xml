@@ -42,15 +42,24 @@
                 android:layout_gravity="bottom"
                 android:background="@drawable/title_background"/>
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/bannerBtn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="10dp"
+                android:layout_width="31dp"
+                android:layout_height="30dp"
                 android:layout_gravity="right"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="15dp"
-                android:background="@null"
-                android:src="@drawable/ic_camera"/>
+                android:background="@drawable/ic_camera" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/bannerConfirm"
+                android:layout_width="31dp"
+                android:layout_height="30dp"
+                android:layout_gravity="left"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="15dp"
+                android:visibility="gone"
+                android:background="@drawable/ic_plus" />
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/ToolBar"
@@ -81,7 +90,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/nameEditText"
+                android:id="@+id/nameText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -119,7 +128,8 @@
                     android:background="@drawable/notifbox">
 
                     <TextView
-                        android:id="@+id/fllwNb"
+
+                        android:id="@+id/fllwNb2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
@@ -129,7 +139,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/fllwNb"
+                        android:layout_below="@+id/fllwNb2"
                         android:layout_centerHorizontal="true"
                         android:text="Follower" />
 
@@ -144,7 +154,7 @@
                     android:background="@drawable/notifbox">
 
                     <TextView
-                        android:id="@+id/fllwNb2"
+                        android:id="@+id/fllwingNb2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
@@ -154,13 +164,13 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/fllwNb2"
+                        android:layout_below="@+id/fllwingNb2"
                         android:layout_centerHorizontal="true"
                         android:text="Following" />
                 </RelativeLayout>
 
                 <ImageButton
-                    android:id="@+id/edit"
+                    android:id="@+id/editProfile"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="center_vertical"
@@ -176,6 +186,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Username"
+                android:id="@+id/usernameTxt"
                 android:layout_marginTop="5dp"
                 android:layout_marginStart="20dp"
                 tools:layout_editor_absoluteX="0dp"
@@ -183,6 +194,7 @@
 
             <TextView
                 android:layout_width="wrap_content"
+                android:id="@+id/bioText"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="20dp"
