@@ -33,8 +33,8 @@ public class AnswersAdapter extends RecyclerView.Adapter<AnswersAdapter.myviewho
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
         holder.Question.setText(AnswerHolder.get(position).getQuestion());
         holder.Username.setText(AnswerHolder.get(position).getUsername());
-        holder.Details.setText(AnswerHolder.get(position).getDetails());
-        holder.Likes.setText(AnswerHolder.get(position).getLikes());
+        holder.Details.setText(AnswerHolder.get(position).getBody());
+        holder.Likes.setText(Integer.toString(AnswerHolder.get(position).getLikesCount()));
         holder.Date.setText(AnswerHolder.get(position).getDate());
     }
 

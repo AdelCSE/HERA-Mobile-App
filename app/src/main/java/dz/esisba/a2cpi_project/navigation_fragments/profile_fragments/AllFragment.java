@@ -33,7 +33,7 @@ public class AllFragment extends Fragment {
 
         AllPostsDataHolder = new ArrayList<>();
 
-        PostModel Post1 = new PostModel(R.drawable.exemple, "Adel Mokadem" , "@addy1001" , "What's your Question1" , "details here","1000","500","11:11 AM • 29 APR 22");
+        /*PostModel Post1 = new PostModel(R.drawable.exemple, "Adel Mokadem" , "@addy1001" , "What's your Question1" , "details here","1000","500","11:11 AM • 29 APR 22");
         AllPostsDataHolder.add(Post1);
         PostModel Post2 = new PostModel(R.drawable.exemple, "Adel Mokadem" , "@addy1001" , "What's your Question2" , "details here","1000",null,"11:08 AM • 29 APR 22");
         AllPostsDataHolder.add(Post2);
@@ -42,7 +42,7 @@ public class AllFragment extends Fragment {
         PostModel Post4 = new PostModel(R.drawable.exemple, "Adel Mokadem" , "@addy1001" , "What's your Question4" , "details here","1000",null,"10:30 AM • 29 APR 22");
         AllPostsDataHolder.add(Post4);
         PostModel Post5 = new PostModel(R.drawable.exemple, "Adel Mokadem" , "@addy1001" , "What's your Question5" , "details here","1000",null,"08:25 AM • 29 APR 22");
-        AllPostsDataHolder.add(Post5);
+        AllPostsDataHolder.add(Post5);*/
 
         recyclerView.setAdapter(new AllPostsAdapter(AllPostsDataHolder));
 
