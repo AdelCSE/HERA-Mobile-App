@@ -4,13 +4,22 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -20,11 +29,20 @@ import dz.esisba.a2cpi_project.navigation_fragments.ProfileFragment;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> {
 
-    ArrayList<PostModel> PostsHolder;
+    private ArrayList<PostModel> PostsHolder;
     private Context context;
+    private OnItemClickListner mListner;
+
 
     public PostAdapter(ArrayList<PostModel> postsHolder) {
-        PostsHolder = postsHolder;
+        PostsHolder = postsHolder; }
+
+    public interface OnItemClickListner {
+        void onItemClick(int position);
+    }
+
+    public void setOnItemClickListner (OnItemClickListner listner){
+        mListner = listner;
     }
 
     @NonNull
@@ -32,11 +50,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
     public myviewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_post,parent,false);
-        return new myviewholder(view);
+        return new myviewholder(view , mListner);
     }
 
     @Override
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
+
         Glide.with(context).load(PostsHolder.get(position).getPublisherPic()).into(holder.img);
         holder.Question.setText(PostsHolder.get(position).getQuestion());
         holder.Name.setText(PostsHolder.get(position).getAskedBy());
@@ -52,12 +71,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
         return PostsHolder.size();
     }
 
-    class myviewholder extends RecyclerView.ViewHolder {
+    public static class myviewholder extends RecyclerView.ViewHolder {
 
+        ImageView likeBtn;
         ImageView img;
         TextView Question,Details,Name,Username,Likes,Answers,Date;
 
-        public myviewholder (@NonNull View itemView){
+        public myviewholder (@NonNull View itemView , OnItemClickListner listner){
             super(itemView);
             img = itemView.findViewById(R.id.img);
             Question = itemView.findViewById(R.id.question);
@@ -67,7 +87,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
             Likes = itemView.findViewById(R.id.likes);
             Answers = itemView.findViewById(R.id.answers);
             Date = itemView.findViewById(R.id.postDate);
+            likeBtn = itemView.findViewById(R.id.questionLikeBtn);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listner != null){
+                        int position = getAbsoluteAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listner.onItemClick(position);
+                        }
+                    }
+                }
+            });
         }
     }
 }

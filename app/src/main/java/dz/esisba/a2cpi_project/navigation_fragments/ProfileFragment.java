@@ -127,7 +127,6 @@ public class ProfileFragment extends Fragment {
                     if (doc.exists())
                     {
                         //set username
-                        username.setText("@"+ doc.get("Username").toString());
                         toolbarLayout.setTitle(doc.get("Username").toString());
 
                         if (doc.get("profilePictureUrl")!= null) { //set profile pic

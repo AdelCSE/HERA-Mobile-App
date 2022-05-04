@@ -1,6 +1,8 @@
 package dz.esisba.a2cpi_project.models;
 
-public class PostModel {
+import java.io.Serializable;
+
+public class PostModel implements Serializable {
    private String askedBy,publisher,Username,question,body,postid,Date,publisherPic;
    private int likesCount,answersCount;
 
@@ -15,6 +17,10 @@ public class PostModel {
         this.publisherPic = publisherPic;
         this.likesCount = likesCount;
         this.answersCount = answersCount;
+    }
+
+    public void change(String text){
+        question = text;
     }
 
     public String getPublisherPic() {
