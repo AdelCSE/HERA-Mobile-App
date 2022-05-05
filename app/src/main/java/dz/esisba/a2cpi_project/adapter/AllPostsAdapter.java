@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
+import dz.esisba.a2cpi_project.interfaces.OnItemClickListner;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.models.PostModel;
 
@@ -21,14 +23,16 @@ public class AllPostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     ArrayList<PostModel> AllPostsDataHolder;
     private Context context;
+    private OnItemClickListner aListner;
 
-    public AllPostsAdapter(ArrayList<PostModel> postsDataHolder) {
+    public AllPostsAdapter(ArrayList<PostModel> postsDataHolder , OnItemClickListner listner) {
         AllPostsDataHolder = postsDataHolder;
+        aListner = listner;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (AllPostsDataHolder.get(position).getAnswersCount()!=0){
+        if (AllPostsDataHolder.size()<=1){
             return 1;
         }else{
             return 2;
@@ -42,7 +46,7 @@ public class AllPostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (viewType == 1){
             context = parent.getContext();
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_post, parent, false);
-            return new ViewHolder1(view);
+            return new ViewHolder1(view,aListner);
         }else{
             context = parent.getContext();
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_answer, parent, false);
@@ -62,6 +66,7 @@ public class AllPostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             viewHolder1.Likes.setText(Integer.toString(AllPostsDataHolder.get(position).getLikesCount()));
             viewHolder1.Answers.setText(Integer.toString(AllPostsDataHolder.get(position).getAnswersCount()));
             viewHolder1.Date.setText(AllPostsDataHolder.get(position).getDate());
+
         }else{
             ViewHolder2 viewHolder2 = (ViewHolder2) holder;
             viewHolder2.Question.setText(AllPostsDataHolder.get(position).getQuestion());
@@ -79,10 +84,12 @@ public class AllPostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
 
     public class ViewHolder1 extends RecyclerView.ViewHolder {
+
         //Question Type
+        ImageButton answerBtn;
         ImageView img;
         TextView Question,Details,Name,Username,Likes,Answers,Date;
-        public ViewHolder1(@NonNull View itemView) {
+        public ViewHolder1(@NonNull View itemView , OnItemClickListner listner) {
             super(itemView);
             img = itemView.findViewById(R.id.img);
             Question = itemView.findViewById(R.id.question);
@@ -92,6 +99,19 @@ public class AllPostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             Likes = itemView.findViewById(R.id.likes);
             Answers = itemView.findViewById(R.id.answers);
             Date = itemView.findViewById(R.id.postDate);
+            answerBtn = itemView.findViewById(R.id.answerBtn);
+
+            itemView.findViewById(R.id.answerBtn).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listner != null){
+                        int position = getBindingAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listner.onAnswerClick(position);
+                        }
+                    }
+                }
+            });
         }
     }
 

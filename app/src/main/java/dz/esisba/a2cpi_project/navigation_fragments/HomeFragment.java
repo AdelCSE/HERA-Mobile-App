@@ -51,7 +51,7 @@ public class HomeFragment extends Fragment{
     private RecyclerView recyclerView;
     private ArrayList<PostModel> PostsDataHolder;
     private PostAdapter adapter;
-    private ImageButton imageButton;
+    private ImageButton imageButton , searchBtn;
 
 
     private FirebaseAuth auth;
@@ -65,16 +65,26 @@ public class HomeFragment extends Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         parentHolder = inflater.inflate(R.layout.fragment_home,container,false);
 
+        searchBtn = parentHolder.findViewById(R.id.search_btn);
         imageButton = parentHolder.findViewById(R.id.logoutBtn);
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
+
 
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(getActivity(), LoginActivity.class));
+            }
+        });
+
+        //Start Search Activity
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), SearchActivity.class));
             }
         });
 
@@ -110,6 +120,7 @@ public class HomeFragment extends Fragment{
         adapter = new PostAdapter(PostsDataHolder);
         recyclerView.setAdapter(adapter);
 
+        //Click on Post
         adapter.setOnItemClickListner(new PostAdapter.OnItemClickListner() {
             @Override
             public void onItemClick(int position) {

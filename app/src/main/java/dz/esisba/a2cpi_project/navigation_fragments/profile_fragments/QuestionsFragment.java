@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.adapter.AllPostsAdapter;
+import dz.esisba.a2cpi_project.adapter.PostAdapter;
 import dz.esisba.a2cpi_project.models.PostModel;
 
 public class QuestionsFragment extends Fragment {
@@ -44,7 +45,7 @@ public class QuestionsFragment extends Fragment {
         PostModel Post5 = new PostModel(R.drawable.exemple, "Adel Mokadem" , "@addy1001" , "What's your Question5" , "details here","1000","500","08:25 AM • 29 APR 22");
         QuestionsDataHolder.add(Post5);*/
 
-        recyclerView.setAdapter(new AllPostsAdapter(QuestionsDataHolder));
+        recyclerView.setAdapter(new PostAdapter(QuestionsDataHolder));
 
         return parentHolder;
     }

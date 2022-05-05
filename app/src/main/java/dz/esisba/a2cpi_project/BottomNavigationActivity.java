@@ -20,14 +20,17 @@ import dz.esisba.a2cpi_project.navigation_fragments.SmartRoomFragment;
 
 public class BottomNavigationActivity extends AppCompatActivity {
 
+    BottomNavigationView bottomNav;
+    FloatingActionButton fab;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bottom_navigation);
 
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation_layout);
-
         //setEnabled(false) for the 2nd index because we're using a floating button instead
+        bottomNav = findViewById(R.id.bottom_navigation_layout);
         bottomNav.setBackground(null);
         bottomNav.getMenu().getItem(2).setEnabled(false);
 
@@ -38,7 +41,7 @@ public class BottomNavigationActivity extends AppCompatActivity {
                 new HomeFragment()).commit();
 
         //start AddPostActivity class
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -46,6 +49,8 @@ public class BottomNavigationActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
     }
 
     //Switch between fragments
