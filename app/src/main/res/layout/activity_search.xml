@@ -27,176 +27,29 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="15dp"
         android:background="@drawable/notifbox"
-        android:hint="Search"
+        android:drawableStart="@drawable/ic_search"
+        android:drawablePadding="12dp"
+        android:hint="Search..."
+        android:imeOptions="actionDone"
+        android:inputType="text"
+        android:maxLines="1"
         android:paddingLeft="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/backBtn"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="TouchTargetSizeCheck" />
 
-    <LinearLayout
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleview1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="15dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="60dp"
+        android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextView">
-        <LinearLayout
-            android:id="@+id/linearLayout1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            >
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="28dp"
-                app:srcCompat="@drawable/ic_search" />
-
-            <TextView
-                android:id="@+id/history1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_weight="0.5"
-                android:text="TextView" />
-
-            <ImageView
-                android:id="@+id/cross1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="15dp"
-                app:srcCompat="@drawable/ic_cross" />
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_marginTop="5dp"
-            >
-
-            <ImageView
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="28dp"
-                app:srcCompat="@drawable/ic_search" />
-
-            <TextView
-                android:id="@+id/history2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_weight="0.5"
-                android:text="TextView" />
-
-            <ImageView
-                android:id="@+id/cross2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="15dp"
-                app:srcCompat="@drawable/ic_cross" />
-        </LinearLayout>
-        <LinearLayout
-
-            android:layout_marginTop="5dp"
-            android:id="@+id/linearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="28dp"
-                app:srcCompat="@drawable/ic_search" />
-
-            <TextView
-                android:id="@+id/history3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_weight="0.5"
-                android:text="TextView" />
-
-            <ImageView
-                android:id="@+id/cross3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="15dp"
-                app:srcCompat="@drawable/ic_cross" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:background="@drawable/toolbar"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:background="@drawable/toolbar">
-
-            <ImageButton
-                android:id="@+id/homebtn"
-                android:layout_width="40dp"
-                android:layout_height="55dp"
-                android:layout_weight="1"
-
-                android:background="@null"
-                tools:ignore="SpeakableTextPresentCheck"
-                android:src="@drawable/ic_home"/>
-
-            <ImageButton
-                android:id="@+id/smartroombtn"
-                android:layout_width="40dp"
-                android:layout_height="55dp"
-                android:layout_weight="1"
-                android:background="@null"
-                tools:ignore="SpeakableTextPresentCheck"
-                android:src="@drawable/ic_play"/>
-
-            <ImageButton
-                android:id="@+id/postbtn"
-                android:layout_width="40dp"
-                android:layout_height="55dp"
-                android:layout_weight="1"
-                android:background="@null"
-                tools:ignore="SpeakableTextPresentCheck"
-                android:src="@drawable/ic_plus"/>
-
-            <ImageButton
-                android:id="@+id/notificationbtn"
-                android:layout_width="40dp"
-                android:layout_height="55dp"
-                android:layout_weight="1"
-                android:background="@null"
-                android:src="@drawable/ic_bell"
-                tools:ignore="SpeakableTextPresentCheck" />
-            <ImageButton
-                android:id="@+id/user_btn"
-                android:layout_width="40dp"
-                android:layout_height="55dp"
-                android:layout_weight="1"
-                android:background="@null"
-                tools:ignore="SpeakableTextPresentCheck"
-                android:src="@drawable/userpic"
-                />
-        </LinearLayout>
-    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

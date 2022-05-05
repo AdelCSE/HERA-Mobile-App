@@ -52,16 +52,17 @@ public class BottomNavigationActivity extends AppCompatActivity {
     private ImageView profileImg;
     private Drawable icon;
 
+    BottomNavigationView bottomNav;
+    FloatingActionButton fab;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bottom_navigation);
 
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation_layout);
-
-        profileImg = findViewById( R.id.ppimg);
-
         //setEnabled(false) for the 2nd index because we're using a floating button instead
+        bottomNav = findViewById(R.id.bottom_navigation_layout);
         bottomNav.setBackground(null);
         bottomNav.getMenu().getItem(2).setEnabled(false);
 
@@ -72,7 +73,7 @@ public class BottomNavigationActivity extends AppCompatActivity {
                 new HomeFragment()).commit();
 
         //start AddPostActivity class
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

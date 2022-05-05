@@ -41,6 +41,10 @@ public class RequestsFragment extends Fragment {
         RequestsDataHolder.add(Request3);
         RequestModel Request4 = new RequestModel("@rachid","What's your Questions4?","•7d•",R.drawable.exemple);
         RequestsDataHolder.add(Request4);
+        RequestModel Request5 = new RequestModel("@rachid","What's your Questions4?","•7d•",R.drawable.exemple);
+        RequestsDataHolder.add(Request5);
+        RequestModel Request6 = new RequestModel("@rachid","What's your Questions4?","•7d•",R.drawable.exemple);
+        RequestsDataHolder.add(Request6);
 
         recyclerView.setAdapter(new RequestAdapter(RequestsDataHolder));
 
