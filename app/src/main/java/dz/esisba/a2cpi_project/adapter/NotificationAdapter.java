@@ -15,7 +15,7 @@ import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.models.NotificationModel;
 import dz.esisba.a2cpi_project.models.PostModel;
 
-public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.myviewholder>{
+public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     ArrayList<NotificationModel> NotificationsHolder;
 
@@ -23,20 +23,41 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         NotificationsHolder = notificationsHolder;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (NotificationsHolder.get(position).getUsername()!=null){
+            return 1;
+        }else{
+            return 2;
+        }
+    }
 
     @NonNull
     @Override
-    public myviewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_notifications,parent,false);
-        return new NotificationAdapter.myviewholder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
+        if (viewType==1){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_notifications,parent,false);
+            return new Myviewholder(view);
+        }else{
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_text,parent,false);
+            return new Myviewholder2(view);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull myviewholder holder, int position) {
-        holder.img.setImageResource(NotificationsHolder.get(position).getImage());
-        holder.Username.setText(NotificationsHolder.get(position).getUsername());
-        holder.Date.setText(NotificationsHolder.get(position).getDate());
-        holder.NotificationText.setText(NotificationsHolder.get(position).getNotificationText());
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (holder.getItemViewType()==1){
+            Myviewholder myviewholder = (Myviewholder) holder;
+            myviewholder.img.setImageResource(NotificationsHolder.get(position).getImage());
+            myviewholder.Username.setText(NotificationsHolder.get(position).getUsername());
+            myviewholder.Date.setText(NotificationsHolder.get(position).getDate());
+            myviewholder.NotificationText.setText(NotificationsHolder.get(position).getNotificationText());
+        }else{
+            Myviewholder2 myviewholder2 = (Myviewholder2) holder;
+            myviewholder2.New.setText("New");
+
+        }
 
     }
 
@@ -45,17 +66,26 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         return NotificationsHolder.size();
     }
 
-    class myviewholder extends RecyclerView.ViewHolder {
+    class Myviewholder extends RecyclerView.ViewHolder {
 
         ImageView img;
         TextView Username,Date,NotificationText;
 
-        public myviewholder (@NonNull View itemView){
+        public Myviewholder (@NonNull View itemView){
             super(itemView);
             img = itemView.findViewById(R.id.notifImg);
             Username = itemView.findViewById(R.id.notifUsername);
             Date = itemView.findViewById(R.id.notifDate);
             NotificationText = itemView.findViewById(R.id.notifText);
+        }
+    }
+
+    class Myviewholder2 extends RecyclerView.ViewHolder {
+        TextView New;
+
+        public Myviewholder2(@NonNull View itemView) {
+            super(itemView);
+            New = itemView.findViewById(R.id.customText);
         }
     }
 }

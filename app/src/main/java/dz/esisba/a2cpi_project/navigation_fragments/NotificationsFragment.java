@@ -35,7 +35,7 @@ public class NotificationsFragment extends Fragment {
 
         NotificationsDataHolder = new ArrayList<>();
 
-        NotificationModel Notification1 = new NotificationModel("Addy1001", "liked your question" , "23m" , R.drawable.exemple);
+        NotificationModel Notification1 = new NotificationModel(null, null , null , -1);
         NotificationsDataHolder.add(Notification1);
         NotificationModel Notification2 = new NotificationModel("Yassine", "liked your question" , "24m" , R.drawable.exemple);
         NotificationsDataHolder.add(Notification2);

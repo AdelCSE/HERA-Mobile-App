@@ -17,7 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 
-import dz.esisba.a2cpi_project.adapter.AllPostsAdapter;
+import dz.esisba.a2cpi_project.adapter.QuestionBlocAdapter;
 import dz.esisba.a2cpi_project.interfaces.OnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
 
@@ -26,7 +26,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
     RecyclerView recyclerView;
     ArrayList<PostModel> PostsDataHolder;
     ImageButton AnswerBtn;
-    AllPostsAdapter adapter;
+    QuestionBlocAdapter adapter;
     BottomSheetDialog dialog;
 
     @Override
@@ -58,7 +58,10 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
         PostModel post = (PostModel) getIntent().getSerializableExtra("Tag");
         PostsDataHolder.add(post);
 
-        adapter = new AllPostsAdapter(PostsDataHolder,this);
+        PostModel text = new PostModel(null,null,null,null,null,null,null,null,-1,post.getAnswersCount());
+        PostsDataHolder.add(text);
+
+        adapter = new QuestionBlocAdapter(PostsDataHolder,this);
         recyclerView.setAdapter(adapter);
     }
 
