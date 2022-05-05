@@ -19,6 +19,7 @@
     <item
         android:id="@+id/nav_profile"
         android:title="•"
-        android:icon="@drawable/userpic"/>
+        android:icon="@drawable/profileimg"/>
+
 
 </menu>
