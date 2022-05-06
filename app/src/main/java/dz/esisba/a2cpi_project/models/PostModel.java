@@ -3,7 +3,7 @@ package dz.esisba.a2cpi_project.models;
 import java.io.Serializable;
 
 public class PostModel implements Serializable {
-   private String askedBy,publisher,Username,question,body,postid,Date,publisherPic;
+   private String askedBy,publisher,Username,question,body,postid,Date,publisherPic,answerBy;
    private int likesCount,answersCount;
 
     public PostModel(String askedBy, String publisher, String username, String question, String body, String postid, String date, String publisherPic, int likesCount, int answersCount) {

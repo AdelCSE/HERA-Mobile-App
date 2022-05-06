@@ -207,3 +207,4 @@ public class UserProfileActivity extends AppCompatActivity {
 }
 
 //TODO: retrieve the name
+//TODO: add followers and following count
