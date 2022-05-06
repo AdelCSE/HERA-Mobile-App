@@ -35,7 +35,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import dz.esisba.a2cpi_project.adapter.AllPostsAdapter;
+import dz.esisba.a2cpi_project.adapter.QuestionBlocAdapter;
+import dz.esisba.a2cpi_project.adapter.QuestionBlocAdapter;
 import dz.esisba.a2cpi_project.interfaces.OnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
 
@@ -44,7 +45,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
     private RecyclerView recyclerView;
     private ArrayList<PostModel> postsDataHolder;
     private ImageButton AnswerBtn;
-    private AllPostsAdapter adapter;
+    private QuestionBlocAdapter adapter;
     private BottomSheetDialog dialog;
 
     private FirebaseAuth auth;
@@ -98,7 +99,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
         });
 
         post = (PostModel) getIntent().getSerializableExtra("Tag");
-        Toast.makeText(this, post.getPostid(), Toast.LENGTH_SHORT).show();
         postRef = fstore.collection("Posts").document(post.getPostid());
         count = post.getAnswersCount();
 
@@ -119,12 +119,15 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
 
         setRecyclerView(findViewById(R.id.recviewa));
         getRecyclerView().setLayoutManager(new LinearLayoutManager(this));
-        setPostsDataHolder(new ArrayList<>());
+        postsDataHolder = new ArrayList<>();
 
-        getPostsDataHolder().add(post);
+        postsDataHolder.add(post);
 
-        setAdapter(new AllPostsAdapter(getPostsDataHolder(),this));
-        getRecyclerView().setAdapter(getAdapter());
+        PostModel text = new PostModel(null,null,null,null,null,null,null,null,-1,post.getAnswersCount());
+        postsDataHolder.add(text);
+
+        adapter = new QuestionBlocAdapter(postsDataHolder,this);
+        recyclerView.setAdapter(adapter);
     }
 
     String date = DateFormat.getInstance().format(new Date());
@@ -229,11 +232,11 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
         AnswerBtn = answerBtn;
     }
 
-    public AllPostsAdapter getAdapter() {
+    public QuestionBlocAdapter getAdapter() {
         return adapter;
     }
 
-    public void setAdapter(AllPostsAdapter adapter) {
+    public void setAdapter(QuestionBlocAdapter adapter) {
         this.adapter = adapter;
     }
 
