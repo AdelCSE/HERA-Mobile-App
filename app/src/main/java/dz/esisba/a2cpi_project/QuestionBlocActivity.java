@@ -66,7 +66,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
         setAnswerBtn(findViewById(R.id.answerBtn));
         setDialog(new BottomSheetDialog(this));
 
-
+//comment
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
