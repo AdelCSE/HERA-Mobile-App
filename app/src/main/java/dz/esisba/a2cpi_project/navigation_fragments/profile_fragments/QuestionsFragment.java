@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import dz.esisba.a2cpi_project.R;
-import dz.esisba.a2cpi_project.adapter.AllPostsAdapter;
 import dz.esisba.a2cpi_project.adapter.PostAdapter;
 import dz.esisba.a2cpi_project.models.PostModel;
 

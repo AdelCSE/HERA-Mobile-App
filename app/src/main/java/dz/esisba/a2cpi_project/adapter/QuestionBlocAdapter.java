@@ -19,23 +19,26 @@ import dz.esisba.a2cpi_project.interfaces.OnItemClickListner;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.models.PostModel;
 
-public class AllPostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     ArrayList<PostModel> AllPostsDataHolder;
     private Context context;
     private OnItemClickListner aListner;
+    static int i =0;
 
-    public AllPostsAdapter(ArrayList<PostModel> postsDataHolder , OnItemClickListner listner) {
+    public QuestionBlocAdapter(ArrayList<PostModel> postsDataHolder , OnItemClickListner listner) {
         AllPostsDataHolder = postsDataHolder;
         aListner = listner;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (AllPostsDataHolder.size()<=1){
+        if (AllPostsDataHolder.get(position).getAnswersCount()!= -1 && AllPostsDataHolder.get(position).getLikesCount()!= -1){
             return 1;
-        }else{
+        }else if (AllPostsDataHolder.get(position).getAnswersCount()!= -1 && AllPostsDataHolder.get(1).getLikesCount()==-1){
             return 2;
+        }else{
+            return 3;
         }
     }
 
@@ -47,6 +50,10 @@ public class AllPostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             context = parent.getContext();
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_post, parent, false);
             return new ViewHolder1(view,aListner);
+        }else if (viewType == 2) {
+            context = parent.getContext();
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_text, parent, false);
+            return  new ViewHolder3(view);
         }else{
             context = parent.getContext();
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_answer, parent, false);
@@ -61,16 +68,24 @@ public class AllPostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             Glide.with(context).load(AllPostsDataHolder.get(position).getPublisherPic()).into(viewHolder1.img);
             viewHolder1.Question.setText(AllPostsDataHolder.get(position).getQuestion());
             viewHolder1.Name.setText(AllPostsDataHolder.get(position).getAskedBy());
-            viewHolder1.Username.setText(AllPostsDataHolder.get(position).getUsername());
+            viewHolder1.Username.setText("@"+AllPostsDataHolder.get(position).getUsername());
             viewHolder1.Details.setText(AllPostsDataHolder.get(position).getBody());
             viewHolder1.Likes.setText(Integer.toString(AllPostsDataHolder.get(position).getLikesCount()));
             viewHolder1.Answers.setText(Integer.toString(AllPostsDataHolder.get(position).getAnswersCount()));
             viewHolder1.Date.setText(AllPostsDataHolder.get(position).getDate());
 
+        }else if (holder.getItemViewType()==2){
+            ViewHolder3 viewHolder3 = (ViewHolder3) holder;
+
+            if (AllPostsDataHolder.get(0).getAnswersCount()==0) {
+                viewHolder3.customText.setText("Be the first who answers this question!");
+            }else {
+                viewHolder3.customText.setText(AllPostsDataHolder.get(0).getAnswersCount() + " answers");
+            }
         }else{
             ViewHolder2 viewHolder2 = (ViewHolder2) holder;
             viewHolder2.Question.setText(AllPostsDataHolder.get(position).getQuestion());
-            viewHolder2.Username.setText(AllPostsDataHolder.get(position).getUsername());
+            viewHolder2.Username.setText("@"+AllPostsDataHolder.get(position).getUsername());
             viewHolder2.Details.setText(AllPostsDataHolder.get(position).getBody());
             viewHolder2.Likes.setText(Integer.toString(AllPostsDataHolder.get(position).getLikesCount()));
             viewHolder2.Date.setText(AllPostsDataHolder.get(position).getDate());
@@ -125,6 +140,16 @@ public class AllPostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             Details = itemView.findViewById(R.id.detailsa);
             Likes = itemView.findViewById(R.id.likesa);
             Date = itemView.findViewById(R.id.postDatea);
+        }
+    }
+
+    public class ViewHolder3 extends RecyclerView.ViewHolder {
+        TextView customText;
+
+        public ViewHolder3(@NonNull View itemView) {
+            super(itemView);
+            customText = itemView.findViewById(R.id.customText);
+            customText.setTextSize(16f);
         }
     }
 }

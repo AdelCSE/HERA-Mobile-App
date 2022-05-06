@@ -29,63 +29,64 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
-                    android:textSize="12sp"
+                    android:text="username"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:text="username" />
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:text="answered your question"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
             <TextView
+                android:id="@+id/questiona"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:layout_gravity="center_horizontal"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="16sp"
+                android:layout_marginTop="5dp"
                 android:text="What's your Question ?"
-                android:id="@+id/questiona"/>
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/detailsa"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="15dp"
-                android:textSize="14sp"
-                android:textColor="@color/black"
                 android:text="details here "
-                android:id="@+id/detailsa"/>
+                android:textColor="@color/black"
+                android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/postDatea"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="date"
                 android:layout_marginLeft="15dp"
-                android:textSize="9sp"
-                android:id="@+id/postDatea"/>
+                android:text="date"
+                android:textSize="9sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/actionbar"
-                android:layout_alignParentBottom="true">
+                android:background="@drawable/answeractionbar">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
 
-                    android:layout_gravity="center_vertical">
+                    android:layout_weight="1">
+
                     <ImageButton
                         android:id="@+id/likeBtn"
                         android:layout_width="wrap_content"
@@ -100,10 +101,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:textStyle="bold"
                         android:layout_marginLeft="5dp"
                         android:text="Likes"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
 
 
                     <ImageButton
@@ -116,7 +117,6 @@
                         android:src="@drawable/ic_share" />
 
                 </LinearLayout>
-
 
 
                 <ImageButton
