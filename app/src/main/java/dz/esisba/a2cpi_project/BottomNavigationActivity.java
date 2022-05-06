@@ -82,7 +82,7 @@ public class BottomNavigationActivity extends AppCompatActivity {
             }
         });
 
-        auth = FirebaseAuth.getInstance();
+        /*auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
         DocumentReference df = fstore.collection("Users").document(user.getUid());
@@ -119,7 +119,7 @@ public class BottomNavigationActivity extends AppCompatActivity {
                     }
                 }
             }
-        });
+        });*/
         bottomNav.getMenu().getItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {

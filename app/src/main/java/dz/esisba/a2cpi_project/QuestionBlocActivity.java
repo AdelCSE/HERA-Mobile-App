@@ -127,6 +127,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         PostModel answer = document.toObject(PostModel.class);
                         answer.setAnswersCount(-1);
+                        answer.setQuestion(post.getQuestion());
                         postsDataHolder.add(answer);
                     }
                     buildRecyclerView();
