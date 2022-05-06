@@ -44,7 +44,7 @@ public class QuestionsFragment extends Fragment {
         PostModel Post5 = new PostModel(R.drawable.exemple, "Adel Mokadem" , "@addy1001" , "What's your Question5" , "details here","1000","500","08:25 AM • 29 APR 22");
         QuestionsDataHolder.add(Post5);*/
 
-        recyclerView.setAdapter(new PostAdapter(QuestionsDataHolder));
+        //recyclerView.setAdapter(new PostAdapter(QuestionsDataHolder));//
 
         return parentHolder;
     }

@@ -88,7 +88,7 @@
                     android:layout_weight="1">
 
                     <ImageButton
-                        android:id="@+id/likeBtn"
+                        android:id="@+id/answerLikeBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -108,7 +108,7 @@
 
 
                     <ImageButton
-                        android:id="@+id/shareBtn"
+                        android:id="@+id/answerShareBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -120,7 +120,7 @@
 
 
                 <ImageButton
-                    android:id="@+id/postMenu"
+                    android:id="@+id/answerMenuBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"

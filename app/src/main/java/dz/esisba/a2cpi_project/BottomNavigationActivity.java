@@ -119,14 +119,14 @@ public class BottomNavigationActivity extends AppCompatActivity {
                     }
                 }
             }
-        });*/
+        });
         bottomNav.getMenu().getItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 bottomNav.getMenu().getItem(2).setIcon(R.drawable.ic_arrow);
                 return false;
             }
-        });
+        });*/
 
     }
 

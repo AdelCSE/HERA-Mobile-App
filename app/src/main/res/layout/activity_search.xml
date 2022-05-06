@@ -19,37 +19,102 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck,TouchTargetSizeCheck" />
 
-    <EditText
-        android:id="@+id/autoCompleteTextView"
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searches"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:paddingStart="-10dp"
         android:layout_marginStart="70dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="15dp"
         android:background="@drawable/notifbox"
-        android:drawableStart="@drawable/ic_search"
-        android:drawablePadding="12dp"
-        android:hint="Search..."
-        android:imeOptions="actionDone"
-        android:inputType="text"
-        android:maxLines="1"
+        app:queryHint="Search.."
+        android:hint="Search"
+        app:iconifiedByDefault="false"
         android:paddingLeft="15dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/backBtn"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="TouchTargetSizeCheck" />
+        tools:ignore="TouchTargetSizeCheck"/>
 
+
+    <FrameLayout
+        android:id="@+id/frameLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/toolbar"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/homebtn"
+                android:layout_width="40dp"
+                android:layout_height="55dp"
+                android:layout_weight="1"
+
+                android:background="@null"
+                android:src="@drawable/ic_home"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <ImageButton
+                android:id="@+id/smartroombtn"
+                android:layout_width="40dp"
+                android:layout_height="55dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:src="@drawable/ic_play"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <ImageButton
+                android:id="@+id/postbtn"
+                android:layout_width="40dp"
+                android:layout_height="55dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:src="@drawable/ic_plus"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <ImageButton
+                android:id="@+id/notificationbtn"
+                android:layout_width="40dp"
+                android:layout_height="55dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:src="@drawable/ic_bell"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <ImageButton
+                android:id="@+id/user_btn"
+                android:layout_width="40dp"
+                android:layout_height="55dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:src="@drawable/userpic"
+                tools:ignore="SpeakableTextPresentCheck" />
+        </LinearLayout>
+    </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleview1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="60dp"
+        android:layout_below="@id/searches"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:scrollbars="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/frameLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/searches" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

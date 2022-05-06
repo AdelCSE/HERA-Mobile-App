@@ -64,4 +64,5 @@ dependencies {
     implementation 'com.airbnb.android:lottie:3.4.0'
     implementation 'com.google.firebase:firebase-analytics:17.2.1'
     implementation 'com.google.firebase:firebase-database:19.2.0'
+    implementation 'com.jakewharton.rxbinding3:rxbinding-appcompat:3.0.0'
 }

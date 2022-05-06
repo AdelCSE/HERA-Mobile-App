@@ -145,7 +145,7 @@
                         android:textSize="12sp" />
 
                     <ImageButton
-                        android:id="@+id/shareBtn"
+                        android:id="@+id/questionShareBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -158,7 +158,7 @@
 
 
                 <ImageButton
-                    android:id="@+id/postMenu"
+                    android:id="@+id/questionMenuBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"

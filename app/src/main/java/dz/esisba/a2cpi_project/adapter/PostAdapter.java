@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 
 import dz.esisba.a2cpi_project.R;
+import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
 import dz.esisba.a2cpi_project.navigation_fragments.ProfileFragment;
 
@@ -26,18 +27,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
 
     private ArrayList<PostModel> PostsHolder;
     private Context context;
-    private OnItemClickListner mListner;
+    private PostsOnItemClickListner mListner;
 
-
-    public PostAdapter(ArrayList<PostModel> postsHolder) {
-        PostsHolder = postsHolder; }
-
-    public interface OnItemClickListner {
-        void onItemClick(int position);
-    }
-
-    public void setOnItemClickListner (OnItemClickListner listner){
-        mListner = listner;
+    public PostAdapter(ArrayList<PostModel> postsHolder ,PostsOnItemClickListner mlistner) {
+        PostsHolder = postsHolder;
+        mListner = mlistner;
     }
 
     @NonNull
@@ -72,7 +66,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
         ImageView img;
         TextView Question,Details,Name,Username,Likes,Answers,Date;
 
-        public myviewholder (@NonNull View itemView , OnItemClickListner listner){
+        public myviewholder (@NonNull View itemView , PostsOnItemClickListner listner){
             super(itemView);
             img = itemView.findViewById(R.id.img);
             Question = itemView.findViewById(R.id.question);
@@ -91,6 +85,39 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
                         int position = getAbsoluteAdapterPosition();
                         if (position != RecyclerView.NO_POSITION){
                             listner.onItemClick(position);
+                        }
+                    }
+                }
+            });
+            itemView.findViewById(R.id.questionShareBtn).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listner != null){
+                        int position = getAbsoluteAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listner.onShareClick(position);
+                        }
+                    }
+                }
+            });
+            itemView.findViewById(R.id.answerBtn).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listner != null){
+                        int position = getAbsoluteAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listner.onAnswerClick(position);
+                        }
+                    }
+                }
+            });
+            itemView.findViewById(R.id.questionMenuBtn).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listner != null){
+                        int position = getAbsoluteAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listner.onMenuClick(position,view);
                         }
                     }
                 }

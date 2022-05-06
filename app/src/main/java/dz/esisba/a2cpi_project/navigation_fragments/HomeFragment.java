@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -42,9 +44,10 @@ import dz.esisba.a2cpi_project.QuestionBlocActivity;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.SearchActivity;
 import dz.esisba.a2cpi_project.adapter.PostAdapter;
+import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
 
-public class HomeFragment extends Fragment{
+public class HomeFragment extends Fragment implements PostsOnItemClickListner, PopupMenu.OnMenuItemClickListener {
 
     private View parentHolder;
     private RecyclerView recyclerView;
@@ -117,24 +120,52 @@ public class HomeFragment extends Fragment{
     public void buildRecyclerView() {
         recyclerView = parentHolder.findViewById(R.id.recview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new PostAdapter(PostsDataHolder);
+        adapter = new PostAdapter(PostsDataHolder,this);
         recyclerView.setAdapter(adapter);
 
-        //Click on Post
-        adapter.setOnItemClickListner(new PostAdapter.OnItemClickListner() {
-            @Override
-            public void onItemClick(int position) {
-                PostModel Post1 = new PostModel(PostsDataHolder.get(position).getAskedBy(), PostsDataHolder.get(position).getPublisher()
-                        , PostsDataHolder.get(position).getUsername() , PostsDataHolder.get(position).getQuestion() ,
-                        PostsDataHolder.get(position).getBody(),PostsDataHolder.get(position).getPostid(),
-                        PostsDataHolder.get(position).getDate(),PostsDataHolder.get(position).getPublisherPic(),
-                        PostsDataHolder.get(position).getLikesCount(),PostsDataHolder.get(position).getAnswersCount());
-                Intent intent = new Intent(getActivity(), QuestionBlocActivity.class);
-                intent.putExtra("Tag", (Serializable) Post1);
-                getActivity().startActivity(intent);
-            }
-
-        });
     }
 
+    public void StartQuestionBlocActivity(int position){
+        PostModel Post1 = new PostModel(PostsDataHolder.get(position).getAskedBy(), PostsDataHolder.get(position).getPublisher()
+                , PostsDataHolder.get(position).getUsername() , PostsDataHolder.get(position).getQuestion() ,
+                PostsDataHolder.get(position).getBody(),PostsDataHolder.get(position).getPostid(),
+                PostsDataHolder.get(position).getDate(),PostsDataHolder.get(position).getPublisherPic(),
+                PostsDataHolder.get(position).getLikesCount(),PostsDataHolder.get(position).getAnswersCount());
+        Intent intent = new Intent(getActivity(), QuestionBlocActivity.class);
+        intent.putExtra("Tag", (Serializable) Post1);
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        StartQuestionBlocActivity(position);
+    }
+
+    @Override
+    public void onAnswerClick(int position) {
+        StartQuestionBlocActivity(position);
+    }
+
+    @Override
+    public void onShareClick(int position) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        String Body = "Download this app";
+        intent.putExtra(Intent.EXTRA_TEXT,Body);
+        intent.putExtra(Intent.EXTRA_TEXT,"URL");
+        startActivity(Intent.createChooser(intent,"Share using"));
+    }
+
+    @Override
+    public void onMenuClick(int position, View v) {
+        PopupMenu popupMenu = new PopupMenu(getActivity(),v);
+        popupMenu.setOnMenuItemClickListener(this);
+        popupMenu.inflate(R.menu.post_menu);
+        popupMenu.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        return false;
+    }
 }

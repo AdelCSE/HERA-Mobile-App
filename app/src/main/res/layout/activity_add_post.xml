@@ -71,11 +71,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="100dp"
+                android:gravity="top"
                 android:hint="Add details to your Question"
                 android:layout_marginTop="60dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:paddingLeft="15dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
                 android:paddingRight="15dp"
                 android:background="@drawable/edittxtshape"/>
 
@@ -85,7 +88,7 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="15dp"
                 android:text="Tags (choose at least one tag):"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -99,7 +102,7 @@
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="15dp"
+
                 app:singleLine="true">
 
                 <com.google.android.material.chip.Chip
@@ -151,8 +154,7 @@
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/healthCG"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="15dp">
+                    android:layout_height="match_parent">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/sleeping"
@@ -247,8 +249,7 @@
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/ilnnesCG"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="15dp">
+                    android:layout_height="match_parent">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/fever"
@@ -321,8 +322,7 @@
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/tipsCG"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="15dp">
+                    android:layout_height="match_parent">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/experience"

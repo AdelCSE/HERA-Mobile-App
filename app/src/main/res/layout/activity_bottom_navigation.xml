@@ -6,11 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".BottomNavigationActivity">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ppimg"/>
-
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
@@ -43,6 +38,7 @@
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:tint="@android:color/white"
             android:backgroundTint="@color/button"
             android:src="@drawable/ic_plus"
             app:layout_anchor="@id/bottomAppBar" />

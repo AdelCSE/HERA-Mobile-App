@@ -57,7 +57,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }else{
             context = parent.getContext();
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_answer, parent, false);
-            return  new ViewHolder2(view);
+            return  new ViewHolder2(view,aListner);
         }
     }
 
@@ -101,7 +101,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public class ViewHolder1 extends RecyclerView.ViewHolder {
 
         //Question Type
-        ImageButton answerBtn;
+        ImageButton answerBtn,shareBtn;
         ImageView img;
         TextView Question,Details,Name,Username,Likes,Answers,Date;
         public ViewHolder1(@NonNull View itemView , OnItemClickListner listner) {
@@ -114,7 +114,6 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             Likes = itemView.findViewById(R.id.likes);
             Answers = itemView.findViewById(R.id.answers);
             Date = itemView.findViewById(R.id.postDate);
-            answerBtn = itemView.findViewById(R.id.answerBtn);
 
             itemView.findViewById(R.id.answerBtn).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -127,19 +126,65 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     }
                 }
             });
+            itemView.findViewById(R.id.questionShareBtn).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listner != null){
+                        int position = getBindingAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listner.onShareClick(position);
+                        }
+                    }
+                }
+            });
+            itemView.findViewById(R.id.questionMenuBtn).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listner != null){
+                        int position = getBindingAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listner.onMenuClick(position,view);
+                        }
+                    }
+                }
+            });
         }
     }
 
     public class ViewHolder2 extends RecyclerView.ViewHolder {
+        ImageButton answerShareBtn;
         TextView Question,Details,Username,Likes,Date;
 
-        public ViewHolder2(@NonNull View itemView) {
+        public ViewHolder2(@NonNull View itemView, OnItemClickListner listner) {
             super(itemView);
             Question = itemView.findViewById(R.id.questiona);
             Username = itemView.findViewById(R.id.usernamea);
             Details = itemView.findViewById(R.id.detailsa);
             Likes = itemView.findViewById(R.id.likesa);
             Date = itemView.findViewById(R.id.postDatea);
+
+            itemView.findViewById(R.id.answerShareBtn).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listner != null){
+                        int position = getBindingAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listner.onShareClick(position);
+                        }
+                    }
+                }
+            });
+            itemView.findViewById(R.id.answerMenuBtn).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listner != null){
+                        int position = getBindingAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listner.onMenuClick(position,view);
+                        }
+                    }
+                }
+            });
         }
     }
 

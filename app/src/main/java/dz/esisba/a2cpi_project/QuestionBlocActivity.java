@@ -9,10 +9,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +44,7 @@ import dz.esisba.a2cpi_project.adapter.QuestionBlocAdapter;
 import dz.esisba.a2cpi_project.interfaces.OnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
 
-public class QuestionBlocActivity extends AppCompatActivity implements OnItemClickListner {
+public class QuestionBlocActivity extends AppCompatActivity implements OnItemClickListner, PopupMenu.OnMenuItemClickListener {
 
     private RecyclerView recyclerView;
     private ArrayList<PostModel> postsDataHolder;
@@ -103,14 +105,13 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
         post = (PostModel) getIntent().getSerializableExtra("Tag");
         postRef = fstore.collection("Posts").document(post.getPostid());
         count = post.getAnswersCount();
-
         postsDataHolder = new ArrayList<>();
 
         FetchAnswers();
 
-
     }
 
+    //Display answers
     private void FetchAnswers()
     {
         postsDataHolder = new ArrayList<>();
@@ -138,11 +139,36 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
         });
     }
 
+    //Add an Answer
     @Override
     public void onAnswerClick(int position) {
         showAnswerDialog();
         getDialog().show();
         getDialog().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+    }
+
+    //Share APP
+    @Override
+    public void onShareClick(int position) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        String Body = "Download this app";
+        intent.putExtra(Intent.EXTRA_TEXT,Body);
+        intent.putExtra(Intent.EXTRA_TEXT,"URL");
+        startActivity(Intent.createChooser(intent,"Share using"));
+    }
+
+    @Override
+    public void onMenuClick(int position,View v) {
+        PopupMenu popupMenu = new PopupMenu(this,v);
+        popupMenu.setOnMenuItemClickListener(this);
+        popupMenu.inflate(R.menu.post_menu);
+        popupMenu.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        return false;
     }
 
 
@@ -284,4 +310,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
     public void setDialog(BottomSheetDialog dialog) {
         this.dialog = dialog;
     }
+
+
 }
