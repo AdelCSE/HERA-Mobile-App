@@ -107,7 +107,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
         postsDataHolder = new ArrayList<>();
 
         FetchAnswers();
-        buildRecyclerView();
 
 
     }
@@ -115,6 +114,10 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
     private void FetchAnswers()
     {
         postsDataHolder = new ArrayList<>();
+        postsDataHolder.add(post);
+
+        PostModel text = new PostModel(null,null,null,null,null,null,null,null,-1,post.getAnswersCount());
+        postsDataHolder.add(text);
 
         postRef.collection("Answers")
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -146,11 +149,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
 
         setRecyclerView(findViewById(R.id.recviewa));
         getRecyclerView().setLayoutManager(new LinearLayoutManager(this));
-
-        postsDataHolder.add(post);
-
-        PostModel text = new PostModel(null,null,null,null,null,null,null,null,-1,post.getAnswersCount());
-        postsDataHolder.add(text);
 
         adapter = new QuestionBlocAdapter(postsDataHolder,this);
         recyclerView.setAdapter(adapter);
