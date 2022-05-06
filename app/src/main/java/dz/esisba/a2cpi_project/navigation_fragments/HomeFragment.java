@@ -103,8 +103,9 @@ public class HomeFragment extends Fragment{
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         PostModel post = document.toObject(PostModel.class);
                         PostsDataHolder.add(post);
-                        buildRecyclerView();
+
                     }
+                    buildRecyclerView();
                 } else {
                     Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
                 }

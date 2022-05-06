@@ -28,6 +28,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -102,9 +104,34 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
         postRef = fstore.collection("Posts").document(post.getPostid());
         count = post.getAnswersCount();
 
+        postsDataHolder = new ArrayList<>();
+
+        FetchAnswers();
         buildRecyclerView();
 
 
+    }
+
+    private void FetchAnswers()
+    {
+        postsDataHolder = new ArrayList<>();
+
+        postRef.collection("Answers")
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        PostModel answer = document.toObject(PostModel.class);
+                        answer.setAnswersCount(-1);
+                        postsDataHolder.add(answer);
+                    }
+                    buildRecyclerView();
+                } else {
+                    Toast.makeText(QuestionBlocActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -119,7 +146,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
 
         setRecyclerView(findViewById(R.id.recviewa));
         getRecyclerView().setLayoutManager(new LinearLayoutManager(this));
-        postsDataHolder = new ArrayList<>();
 
         postsDataHolder.add(post);
 
@@ -149,9 +175,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
             }
         });
 
-        DocumentReference ref = FirebaseFirestore.getInstance().collection("Posts")
-                .document(post.getPostid()).collection("Answers").document(); //generate unique id
-        String answerId = ref.getId();
 
         postAnswerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,42 +182,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
 
                 if(!addAnswer.getText().toString().isEmpty())
                 {
-                    Toast.makeText(QuestionBlocActivity.this, "Posting...", Toast.LENGTH_SHORT).show();
-                    HashMap<String, Object> data = new HashMap<>();
-                    data.put("postid", answerId);
-                    data.put("publisherPic", downloadUrl);
-                    data.put("body", addAnswer.getText().toString());
-                    data.put("publisher", user.getUid().toString());
-                    data.put("answerBy", askedByName);
-                    data.put("Username", askedByUsername);
-                    data.put("Date", date);
-                    data.put("likesCount", 0);
-
-                    DocumentReference df = postRef.collection("Answers").document(answerId);
-                    df.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                count++;
-                                HashMap<String, Object> hm = new HashMap<>();
-                                hm.put("answersCount", count);
-                                postRef.update(hm).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        Toast.makeText(QuestionBlocActivity.this, "Answer posted successfully", Toast.LENGTH_SHORT).show();
-                                        getDialog().dismiss();
-                                        startActivity(new Intent(getApplicationContext(), BottomNavigationActivity.class));
-                                        finish();
-                                    }
-                                });
-                            }
-                            else
-                            {
-                                Toast.makeText(QuestionBlocActivity.this, "Could not post answer " + task.getException().toString(),
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+                    PerformValidation(addAnswer.getText().toString());
                 }else {
                     getDialog().dismiss();
                     startActivity(new Intent(getApplicationContext(), BottomNavigationActivity.class));
@@ -206,6 +194,56 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
         getDialog().setContentView(view);
     }
 
+    private void PerformValidation(String answer)
+    {
+        String answerId = post.getPostid() + Integer.toString(post.getAnswersCount());
+        Toast.makeText(QuestionBlocActivity.this, "Posting...", Toast.LENGTH_SHORT).show();
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("postid", answerId);
+        data.put("publisherPic", downloadUrl);
+        data.put("body", answer);
+        data.put("publisher", user.getUid().toString());
+        data.put("answerBy", askedByName);
+        data.put("Username", askedByUsername);
+        data.put("Date", date);
+        data.put("likesCount", 0);
+
+        DocumentReference df = postRef.collection("Answers").document(answerId);
+        df.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Task<QuerySnapshot> followingReference = postRef.collection("Answers")
+                            .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful())
+                                    {
+                                        count = task.getResult().size();
+                                        HashMap<String, Object> hm = new HashMap<>();
+                                        hm.put("answersCount", count);
+                                        postRef.update(hm).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                Toast.makeText(QuestionBlocActivity.this, "Answer posted successfully", Toast.LENGTH_SHORT).show();
+                                                getDialog().dismiss();
+                                                startActivity(new Intent(getApplicationContext(), BottomNavigationActivity.class));
+                                                finish();
+                                            }
+                                        });
+
+                                    }
+                                }
+                            });
+                }
+                else
+                {
+                    Toast.makeText(QuestionBlocActivity.this, "Could not post answer " + task.getException().toString(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 
 
     public RecyclerView getRecyclerView() {
