@@ -13,10 +13,12 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import dz.esisba.a2cpi_project.R;
+import dz.esisba.a2cpi_project.adapter.AllPostsProfileAdapter;
+import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
 
 
-public class AllFragment extends Fragment {
+public class AllFragment extends Fragment implements PostsOnItemClickListner {
 
     View parentHolder;
     RecyclerView recyclerView;
@@ -41,10 +43,30 @@ public class AllFragment extends Fragment {
         PostModel Post4 = new PostModel(R.drawable.exemple, "Adel Mokadem" , "@addy1001" , "What's your Question4" , "details here","1000",null,"10:30 AM • 29 APR 22");
         AllPostsDataHolder.add(Post4);
         PostModel Post5 = new PostModel(R.drawable.exemple, "Adel Mokadem" , "@addy1001" , "What's your Question5" , "details here","1000",null,"08:25 AM • 29 APR 22");
-        AllPostsDataHolder.add(Post5);*/
+        AllPostsDataHolder.add(Post5);
 
-       /* recyclerView.setAdapter(new AllPostsAdapter(AllPostsDataHolder));*/
+       recyclerView.setAdapter(new AllPostsProfileAdapter(AllPostsDataHolder,this));*/
 
         return parentHolder;
+    }
+
+    @Override
+    public void onAnswerClick(int position) {
+
+    }
+
+    @Override
+    public void onShareClick(int position) {
+
+    }
+
+    @Override
+    public void onMenuClick(int position, View v) {
+
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
     }
 }

@@ -3,7 +3,6 @@ package dz.esisba.a2cpi_project.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,7 +24,7 @@ public class AnswersAdapter extends RecyclerView.Adapter<AnswersAdapter.myviewho
     @NonNull
     @Override
     public myviewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_answer,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_profile_answer,parent,false);
         return new myviewholder(view);
     }
 

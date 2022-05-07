@@ -20,9 +20,21 @@
             android:layout_marginTop="5dp"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/questionpa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:text="What's your Question ?"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:gravity="center_vertical">
 
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -30,10 +42,10 @@
                     android:layout_height="35dp"
                     android:layout_marginLeft="15dp"
                     android:src="@drawable/profileimg"
-                    android:id="@+id/imga"/>
+                    android:id="@+id/imgpa"/>
 
                 <TextView
-                    android:id="@+id/usernamea"
+                    android:id="@+id/usernamepa"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
@@ -46,14 +58,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-                    android:text="answered the question"
+                    android:text="answered this question"
                     android:textSize="12sp" />
 
             </LinearLayout>
 
-
             <TextView
-                android:id="@+id/detailsa"
+                android:id="@+id/detailspa"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
@@ -64,7 +75,7 @@
                 android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/postDatea"
+                android:id="@+id/postDatepa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
@@ -86,7 +97,7 @@
                     android:layout_weight="1">
 
                     <ImageButton
-                        android:id="@+id/answerLikeBtn"
+                        android:id="@+id/answerLikeBtnpa"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -95,7 +106,7 @@
                         android:src="@drawable/ic_heart" />
 
                     <TextView
-                        android:id="@+id/likesa"
+                        android:id="@+id/likespa"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -106,7 +117,7 @@
 
 
                     <ImageButton
-                        android:id="@+id/answerShareBtn"
+                        android:id="@+id/answerShareBtnpa"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -118,7 +129,7 @@
 
 
                 <ImageButton
-                    android:id="@+id/answerMenuBtn"
+                    android:id="@+id/answerMenuBtnpa"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -126,12 +137,9 @@
                     android:background="@null"
                     android:src="@drawable/ic_post_menu" />
 
-
             </LinearLayout>
 
-
         </LinearLayout>
-
 
     </RelativeLayout>
 
