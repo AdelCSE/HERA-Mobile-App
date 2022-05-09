@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.airbnb.lottie.LottieAnimationView;
 
 import java.util.ArrayList;
 
@@ -64,6 +67,12 @@ public class AllFragment extends Fragment implements PostsOnItemClickListner {
     public void onMenuClick(int position, View v) {
 
     }
+
+    @Override
+    public void onLikeClick(int position, LottieAnimationView lottieAnimationView, TextView likesTxt, boolean isAnswer) {
+
+    }
+
 
     @Override
     public void onItemClick(int position) {

@@ -107,13 +107,14 @@
 
                     android:layout_gravity="center_vertical">
 
-                    <ImageView
+
+                    <com.airbnb.lottie.LottieAnimationView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        app:lottie_rawRes="@raw/likebtn"
                         android:layout_marginStart="15dp"
-                        android:background="@null"
-                        android:src="@drawable/ic_heart"
-                        android:id="@+id/questionLikeBtn"/>
+                        android:tag="Like"
+                        android:id="@+id/lottieLike"/>
 
                     <TextView
                         android:id="@+id/likes"
