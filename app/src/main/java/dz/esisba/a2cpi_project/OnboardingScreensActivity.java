@@ -5,6 +5,7 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ public class OnboardingScreensActivity extends AppCompatActivity {
         layoutOnboardingIndicators = findViewById(R.id.layoutOnboardingIndicators);
         buttonOnboardingAction = findViewById(R.id.buttonOnboardingAction);
         setupOnboardingItems();
+
         ViewPager2 onboardingViewPager = findViewById(R.id.onboardingViewPager);
         onboardingViewPager.setAdapter(onboardingAdapter);
 
@@ -56,7 +58,7 @@ public class OnboardingScreensActivity extends AppCompatActivity {
             }
         });
 
-        }
+    }
 
     private void setupOnboardingItems(){
 
