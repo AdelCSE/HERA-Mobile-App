@@ -2,26 +2,12 @@ package dz.esisba.a2cpi_project;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.jakewharton.rxbinding3.appcompat.RxSearchView;
-
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-
-import dz.esisba.a2cpi_project.adapter.SearchAdapter;
-import dz.esisba.a2cpi_project.models.UserSearchModel;
-import dz.esisba.a2cpi_project.navigation_fragments.HomeFragment;
-import io.reactivex.android.schedulers.AndroidSchedulers;
+import dz.esisba.a2cpi_project.search_fragments.SearchFragment;
+import dz.esisba.a2cpi_project.search_fragments.TagsFragment;
 
 public class SearchActivity extends AppCompatActivity{
 

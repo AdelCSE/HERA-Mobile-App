@@ -1,4 +1,4 @@
-package dz.esisba.a2cpi_project;
+package dz.esisba.a2cpi_project.search_fragments;
 
 import android.os.Bundle;
 
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.adapter.SearchAdapter;
 import dz.esisba.a2cpi_project.models.UserSearchModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
