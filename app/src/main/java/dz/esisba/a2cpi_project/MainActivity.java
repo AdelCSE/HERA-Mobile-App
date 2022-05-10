@@ -22,6 +22,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import dz.esisba.a2cpi_project.navigation_fragments.ProfileFragment;
+
 public class MainActivity extends AppCompatActivity {
 
     private Button postBtn,user1,user2;
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                                     {
                                         uid = document.get("uid").toString();
                                         if (auth.getCurrentUser().getUid().equals(uid)) {
-                                            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                                            startActivity(new Intent(getApplicationContext(), ProfileFragment.class));
                                             finish();
                                         }
                                         else if (!auth.getCurrentUser().getUid().equals(uid) && !uid.isEmpty())
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                                         {
                                             uid = document.get("uid").toString();
                                             if (auth.getCurrentUser().getUid().equals(uid)) {
-                                                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                                                startActivity(new Intent(getApplicationContext(), ProfileFragment.class));
                                                 finish();
                                             }
                                             else if (!auth.getCurrentUser().getUid().equals(uid) && !uid.isEmpty())
@@ -146,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void profile(View view) {
-        startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+        startActivity(new Intent(getApplicationContext(), ProfileFragment.class));
         finish();
     }
 }

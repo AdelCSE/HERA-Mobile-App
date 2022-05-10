@@ -20,13 +20,7 @@
             android:name=".SplashScreenActivity"
             android:exported="false" />
         <activity
-            android:name=".EmptyActivity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ProfileActivity"
             android:exported="false" />
         <activity
             android:name=".AddPostActivity"
@@ -42,9 +36,6 @@
             android:exported="false" />
         <activity
             android:name=".QuestionBlocActivity"
-            android:exported="false" />
-        <activity
-            android:name=".NotificationsActivity"
             android:exported="false" />
         <activity
             android:name=".BottomNavigationActivity"
