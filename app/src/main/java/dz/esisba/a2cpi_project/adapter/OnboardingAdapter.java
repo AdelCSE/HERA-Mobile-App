@@ -1,4 +1,4 @@
-package dz.esisba.a2cpi_project;
+package dz.esisba.a2cpi_project.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +11,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import dz.esisba.a2cpi_project.R;
+import dz.esisba.a2cpi_project.models.OnboardingItemModel;
+
 public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.OnboardingViewHolder> {
 
-    private List<OnboardingItem> onboardingItems;
+    private List<OnboardingItemModel> onboardingItemModels;
 
-    public OnboardingAdapter(List<OnboardingItem> onboardingItems) {
-        this.onboardingItems = onboardingItems;
+    public OnboardingAdapter(List<OnboardingItemModel> onboardingItemModels) {
+        this.onboardingItemModels = onboardingItemModels;
     }
 
     @NonNull
@@ -31,13 +34,13 @@ public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.On
 
     @Override
     public void onBindViewHolder(@NonNull OnboardingViewHolder holder, int position) {
-        holder.setOnboardingData(onboardingItems.get(position));
+        holder.setOnboardingData(onboardingItemModels.get(position));
 
     }
 
     @Override
     public int getItemCount() {
-        return onboardingItems.size();
+        return onboardingItemModels.size();
     }
 
     class OnboardingViewHolder extends RecyclerView.ViewHolder{
@@ -53,10 +56,10 @@ public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.On
             imageOnboarding = itemView.findViewById(R.id.imageOnboarding);
         }
 
-        void setOnboardingData(OnboardingItem onboardingItem){
-            textTitle.setText(onboardingItem.getTitle());
-            textDescription.setText(onboardingItem.getDescription());
-            imageOnboarding.setImageResource(onboardingItem.getImage());
+        void setOnboardingData(OnboardingItemModel onboardingItemModel){
+            textTitle.setText(onboardingItemModel.getTitle());
+            textDescription.setText(onboardingItemModel.getDescription());
+            imageOnboarding.setImageResource(onboardingItemModel.getImage());
 
 
         }

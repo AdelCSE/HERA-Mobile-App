@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import dz.esisba.a2cpi_project.R;
+import dz.esisba.a2cpi_project.interfaces.OnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
 
 public class AnswersAdapter extends RecyclerView.Adapter<AnswersAdapter.myviewholder> {

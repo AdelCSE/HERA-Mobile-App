@@ -1,6 +1,6 @@
-package dz.esisba.a2cpi_project;
+package dz.esisba.a2cpi_project.models;
 
-public class OnboardingItem {
+public class OnboardingItemModel {
 
     private int image;
     private String title;

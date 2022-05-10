@@ -5,7 +5,6 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,9 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import dz.esisba.a2cpi_project.adapter.OnboardingAdapter;
+import dz.esisba.a2cpi_project.models.OnboardingItemModel;
 
 public class OnboardingScreensActivity extends AppCompatActivity {
 
@@ -62,28 +64,28 @@ public class OnboardingScreensActivity extends AppCompatActivity {
 
     private void setupOnboardingItems(){
 
-        List<OnboardingItem> onboardingItems = new ArrayList<OnboardingItem>();
+        List<OnboardingItemModel> onboardingItemModels = new ArrayList<OnboardingItemModel>();
 
-        OnboardingItem item1 = new OnboardingItem();
+        OnboardingItemModel item1 = new OnboardingItemModel();
         item1.setTitle("Title1");
         item1.setDescription("Description1");
         item1.setImage(R.drawable.welcomepage1);
 
-        OnboardingItem item2 = new OnboardingItem();
+        OnboardingItemModel item2 = new OnboardingItemModel();
         item2.setTitle("Title2");
         item2.setDescription("Description2");
         item2.setImage(R.drawable.welcomepage2);
 
-        OnboardingItem item3 = new OnboardingItem();
+        OnboardingItemModel item3 = new OnboardingItemModel();
         item3.setTitle("Title3");
         item3.setDescription("Description3");
         item3.setImage(R.drawable.welcomepage3);
 
-        onboardingItems.add(item1);
-        onboardingItems.add(item2);
-        onboardingItems.add(item3);
+        onboardingItemModels.add(item1);
+        onboardingItemModels.add(item2);
+        onboardingItemModels.add(item3);
 
-        onboardingAdapter= new OnboardingAdapter(onboardingItems);
+        onboardingAdapter= new OnboardingAdapter(onboardingItemModels);
 
     }
 
