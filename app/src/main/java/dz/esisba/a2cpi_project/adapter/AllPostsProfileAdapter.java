@@ -127,17 +127,6 @@ public class AllPostsProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     }
                 }
             });
-            itemView.findViewById(R.id.questionMenuBtn).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (listner != null){
-                        int position = getBindingAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION){
-                            listner.onMenuClick(position,view,postModel.get(position));
-                        }
-                    }
-                }
-            });
         }
     }
 
@@ -170,17 +159,6 @@ public class AllPostsProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                         int position = getBindingAdapterPosition();
                         if (position != RecyclerView.NO_POSITION){
                             listner.onShareClick(position);
-                        }
-                    }
-                }
-            });
-            itemView.findViewById(R.id.answerMenuBtn).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (listner != null){
-                        int position = getBindingAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION){
-                            listner.onMenuClick(position,view, postModel.get(position));
                         }
                     }
                 }

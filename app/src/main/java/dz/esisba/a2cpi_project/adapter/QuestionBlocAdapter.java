@@ -2,11 +2,14 @@ package dz.esisba.a2cpi_project.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,9 +33,9 @@ import dz.esisba.a2cpi_project.models.PostModel;
 
 public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<PostModel> AllPostsDataHolder;
+    private final ArrayList<PostModel> AllPostsDataHolder;
     private Context context;
-    private OnItemClickListner aListner;
+    private final OnItemClickListner aListner;
 
     public QuestionBlocAdapter(ArrayList<PostModel> postsDataHolder , OnItemClickListner listner) {
         AllPostsDataHolder = postsDataHolder;
@@ -124,6 +127,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
         });
     }
+
     private void RunCheckForLikesAnswerLikes(PostModel post, LottieAnimationView lottieAnimationView) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         DocumentReference likesRef = FirebaseFirestore.getInstance().collection("Users").document(user.getUid())
@@ -160,6 +164,11 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         LottieAnimationView likeBtn;
         ImageView img;
         TextView Question,Details,Name,Username,Likes,Answers,Date;
+
+        private FirebaseAuth auth;
+        private FirebaseUser user;
+        private FirebaseFirestore fstore;
+
         public ViewHolder1(@NonNull View itemView , OnItemClickListner listner, ArrayList<PostModel> postModel) {
             super(itemView);
             img = itemView.findViewById(R.id.img);
@@ -171,6 +180,10 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             Answers = itemView.findViewById(R.id.answers);
             Date = itemView.findViewById(R.id.postDate);
             likeBtn = itemView.findViewById(R.id.lottieLike);
+
+            auth = FirebaseAuth.getInstance();
+            fstore = FirebaseFirestore.getInstance();
+            user = auth.getCurrentUser();
 
             likeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -206,15 +219,30 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     }
                 }
             });
+
             itemView.findViewById(R.id.questionMenuBtn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (listner != null){
-                        int position = getBindingAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION){
-                            listner.onMenuClick(position,view,postModel.get(position));
+                    int position = getAbsoluteAdapterPosition();
+                    PopupMenu popupMenu = new PopupMenu(view.getContext(),view);
+                    if (user.getUid().equals(postModel.get(position).getPublisher()))
+                        popupMenu.inflate(R.menu.my_post_menu);
+                    else popupMenu.inflate(R.menu.post_menu);
+
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            if (menuItem.getTitle().equals("Delete")) {
+                                Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
+                            else {
+                                Toast.makeText(view.getContext(), "Report", Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
                         }
-                    }
+                    });
+                    popupMenu.show();
                 }
             });
         }
@@ -224,8 +252,11 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         CircleImageView img;
         LottieAnimationView likeBtn;
-
         TextView Details,Username,Likes,Date;
+
+        private FirebaseAuth auth;
+        private FirebaseUser user;
+        private FirebaseFirestore fstore;
         public ViewHolder2(@NonNull View itemView, OnItemClickListner listner, ArrayList<PostModel> postModel) {
             super(itemView);
             img = itemView.findViewById(R.id.imga);
@@ -234,6 +265,10 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             Likes = itemView.findViewById(R.id.likesa);
             Date = itemView.findViewById(R.id.postDatea);
             likeBtn = itemView.findViewById(R.id.lottieLike);
+
+            auth = FirebaseAuth.getInstance();
+            fstore = FirebaseFirestore.getInstance();
+            user = auth.getCurrentUser();
 
             likeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -258,15 +293,30 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     }
                 }
             });
+
             itemView.findViewById(R.id.answerMenuBtn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (listner != null){
-                        int position = getBindingAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION){
-                            listner.onMenuClick(position,view,postModel.get(position));
+                    int position = getAbsoluteAdapterPosition();
+                    PopupMenu popupMenu = new PopupMenu(view.getContext(),view);
+                    if (user.getUid().equals(postModel.get(position).getPublisher()))
+                        popupMenu.inflate(R.menu.my_post_menu);
+                    else popupMenu.inflate(R.menu.post_menu);
+
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            if (menuItem.getTitle().equals("Delete")) {
+                                Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
+                            else {
+                                Toast.makeText(view.getContext(), "Report", Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
                         }
-                    }
+                    });
+                    popupMenu.show();
                 }
             });
         }

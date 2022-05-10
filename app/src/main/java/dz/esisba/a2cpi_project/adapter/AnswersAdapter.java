@@ -50,10 +50,10 @@ public class AnswersAdapter extends RecyclerView.Adapter<AnswersAdapter.myviewho
         public myviewholder(@NonNull View itemView) {
             super(itemView);
             Question = itemView.findViewById(R.id.questionpa);
-            Username = itemView.findViewById(R.id.usernamea);
-            Details = itemView.findViewById(R.id.detailsa);
-            Likes = itemView.findViewById(R.id.likesa);
-            Date = itemView.findViewById(R.id.postDatea);
+            Username = itemView.findViewById(R.id.usernamepa);
+            Details = itemView.findViewById(R.id.detailspa);
+            Likes = itemView.findViewById(R.id.likespa);
+            Date = itemView.findViewById(R.id.postDatepa);
         }
     }
 }

@@ -46,7 +46,7 @@ import dz.esisba.a2cpi_project.adapter.QuestionBlocAdapter;
 import dz.esisba.a2cpi_project.interfaces.OnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
 
-public class QuestionBlocActivity extends AppCompatActivity implements OnItemClickListner, PopupMenu.OnMenuItemClickListener {
+public class QuestionBlocActivity extends AppCompatActivity implements OnItemClickListner {
 
     private RecyclerView recyclerView;
     private ArrayList<PostModel> postsDataHolder;
@@ -161,13 +161,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
         startActivity(Intent.createChooser(intent,"Share using"));
     }
 
-    @Override
-    public void onMenuClick(int position,View v, PostModel post) {
-        PopupMenu popupMenu = new PopupMenu(this,v);
-        popupMenu.setOnMenuItemClickListener(this);
-        popupMenu.inflate(R.menu.post_menu);
-        popupMenu.show();
-    }
     @Override
     public void onLikeClick(int position, LottieAnimationView lottieAnimationView, TextView likesTxt, boolean isAnswer) {
         lottieAnimationView.setEnabled(false);
@@ -327,11 +320,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
                 }
             }
         });
-    }
-
-    @Override
-    public boolean onMenuItemClick(MenuItem menuItem) {
-        return false;
     }
 
 
