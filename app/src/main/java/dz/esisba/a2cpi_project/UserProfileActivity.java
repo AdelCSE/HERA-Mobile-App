@@ -8,8 +8,10 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,15 +31,21 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.adapter.UserProfileAdapter;
+import dz.esisba.a2cpi_project.models.UserModel;
 
 public class UserProfileActivity extends AppCompatActivity {
-    private static String username,uid,currentUsername = "";
+    private static String uid,currentUsername = "";
     private TextView usernameTxt,name, bio, followersCount, followingCount;
     private Button followBtn;
     private static  String date = DateFormat.getInstance().format(new Date());
     private static Boolean following = false;
     private CollapsingToolbarLayout toolbarLayout;
+    private CircleImageView profilePic;
+    private ImageView banner;
+
+    private UserModel userModel;
 
     FirebaseAuth auth;
     FirebaseUser user;
@@ -69,18 +77,21 @@ public class UserProfileActivity extends AppCompatActivity {
 
         new TabLayoutMediator(tabLayout,viewPager,((tab, position) -> tab.setText(titles[position]))).attach();
 
-        username = getIntent().getStringExtra("Username");
-        uid = getIntent().getStringExtra("uid");
-        usernameTxt = findViewById(R.id.usernameTxt);
+
+        userModel = (UserModel) getIntent().getSerializableExtra("Tag");
+        uid = userModel.getUid();
+
         followBtn = findViewById(R.id.followBtn);
         name = findViewById(R.id.profileName);
+        usernameTxt = findViewById(R.id.usernameTxt);
         bio = findViewById(R.id.profileBio);
         followersCount = findViewById(R.id.fllwNb);
         followingCount = findViewById(R.id.fllwingNb);
         toolbarLayout = findViewById(R.id.CollapsingToolBarLayout2);
+        profilePic = findViewById(R.id.profilePic);
+        banner = findViewById(R.id.banner);
 
-        usernameTxt.setText("@"+username);
-        toolbarLayout.setTitle(username);
+        SetUserInfo();
 
 
         auth = FirebaseAuth.getInstance();
@@ -90,22 +101,6 @@ public class UserProfileActivity extends AppCompatActivity {
         GetCurrentUsername();
 
         DocumentReference df = fstore.collection("Users").document(uid);
-        df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful())
-                {
-                    DocumentSnapshot doc = task.getResult();
-                    if (doc.exists())
-                    {
-                        if (doc.get("Name")!= null && doc.get("Bio")!=null) {
-                            name.setText(doc.get("Name").toString());
-                            bio.setText(doc.get("Bio").toString());
-                        }
-                    }
-                }
-            }
-        });
 
         Task<QuerySnapshot> followingReference = df.collection("following").
                 get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -144,6 +139,16 @@ public class UserProfileActivity extends AppCompatActivity {
 
     }
 
+    private void SetUserInfo()
+    {
+        toolbarLayout.setTitle(userModel.getUsername());
+        usernameTxt.setText("@"+userModel.getUsername());
+        name.setText(userModel.getName());
+        bio.setText(userModel.getBio());
+        Glide.with(UserProfileActivity.this).load(userModel.getProfilePictureUrl()).into(profilePic);
+        Glide.with(UserProfileActivity.this).load(userModel.getBannerUrl()).into(banner);
+    }
+
     private void RunCheck()
     {
         //we need this to update what our current user is following
@@ -170,6 +175,9 @@ public class UserProfileActivity extends AppCompatActivity {
                                     public void onSuccess(Void aVoid) {
                                         following=false;
                                         followBtn.setText("Follow");
+                                        int i = Integer.parseInt(followersCount.getText().toString());
+                                        i--;
+                                        followersCount.setText(Integer.toString(i));
                                     }
                                 });
                                 currentUserRef.delete().addOnFailureListener(new OnFailureListener() { //delete user from list that current user follows
@@ -187,6 +195,9 @@ public class UserProfileActivity extends AppCompatActivity {
                         followBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                int i = Integer.parseInt(followersCount.getText().toString());
+                                i++;
+                                followersCount.setText(Integer.toString(i));
                                 //we need this to update the followers of the user we're watching
                                 DocumentReference userRef = fstore.collection("Users").document(uid).
                                         collection("followers").document(user.getUid());
@@ -200,7 +211,7 @@ public class UserProfileActivity extends AppCompatActivity {
                                 //add a follower to user
 
                                 Map<String,Object> currUserInfor = new HashMap<>(); //represents key, value
-                                currUserInfor.put("Username", username);
+                                currUserInfor.put("Username", userModel.getUsername());
                                 currUserInfor.put("followingDate", date);
                                 currUserInfor.put("uid", uid);
 

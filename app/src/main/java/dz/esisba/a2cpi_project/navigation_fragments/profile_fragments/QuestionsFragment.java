@@ -117,9 +117,10 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
     }
 
     @Override
-    public void onMenuClick(int position, View v) {
+    public void onMenuClick(int position, View v, PostModel post) {
 
     }
+
 
     @Override
     public void onLikeClick(int position, LottieAnimationView lottieAnimationView, TextView likesTxt, boolean isAnswer) {
