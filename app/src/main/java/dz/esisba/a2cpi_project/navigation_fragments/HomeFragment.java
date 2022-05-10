@@ -162,12 +162,16 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner, P
     }
 
     @Override
-    public void onMenuClick(int position, View v) {
+    public void onMenuClick(int position, View v, PostModel post) {
         PopupMenu popupMenu = new PopupMenu(getActivity(),v);
         popupMenu.setOnMenuItemClickListener(this);
-        popupMenu.inflate(R.menu.post_menu);
+        if (user.getUid().equals(post.getPublisher()))
+            popupMenu.inflate(R.menu.my_post_menu);
+        else popupMenu.inflate(R.menu.post_menu);
+        popupMenu.setOnMenuItemClickListener(this);
         popupMenu.show();
     }
+
 
     @Override
     public void onLikeClick(int position, LottieAnimationView lottieAnimationView, TextView likesTxt, boolean isAnswer) {
@@ -253,10 +257,15 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner, P
     }
 
 
-
-
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
+        if (menuItem.getTitle().equals("Delete"))
+        {
+            //delete answers of post first
+        }
+        else {
+
+        }
         return false;
     }
 }

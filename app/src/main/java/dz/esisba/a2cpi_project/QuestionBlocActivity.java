@@ -162,7 +162,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
     }
 
     @Override
-    public void onMenuClick(int position,View v) {
+    public void onMenuClick(int position,View v, PostModel post) {
         PopupMenu popupMenu = new PopupMenu(this,v);
         popupMenu.setOnMenuItemClickListener(this);
         popupMenu.inflate(R.menu.post_menu);

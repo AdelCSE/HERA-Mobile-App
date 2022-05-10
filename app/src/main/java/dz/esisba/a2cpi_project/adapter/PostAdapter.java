@@ -46,7 +46,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
     public myviewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_post,parent,false);
-        return new myviewholder(view , mListner);
+        return new myviewholder(view , mListner, PostsHolder);
     }
 
     @Override
@@ -98,7 +98,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
         ImageView img;
         TextView Question,Details,Name,Username,Likes,Answers,Date;
 
-        public myviewholder (@NonNull View itemView , PostsOnItemClickListner listner){
+        public myviewholder (@NonNull View itemView , PostsOnItemClickListner listner , ArrayList<PostModel> postHolder){
             super(itemView);
             img = itemView.findViewById(R.id.img);
             Question = itemView.findViewById(R.id.question);
@@ -161,7 +161,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
                     if (listner != null){
                         int position = getAbsoluteAdapterPosition();
                         if (position != RecyclerView.NO_POSITION){
-                            listner.onMenuClick(position,view);
+                            listner.onMenuClick(position,view, postHolder.get(position));
                         }
                     }
                 }
