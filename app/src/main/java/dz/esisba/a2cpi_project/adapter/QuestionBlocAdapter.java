@@ -57,7 +57,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if (viewType == 1){
             context = parent.getContext();
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_post, parent, false);
-            return new ViewHolder1(view,aListner);
+            return new ViewHolder1(view,aListner, AllPostsDataHolder);
         }else if (viewType == 2) {
             context = parent.getContext();
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_text, parent, false);
@@ -65,7 +65,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }else{
             context = parent.getContext();
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_answer, parent, false);
-            return  new ViewHolder2(view,aListner);
+            return  new ViewHolder2(view,aListner, AllPostsDataHolder);
         }
     }
 
@@ -160,7 +160,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         LottieAnimationView likeBtn;
         ImageView img;
         TextView Question,Details,Name,Username,Likes,Answers,Date;
-        public ViewHolder1(@NonNull View itemView , OnItemClickListner listner) {
+        public ViewHolder1(@NonNull View itemView , OnItemClickListner listner, ArrayList<PostModel> postModel) {
             super(itemView);
             img = itemView.findViewById(R.id.img);
             Question = itemView.findViewById(R.id.question);
@@ -212,7 +212,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     if (listner != null){
                         int position = getBindingAdapterPosition();
                         if (position != RecyclerView.NO_POSITION){
-                            listner.onMenuClick(position,view);
+                            listner.onMenuClick(position,view,postModel.get(position));
                         }
                     }
                 }
@@ -226,7 +226,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         LottieAnimationView likeBtn;
 
         TextView Details,Username,Likes,Date;
-        public ViewHolder2(@NonNull View itemView, OnItemClickListner listner) {
+        public ViewHolder2(@NonNull View itemView, OnItemClickListner listner, ArrayList<PostModel> postModel) {
             super(itemView);
             img = itemView.findViewById(R.id.imga);
             Username = itemView.findViewById(R.id.usernamea);
@@ -264,7 +264,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     if (listner != null){
                         int position = getBindingAdapterPosition();
                         if (position != RecyclerView.NO_POSITION){
-                            listner.onMenuClick(position,view);
+                            listner.onMenuClick(position,view,postModel.get(position));
                         }
                     }
                 }
