@@ -15,9 +15,7 @@ import java.util.ArrayList;
 
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.adapter.NotificationAdapter;
-import dz.esisba.a2cpi_project.adapter.PostAdapter;
 import dz.esisba.a2cpi_project.models.NotificationModel;
-import dz.esisba.a2cpi_project.models.PostModel;
 
 public class NotificationsFragment extends Fragment {
 

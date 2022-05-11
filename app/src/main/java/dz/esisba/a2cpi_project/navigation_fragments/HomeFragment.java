@@ -4,11 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +25,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -82,6 +81,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                clearToken(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(getActivity(), LoginActivity.class));
             }
@@ -242,5 +242,19 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 }
             }
         });
+        //Send Like Notification to the publisher
+
+
+    }
+
+    //function that delete the token of the user Because when the user is signed-out he doesn't receive Notifications
+    private void clearToken(String uid){
+        final Map<String,Object> emptyToken = new HashMap<>();
+        emptyToken.put("Token", FieldValue.delete());
+        FirebaseFirestore
+                .getInstance()
+                .collection("Users")
+                .document(uid)
+                .update(emptyToken);
     }
 }
