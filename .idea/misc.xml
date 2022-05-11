@@ -85,10 +85,29 @@
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/menu/bottom_navigation.xml" value="0.20051303976058144" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/menu/my_post_menu.xml" value="0.20051303976058144" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/menu/post_menu.xml" value="0.1996579734929457" />
+        <entry key="app/src/main/res/drawable/actionbar.xml" value="0.19" />
+        <entry key="app/src/main/res/drawable/answeractionbar.xml" value="0.19" />
+        <entry key="app/src/main/res/drawable/ic_heart.xml" value="0.19" />
+        <entry key="app/src/main/res/drawable/new_notification.xml" value="0.354" />
+        <entry key="app/src/main/res/layout/activity_add_post.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/activity_answer_bloc.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/activity_bottom_navigation.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/activity_main2.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/activity_notifications.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/activity_question_bloc.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/cardview_notifications.xml" value="0.7488038277511961" />
+        <entry key="app/src/main/res/layout/cardview_post.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/cardview_search_user.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/essaie.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/fragment_questions.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/fragment_smart_room_notifications.xml" value="0.35625" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
