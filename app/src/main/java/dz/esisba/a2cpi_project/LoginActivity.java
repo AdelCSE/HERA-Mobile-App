@@ -36,6 +36,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.auth.Token;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -50,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
     AlertDialog.Builder reset_alert;
 
     LayoutInflater inflater;
+    private String Token;
 
 
     @Override
@@ -84,6 +91,8 @@ public class LoginActivity extends AppCompatActivity {
                 String email = emailEditTxt.getText().toString().trim();
                 String password = pwEditTxt.getText().toString().trim();
 
+                retrieveRestoreToken();
+
                 //email processing
                 if (TextUtils.isEmpty(email)) {
                     emailEditTxt.setError("Email is required!");
@@ -109,6 +118,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, "LOGGED IN!", Toast.LENGTH_SHORT).show(); // for debug purposes, can be deleted later
+                            retrieveRestoreToken();
                             startActivity(new Intent(LoginActivity.this, BottomNavigationActivity.class));
                             finish();
                         } else {
@@ -122,6 +132,7 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+
 
         singupBtn.setOnClickListener(new View.OnClickListener() { //if user doesnt have an account take them to the register page
             @Override
@@ -168,6 +179,25 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+    private void retrieveRestoreToken(){
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            Map<String, Object> userToken=new HashMap<>();
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if(task.isSuccessful()){
+                    String token = task.getResult();
+                    userToken.put("Token", token);
+                    FirebaseFirestore.getInstance().collection("Users").document(
+                            FirebaseAuth.getInstance().getCurrentUser().getUid()).update(userToken).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Toast.makeText(LoginActivity.this,"Succccessss",Toast.LENGTH_LONG);
+                        }
+                    });
+                }
+            }
+        });
     }
 
 }
