@@ -8,8 +8,11 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,23 +28,30 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.adapter.UserProfileAdapter;
+import dz.esisba.a2cpi_project.models.UserModel;
 
 public class UserProfileActivity extends AppCompatActivity {
-    private static String username,uid,currentUsername = "";
     private TextView usernameTxt,name, bio, followersCount, followingCount;
     private Button followBtn;
     private static  String date = DateFormat.getInstance().format(new Date());
     private static Boolean following = false;
     private CollapsingToolbarLayout toolbarLayout;
+    private CircleImageView profilePic;
+    private ImageView banner;
+
+    private UserModel userModel, currentUserModel;
 
     FirebaseAuth auth;
     FirebaseUser user;
     FirebaseFirestore fstore;
+
 
     ViewPager2 viewPager;
     TabLayout tabLayout;
@@ -50,6 +60,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
 
     private String[] titles = {"All" , "Questions" , "Answers"};
+    private ArrayList<String> currUserFollowers, currUserFollowing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,153 +80,139 @@ public class UserProfileActivity extends AppCompatActivity {
 
         new TabLayoutMediator(tabLayout,viewPager,((tab, position) -> tab.setText(titles[position]))).attach();
 
-        username = getIntent().getStringExtra("Username");
-        uid = getIntent().getStringExtra("uid");
-        usernameTxt = findViewById(R.id.usernameTxt);
+
+        userModel = (UserModel) getIntent().getSerializableExtra("Tag");
         followBtn = findViewById(R.id.followBtn);
         name = findViewById(R.id.profileName);
+        usernameTxt = findViewById(R.id.usernameTxt);
         bio = findViewById(R.id.profileBio);
         followersCount = findViewById(R.id.fllwNb);
         followingCount = findViewById(R.id.fllwingNb);
         toolbarLayout = findViewById(R.id.CollapsingToolBarLayout2);
-
-        usernameTxt.setText("@"+username);
-        toolbarLayout.setTitle(username);
-
+        profilePic = findViewById(R.id.profilePic);
+        banner = findViewById(R.id.banner);
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         fstore = FirebaseFirestore.getInstance();
 
-        GetCurrentUsername();
+        DocumentReference userRef = fstore.collection("Users").document(userModel.getUid());
+        DocumentReference currentUserRef = fstore.collection("Users").document(user.getUid());
 
-        DocumentReference df = fstore.collection("Users").document(uid);
-        df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        GetCurrentUserModel();
+        SetUserInfo();
+
+        followBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful())
+            public void onClick(View view) {
+                if (followBtn.getTag().equals("follow"))
                 {
-                    DocumentSnapshot doc = task.getResult();
-                    if (doc.exists())
-                    {
-                        if (doc.get("Name")!= null && doc.get("Bio")!=null) {
-                            name.setText(doc.get("Name").toString());
-                            bio.setText(doc.get("Bio").toString());
+                    followBtn.setText("Unfollow");
+                    followBtn.setTag("following");
+
+                    ArrayList<String> following = new ArrayList<>();
+                    ArrayList<String> followers = new ArrayList<>();
+                    followers = userModel.getFollowers();
+                    following = currentUserModel.getFollowing();
+
+
+                    following.add(userModel.getUid()); //add following to current user
+                    followers.add(user.getUid());//add follower to user
+
+                    Map<String,Object> currUser = new HashMap();
+                    Map<String,Object> user = new HashMap();
+                    
+                    currUser.put("following", following);
+                    user.put("followers", followers);
+                    
+                    currentUserRef.update(currUser).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            userRef.update(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    int i = Integer.parseInt(followersCount.getText().toString());
+                                    i++;
+                                    followersCount.setText(Integer.toString(i)); //update count
+                                }
+                            });
                         }
-                    }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(UserProfileActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+                            followBtn.setText("Follow");
+                            followBtn.setTag("follow");
+                        }
+                    });
                 }
-            }
-        });
-
-        Task<QuerySnapshot> followingReference = df.collection("following").
-                get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful())
+                else if (followBtn.getTag().equals("following"))
                 {
-                    if (task.getResult().size()>0) {
-                        int size = task.getResult().size();
-                        followingCount.setText(Integer.toString(size));
-                    }
+                    followBtn.setTag("follow");
+                    followBtn.setText("Follow");
+
+                    ArrayList<String> following = currentUserModel.getFollowing();
+                    ArrayList<String> followers = userModel.getFollowers();
+                    following.remove(userModel.getUid()); //remove following to current user
+                    followers.remove(user.getUid());//remove follower to user
+
+                    Map<String,Object> currUser = new HashMap();
+                    Map<String,Object> user = new HashMap();
+
+                    currUser.put("following", following);
+                    user.put("followers", followers);
+
+                    currentUserRef.update(currUser).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            userRef.update(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    int i = Integer.parseInt(followersCount.getText().toString());
+                                    i--;
+                                    followersCount.setText(Integer.toString(i)); //update count
+                                }
+                            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(UserProfileActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+                            followBtn.setText("Unfollow");
+                            followBtn.setTag("following");
+                        }
+                    });
                 }
             }
         });
 
+    }
 
-        Task<QuerySnapshot> followerReference = df.collection("followers").
-                get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful())
-                {
-                    if (task.getResult().size()>0) {
-                        int size = task.getResult().size();
-                        followersCount.setText(Integer.toString(size));
-                    }
-                }
-            }
-        });
-
-        RunCheck(); //check if the current user (logged in) if following the user (user we're looking at) or not
-        //if he's following him then he will get the option to follow
-        //else he'll get the option to follow him
-        //we will need a recursive method to keep updating checks
-
-
+    private void SetUserInfo()
+    {
+        toolbarLayout.setTitle(userModel.getUsername());
+        usernameTxt.setText("@"+userModel.getUsername());
+        name.setText(userModel.getName());
+        bio.setText(userModel.getBio());
+        Glide.with(UserProfileActivity.this).load(userModel.getProfilePictureUrl()).into(profilePic);
+        Glide.with(UserProfileActivity.this).load(userModel.getBannerUrl()).into(banner);
     }
 
     private void RunCheck()
     {
-        //we need this to update what our current user is following
-        DocumentReference currentUserRef = fstore.collection("Users").document(user.getUid()).
-                collection("following").document(uid);
-        currentUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override //check if the document exists, i.e current user follow the user
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful())
-                {
-                    DocumentSnapshot doc = task.getResult();
-                    if (doc.exists())
-                    {
-                        following = true;
-                        followBtn.setText("Unfollow");
-                        followBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                //we need this to update the followers of the user we're watching
-                                DocumentReference userRef = fstore.collection("Users").document(uid).
-                                        collection("followers").document(user.getUid());
-                                userRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {  //delete a current user from followers lust
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        following=false;
-                                        followBtn.setText("Follow");
-                                    }
-                                });
-                                currentUserRef.delete().addOnFailureListener(new OnFailureListener() { //delete user from list that current user follows
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        following = true;
-                                        followBtn.setText("Unfollow");
-                                    }
-                                });
-                            }
-                        });
-                    }
-                    else
-                    {
-                        followBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                //we need this to update the followers of the user we're watching
-                                DocumentReference userRef = fstore.collection("Users").document(uid).
-                                        collection("followers").document(user.getUid());
-
-                                Map<String,Object> userInfor = new HashMap<>(); //represents key, value
-                                userInfor.put("Username", currentUsername);
-                                userInfor.put("followingDate", date);
-                                userInfor.put("uid", user.getUid());
-
-                                userRef.set(userInfor); //pass our map to the fb document
-                                //add a follower to user
-
-                                Map<String,Object> currUserInfor = new HashMap<>(); //represents key, value
-                                currUserInfor.put("Username", username);
-                                currUserInfor.put("followingDate", date);
-                                currUserInfor.put("uid", uid);
-
-                                currentUserRef.set(currUserInfor); //pass our map to the fb document
-                                //add what our current user is following
-                            }
-                        });
-                    }
-                    RunCheck(); //recursive method to keep checking
-                }
-            }
-        });
+        ArrayList<String> following = currentUserModel.getFollowing();
+        if (following.contains(userModel.getUid()))
+        {
+            followBtn.setTag("following");
+            followBtn.setText("Unfollow");
+        }
+        else
+        {
+            followBtn.setTag("follow");
+        }
     }
 
-    private void GetCurrentUsername()
+    private void GetCurrentUserModel()
     {
         DocumentReference df = fstore.collection("Users").document(user.getUid());
         df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -226,7 +223,21 @@ public class UserProfileActivity extends AppCompatActivity {
                     DocumentSnapshot doc = task.getResult();
                     if (doc.exists())
                     {
-                        currentUsername=doc.get("Username").toString();
+                        currentUserModel =  doc.toObject(UserModel.class);
+                        currUserFollowers = userModel.getFollowers();
+                        currUserFollowing = userModel.getFollowing();
+
+                        if (currUserFollowers!=null) {
+                            String i = Integer.toString(currUserFollowers.size());
+                            followersCount.setText(i);
+                        }
+                        if (currUserFollowing!=null) {
+                            String j = Integer.toString(currUserFollowing.size());
+                            followingCount.setText(j);
+                        }
+
+                        RunCheck(); //check if the current user (logged in) if following the user (user we're looking at) or not
+                        //if he's following him then he will get the option to unfollow
                     }
                 }
             }

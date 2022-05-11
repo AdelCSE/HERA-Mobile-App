@@ -28,6 +28,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -123,6 +124,16 @@ public class RegisterActivity extends AppCompatActivity {
                                 userInfor.put("Email", email); //email categorie
                                 userInfor.put("uid", user.getUid());
                                 userInfor.put("createdAt", date);
+
+                                ArrayList<String> following = new ArrayList<>();
+                                ArrayList<String> followers = new ArrayList<>();
+                                HashMap<String, Object> likes = new HashMap<>();
+                                HashMap<String, String> answerLikes = new HashMap<>();
+
+                                userInfor.put("following", following);
+                                userInfor.put("followers", followers);
+                                userInfor.put("likes", likes);
+                                userInfor.put("answerLikes", answerLikes);
 
                                 //specify access level (if user is admin)
                                 userInfor.put("isUser","1");

@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -27,17 +26,17 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import dz.esisba.a2cpi_project.interfaces.OnItemClickListner;
 import dz.esisba.a2cpi_project.R;
+import dz.esisba.a2cpi_project.interfaces.QuestionsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
 
 public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final ArrayList<PostModel> AllPostsDataHolder;
     private Context context;
-    private final OnItemClickListner aListner;
+    private final QuestionsOnItemClickListner aListner;
 
-    public QuestionBlocAdapter(ArrayList<PostModel> postsDataHolder , OnItemClickListner listner) {
+    public QuestionBlocAdapter(ArrayList<PostModel> postsDataHolder , QuestionsOnItemClickListner listner) {
         AllPostsDataHolder = postsDataHolder;
         aListner = listner;
     }
@@ -169,7 +168,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         private FirebaseUser user;
         private FirebaseFirestore fstore;
 
-        public ViewHolder1(@NonNull View itemView , OnItemClickListner listner, ArrayList<PostModel> postModel) {
+        public ViewHolder1(@NonNull View itemView , QuestionsOnItemClickListner listner, ArrayList<PostModel> postModel) {
             super(itemView);
             img = itemView.findViewById(R.id.img);
             Question = itemView.findViewById(R.id.question);
@@ -257,7 +256,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         private FirebaseAuth auth;
         private FirebaseUser user;
         private FirebaseFirestore fstore;
-        public ViewHolder2(@NonNull View itemView, OnItemClickListner listner, ArrayList<PostModel> postModel) {
+        public ViewHolder2(@NonNull View itemView, QuestionsOnItemClickListner listner, ArrayList<PostModel> postModel) {
             super(itemView);
             img = itemView.findViewById(R.id.imga);
             Username = itemView.findViewById(R.id.usernamea);

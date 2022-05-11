@@ -42,6 +42,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,9 +50,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.EditProfileActivity;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.adapter.ProfileAdapter;
+import dz.esisba.a2cpi_project.models.UserModel;
 
 public class ProfileFragment extends Fragment {
 
+    private UserModel userModel;
+    private ArrayList<String> followers, followings;
 
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -117,68 +121,7 @@ public class ProfileFragment extends Fragment {
 
 
         DocumentReference df = fstore.collection("Users").document(user.getUid());
-        //set user info
-        df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful())
-                {
-                    DocumentSnapshot doc = task.getResult();
-                    if (doc.exists())
-                    {
-                        //set username
-                        toolbarLayout.setTitle(doc.get("Username").toString());
-
-                        if (doc.get("profilePictureUrl")!= null) { //set profile pic
-                            String downloadUrl = doc.get("profilePictureUrl").toString(); //TODO: ADD ON SUCCESS LISTENER
-                            Glide.with(ProfileFragment.this).load(downloadUrl).into(profileImg);
-                        }
-                        if (doc.get("bannerUrl")!= null) { //set banner
-                            String downloadUrl = doc.get("bannerUrl").toString();
-                            Glide.with(ProfileFragment.this).load(downloadUrl).into(banner);
-                        }
-                        if (doc.get("Name")!= null) { //set name
-                            name.setText(doc.get("Name").toString());
-                        }
-                        if(doc.get("Bio")!=null)
-                        { //set bio
-                            bio.setText(doc.get("Bio").toString());
-                        }
-                    }
-                }
-            }
-        });
-
-        //get followers and following count
-        Task<QuerySnapshot> followingReference = df.collection("following").
-                get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful())
-                {
-                    if (task.getResult().size()>0) {
-                        int size = task.getResult().size();
-                        followingCount.setText(Integer.toString(size));
-                    }
-                }
-            }
-        });
-
-
-        Task<QuerySnapshot> followerReference = df.collection("followers").
-                get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful())
-                {
-                    if (task.getResult().size()>0) {
-                        int size = task.getResult().size();
-                        followersCount.setText(Integer.toString(size));
-                    }
-                }
-            }
-        });
-
+        GetCurrentUserModelAndSetInfo();
 
         //change banner
         bannerBtn.setOnClickListener(new View.OnClickListener() {
@@ -255,6 +198,54 @@ public class ProfileFragment extends Fragment {
                     startForMediaPickerResult.launch(intent);
                     return null;
                 });
+    }
+
+    private void GetCurrentUserModelAndSetInfo()
+    {
+        DocumentReference df = fstore.collection("Users").document(user.getUid());
+        df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful())
+                {
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc.exists())
+                    {
+                        userModel =  doc.toObject(UserModel.class);
+                        followers = userModel.getFollowers();
+                        followings = userModel.getFollowing();
+
+                        if (followers!=null) {
+                            String i = Integer.toString(followers.size());
+                            followersCount.setText(i);
+                        }
+                        if (followings!=null) {
+                            String j = Integer.toString(followings.size());
+                            followingCount.setText(j);
+                        }
+
+                        //set username
+                        toolbarLayout.setTitle(doc.get("Username").toString());
+
+                        if (doc.get("profilePictureUrl")!= null) { //set profile pic
+                            String downloadUrl = doc.get("profilePictureUrl").toString(); //TODO: ADD ON SUCCESS LISTENER
+                            Glide.with(ProfileFragment.this).load(downloadUrl).into(profileImg);
+                        }
+                        if (doc.get("bannerUrl")!= null) { //set banner
+                            String downloadUrl = doc.get("bannerUrl").toString();
+                            Glide.with(ProfileFragment.this).load(downloadUrl).into(banner);
+                        }
+                        if (doc.get("Name")!= null) { //set name
+                            name.setText(doc.get("Name").toString());
+                        }
+                        if(doc.get("Bio")!=null)
+                        { //set bio
+                            bio.setText(doc.get("Bio").toString());
+                        }
+                    }
+                }
+            }
+        });
     }
 
     private final ActivityResultLauncher<Intent> startForMediaPickerResult = registerForActivityResult(

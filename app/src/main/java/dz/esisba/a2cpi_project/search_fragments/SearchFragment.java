@@ -21,14 +21,14 @@ import java.util.concurrent.TimeUnit;
 
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.adapter.SearchAdapter;
-import dz.esisba.a2cpi_project.models.UserSearchModel;
+import dz.esisba.a2cpi_project.models.UserModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class SearchFragment extends Fragment implements SearchAdapter.OnItemClickListener {
 
     RecyclerView recyclerView1;
     View parentHolder;
-    ArrayList<UserSearchModel> usersArrayList;
+    ArrayList<UserModel> usersArrayList;
     SearchAdapter mAdapter;
     FirebaseFirestore db ;
     SearchView searchView;
@@ -75,8 +75,8 @@ public class SearchFragment extends Fragment implements SearchAdapter.OnItemClic
                 String dataName = Objects.requireNonNull(dc.getString("Name")).toLowerCase().trim();
                 String dataUserName = Objects.requireNonNull(dc.getString("Username")).toLowerCase().trim();
                 if(dataName.contains(s) || dataUserName.contains(s)){
-                    if(!usersArrayList.contains(dc.toObject(UserSearchModel.class))) {
-                        usersArrayList.add(dc.toObject(UserSearchModel.class));
+                    if(!usersArrayList.contains(dc.toObject(UserModel.class))) {
+                        usersArrayList.add(dc.toObject(UserModel.class));
                     }
                 }
                 mAdapter.notifyDataSetChanged();
