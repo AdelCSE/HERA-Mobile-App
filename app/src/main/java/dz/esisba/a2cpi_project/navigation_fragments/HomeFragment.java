@@ -29,6 +29,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -44,6 +45,13 @@ import dz.esisba.a2cpi_project.SearchActivity;
 import dz.esisba.a2cpi_project.adapter.PostAdapter;
 import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
+import likeNotification.APIService;
+import likeNotification.Data;
+import likeNotification.MyResponse;
+import likeNotification.NotificationSender;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
@@ -64,6 +72,8 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     private boolean liked = false;
     private static  String date = DateFormat.getInstance().format(new Date());
     private int likes;
+    APIService apiService;
+    final static String TAG ="_____________________";
 
     @Nullable
     @Override
@@ -179,6 +189,8 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                     DocumentSnapshot doc = task.getResult();
                     if (doc.exists())
                     {
+                        //i need the token of the publisher of the post in the recyclerView
+                        //sendNotification(FirebaseMessaging.getInstance().getToken().getResult(),FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),"Liked your post");
                         likes = doc.getLong("likesCount").intValue();
                         Log.d(String.valueOf(getActivity()), "initial value" +Integer.toString(likes));
                         //likes are stored for user for faster query
@@ -242,9 +254,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 }
             }
         });
-        //Send Like Notification to the publisher
-
-
     }
 
     //function that delete the token of the user Because when the user is signed-out he doesn't receive Notifications
@@ -257,4 +266,25 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 .document(uid)
                 .update(emptyToken);
     }
+
+    //Send Like Notification to the publisher
+    public void sendNotification(String publisherToken,String title , String message){
+        Data data = new Data(title,message);
+        NotificationSender sender = new NotificationSender(data, publisherToken);
+        apiService.sendNotifcation(sender).enqueue(new Callback<MyResponse>() {
+            @Override
+            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                if(response.code() == 200){
+                    if(response.body().success != 1){
+                        //Toast.makeText(HomeFragment.this, "Failed", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "onResponse: _____");
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<MyResponse> call, Throwable t) {
+            }
+        });
+    }
+
 }
