@@ -2,18 +2,27 @@ package dz.esisba.a2cpi_project.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 import java.util.ArrayList;
@@ -29,6 +38,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
     private Context context;
     private PostsOnItemClickListner mListner;
 
+
+
     public PostAdapter(ArrayList<PostModel> postsHolder ,PostsOnItemClickListner mlistner) {
         PostsHolder = postsHolder;
         mListner = mlistner;
@@ -39,7 +50,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
     public myviewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_post,parent,false);
-        return new myviewholder(view , mListner);
+        return new myviewholder(view , mListner, PostsHolder);
     }
 
     @Override
@@ -53,7 +64,32 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
         holder.Likes.setText(Integer.toString(PostsHolder.get(position).getLikesCount()));
         holder.Answers.setText(Integer.toString(PostsHolder.get(position).getAnswersCount()));
         holder.Date.setText(PostsHolder.get(position).getDate());
+        RunCheckForLikes(PostsHolder.get(position), holder.likeBtn);
     }
+
+    private void RunCheckForLikes(PostModel post, LottieAnimationView lottieAnimationView) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DocumentReference likesRef = FirebaseFirestore.getInstance().collection("Users").document(user.getUid()).
+                collection("Likes").document(post.getPostid());
+        likesRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override //check if the document exists, i.e current user likes the post
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc.exists()) {
+                        lottieAnimationView.setSpeed(100);
+                        lottieAnimationView.playAnimation();
+                        lottieAnimationView.setTag("Liked");
+                    }
+                    else
+                    {
+                        lottieAnimationView.setTag("Like");
+                    }
+                }
+            }
+        });
+    }
+
 
     @Override
     public int getItemCount() {
@@ -62,11 +98,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
 
     public static class myviewholder extends RecyclerView.ViewHolder {
 
-        ImageView likeBtn;
+        LottieAnimationView likeBtn;
         ImageView img;
         TextView Question,Details,Name,Username,Likes,Answers,Date;
 
-        public myviewholder (@NonNull View itemView , PostsOnItemClickListner listner){
+        private FirebaseAuth auth;
+        private FirebaseUser user;
+        private FirebaseFirestore fstore;
+
+        public myviewholder (@NonNull View itemView , PostsOnItemClickListner listner , ArrayList<PostModel> postHolder){
             super(itemView);
             img = itemView.findViewById(R.id.img);
             Question = itemView.findViewById(R.id.question);
@@ -76,7 +116,23 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
             Likes = itemView.findViewById(R.id.likes);
             Answers = itemView.findViewById(R.id.answers);
             Date = itemView.findViewById(R.id.postDate);
-            likeBtn = itemView.findViewById(R.id.questionLikeBtn);
+            likeBtn = itemView.findViewById(R.id.lottieLike);
+
+            auth = FirebaseAuth.getInstance();
+            fstore = FirebaseFirestore.getInstance();
+            user = auth.getCurrentUser();
+
+            likeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listner != null){
+                        int position = getAbsoluteAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listner.onLikeClick(position,likeBtn, Likes, false);
+                        }
+                    }
+                }
+            });
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -89,6 +145,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
                     }
                 }
             });
+
             itemView.findViewById(R.id.questionShareBtn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -100,6 +157,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
                     }
                 }
             });
+
             itemView.findViewById(R.id.answerBtn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -111,15 +169,30 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
                     }
                 }
             });
+
             itemView.findViewById(R.id.questionMenuBtn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (listner != null){
-                        int position = getAbsoluteAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION){
-                            listner.onMenuClick(position,view);
+                    int position = getAbsoluteAdapterPosition();
+                    PopupMenu popupMenu = new PopupMenu(view.getContext(),view);
+                    if (user.getUid().equals(postHolder.get(position).getPublisher()))
+                        popupMenu.inflate(R.menu.my_post_menu);
+                    else popupMenu.inflate(R.menu.post_menu);
+
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            if (menuItem.getTitle().equals("Delete")) {
+                                Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
+                            else {
+                                Toast.makeText(view.getContext(), "Report", Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
                         }
-                    }
+                    });
+                    popupMenu.show();
                 }
             });
         }

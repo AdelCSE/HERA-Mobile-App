@@ -2,6 +2,8 @@ package dz.esisba.a2cpi_project;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +15,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -24,6 +28,8 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import dz.esisba.a2cpi_project.adapter.UserProfileAdapter;
 
 public class UserProfileActivity extends AppCompatActivity {
     private static String username,uid,currentUsername = "";
@@ -37,10 +43,32 @@ public class UserProfileActivity extends AppCompatActivity {
     FirebaseUser user;
     FirebaseFirestore fstore;
 
+    ViewPager2 viewPager;
+    TabLayout tabLayout;
+    UserProfileAdapter adapter;
+    Toolbar toolbar;
+
+
+    private String[] titles = {"All" , "Questions" , "Answers"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+
+        viewPager = findViewById(R.id.viewPagerUp);
+        tabLayout = findViewById(R.id.tabLayoutUp);
+        toolbar = findViewById(R.id.ToolBarUp);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+
+        adapter = new UserProfileAdapter(getSupportFragmentManager(),getLifecycle());
+        viewPager.setAdapter(adapter);
+
+        new TabLayoutMediator(tabLayout,viewPager,((tab, position) -> tab.setText(titles[position]))).attach();
+
         username = getIntent().getStringExtra("Username");
         uid = getIntent().getStringExtra("uid");
         usernameTxt = findViewById(R.id.usernameTxt);

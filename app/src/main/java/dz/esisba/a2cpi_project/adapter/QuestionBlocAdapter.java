@@ -1,44 +1,41 @@
 package dz.esisba.a2cpi_project.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.interfaces.OnItemClickListner;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.models.PostModel;
-import likeNotification.APIService;
-import likeNotification.Client;
-import likeNotification.Data;
-import likeNotification.MyResponse;
-import likeNotification.NotificationSender;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<PostModel> AllPostsDataHolder;
+    private final ArrayList<PostModel> AllPostsDataHolder;
     private Context context;
-    private OnItemClickListner aListner;
-    private APIService apiService;
-    private final static String TAG = "QuestionBlocAdapter";
+    private final OnItemClickListner aListner;
 
     public QuestionBlocAdapter(ArrayList<PostModel> postsDataHolder , OnItemClickListner listner) {
         AllPostsDataHolder = postsDataHolder;
@@ -63,7 +60,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if (viewType == 1){
             context = parent.getContext();
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_post, parent, false);
-            return new ViewHolder1(view,aListner);
+            return new ViewHolder1(view,aListner, AllPostsDataHolder);
         }else if (viewType == 2) {
             context = parent.getContext();
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_text, parent, false);
@@ -71,7 +68,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }else{
             context = parent.getContext();
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_answer, parent, false);
-            return  new ViewHolder2(view,aListner);
+            return  new ViewHolder2(view,aListner, AllPostsDataHolder);
         }
     }
 
@@ -87,6 +84,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             viewHolder1.Likes.setText(Integer.toString(AllPostsDataHolder.get(position).getLikesCount()));
             viewHolder1.Answers.setText(Integer.toString(AllPostsDataHolder.get(position).getAnswersCount()));
             viewHolder1.Date.setText(AllPostsDataHolder.get(position).getDate());
+            RunCheckForLikes(AllPostsDataHolder.get(position), viewHolder1.likeBtn);
 
         }else if (holder.getItemViewType()==2){
             ViewHolder3 viewHolder3 = (ViewHolder3) holder;
@@ -98,11 +96,60 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
         }else{
             ViewHolder2 viewHolder2 = (ViewHolder2) holder;
+            Glide.with(context).load(AllPostsDataHolder.get(position).getPublisherPic()).into(viewHolder2.img);
             viewHolder2.Username.setText("@"+AllPostsDataHolder.get(position).getUsername());
             viewHolder2.Details.setText(AllPostsDataHolder.get(position).getBody());
             viewHolder2.Likes.setText(Integer.toString(AllPostsDataHolder.get(position).getLikesCount()));
             viewHolder2.Date.setText(AllPostsDataHolder.get(position).getDate());
+            RunCheckForLikesAnswerLikes(AllPostsDataHolder.get(position), viewHolder2.likeBtn);
         }
+    }
+
+    private void RunCheckForLikes(PostModel post, LottieAnimationView lottieAnimationView) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DocumentReference likesRef = FirebaseFirestore.getInstance().collection("Users").document(user.getUid()).
+                collection("Likes").document(post.getPostid());
+        likesRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override //check if the document exists, i.e current user likes the post
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc.exists()) {
+                        lottieAnimationView.setSpeed(100);
+                        lottieAnimationView.playAnimation();
+                        lottieAnimationView.setTag("Liked");
+                    }
+                    else
+                    {
+                        lottieAnimationView.setTag("Like");
+                    }
+                }
+            }
+        });
+    }
+
+    private void RunCheckForLikesAnswerLikes(PostModel post, LottieAnimationView lottieAnimationView) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DocumentReference likesRef = FirebaseFirestore.getInstance().collection("Users").document(user.getUid())
+               // collection("Likes").document(postid)
+                .collection("AnswerLikes").document(post.getPostid());
+        likesRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override //check if the document exists, i.e current user likes the post
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc.exists()) {
+                        lottieAnimationView.setSpeed(100);
+                        lottieAnimationView.playAnimation();
+                        lottieAnimationView.setTag("Liked");
+                    }
+                    else
+                    {
+                        lottieAnimationView.setTag("Like");
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -113,11 +160,16 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public class ViewHolder1 extends RecyclerView.ViewHolder {
 
-
         //Question Type
+        LottieAnimationView likeBtn;
         ImageView img;
         TextView Question,Details,Name,Username,Likes,Answers,Date;
-        public ViewHolder1(@NonNull View itemView , OnItemClickListner listner) {
+
+        private FirebaseAuth auth;
+        private FirebaseUser user;
+        private FirebaseFirestore fstore;
+
+        public ViewHolder1(@NonNull View itemView , OnItemClickListner listner, ArrayList<PostModel> postModel) {
             super(itemView);
             img = itemView.findViewById(R.id.img);
             Question = itemView.findViewById(R.id.question);
@@ -127,8 +179,23 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             Likes = itemView.findViewById(R.id.likes);
             Answers = itemView.findViewById(R.id.answers);
             Date = itemView.findViewById(R.id.postDate);
+            likeBtn = itemView.findViewById(R.id.lottieLike);
 
+            auth = FirebaseAuth.getInstance();
+            fstore = FirebaseFirestore.getInstance();
+            user = auth.getCurrentUser();
 
+            likeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listner != null){
+                        int position = getAbsoluteAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listner.onLikeClick(position,likeBtn, Likes, false);
+                        }
+                    }
+                }
+            });
 
             itemView.findViewById(R.id.answerBtn).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -152,15 +219,30 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     }
                 }
             });
+
             itemView.findViewById(R.id.questionMenuBtn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (listner != null){
-                        int position = getBindingAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION){
-                            listner.onMenuClick(position,view);
+                    int position = getAbsoluteAdapterPosition();
+                    PopupMenu popupMenu = new PopupMenu(view.getContext(),view);
+                    if (user.getUid().equals(postModel.get(position).getPublisher()))
+                        popupMenu.inflate(R.menu.my_post_menu);
+                    else popupMenu.inflate(R.menu.post_menu);
+
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            if (menuItem.getTitle().equals("Delete")) {
+                                Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
+                            else {
+                                Toast.makeText(view.getContext(), "Report", Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
                         }
-                    }
+                    });
+                    popupMenu.show();
                 }
             });
         }
@@ -168,13 +250,37 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public class ViewHolder2 extends RecyclerView.ViewHolder {
 
+        CircleImageView img;
+        LottieAnimationView likeBtn;
         TextView Details,Username,Likes,Date;
-        public ViewHolder2(@NonNull View itemView, OnItemClickListner listner) {
+
+        private FirebaseAuth auth;
+        private FirebaseUser user;
+        private FirebaseFirestore fstore;
+        public ViewHolder2(@NonNull View itemView, OnItemClickListner listner, ArrayList<PostModel> postModel) {
             super(itemView);
+            img = itemView.findViewById(R.id.imga);
             Username = itemView.findViewById(R.id.usernamea);
             Details = itemView.findViewById(R.id.detailsa);
             Likes = itemView.findViewById(R.id.likesa);
             Date = itemView.findViewById(R.id.postDatea);
+            likeBtn = itemView.findViewById(R.id.lottieLike);
+
+            auth = FirebaseAuth.getInstance();
+            fstore = FirebaseFirestore.getInstance();
+            user = auth.getCurrentUser();
+
+            likeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listner != null){
+                        int position = getAbsoluteAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listner.onLikeClick(position,likeBtn, Likes, true);
+                        }
+                    }
+                }
+            });
 
             itemView.findViewById(R.id.answerShareBtn).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -187,15 +293,30 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     }
                 }
             });
+
             itemView.findViewById(R.id.answerMenuBtn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (listner != null){
-                        int position = getBindingAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION){
-                            listner.onMenuClick(position,view);
+                    int position = getAbsoluteAdapterPosition();
+                    PopupMenu popupMenu = new PopupMenu(view.getContext(),view);
+                    if (user.getUid().equals(postModel.get(position).getPublisher()))
+                        popupMenu.inflate(R.menu.my_post_menu);
+                    else popupMenu.inflate(R.menu.post_menu);
+
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            if (menuItem.getTitle().equals("Delete")) {
+                                Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
+                            else {
+                                Toast.makeText(view.getContext(), "Report", Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
                         }
-                    }
+                    });
+                    popupMenu.show();
                 }
             });
         }
@@ -210,26 +331,4 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             customText.setTextSize(16f);
         }
     }
-
-    public void sendNotifications(String usertoken, String title, String message) {
-        Data data = new Data(title, message);
-        NotificationSender sender = new NotificationSender(data, usertoken);
-        apiService.sendNotifcation(sender).enqueue(new Callback<MyResponse>() {
-
-            @Override
-            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                if (response.code() == 200) {
-                    if (response.body().success != 1) {
-                        Log.d(TAG, "onResponse: Failed ViewHolder=>sendNotification");
-//                        Toast.makeText(QuestionBlocAdapter.class,"Failed",Toast.LENGTH_LONG);
-////                        Toast.makeText(QuestionBlocAdapter.this, "Failed ", Toast.LENGTH_LONG);
-                    }
-                }
-            }
-            @Override
-            public void onFailure(Call<MyResponse> call, Throwable t) {
-            }
-        });
-    }
-
-    }
+}

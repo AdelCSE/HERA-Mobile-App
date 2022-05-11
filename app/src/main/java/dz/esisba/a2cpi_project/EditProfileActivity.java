@@ -142,54 +142,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                 hashMap.put("Bio", bio.getText().toString());
                                 StorageReference fileReference = storageReference.child(user.getUid());
                                 if(resultUri!=null) {
-                                    //upload to storage
-                                    fileReference.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                            fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                                @Override
-                                                public void onSuccess(Uri uri) {
-                                                    imageUrl = uri.toString();
-                                                    hashMap.put("profilePictureUrl", imageUrl);
-                                                    fstore.collection("Posts").whereEqualTo("publisher", user.getUid())
-                                                            .get() //update picture in posts
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        i=0;
-                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                                                            DocumentReference pr = document.getReference();
-                                                                            Map<String,Object> hm = new HashMap();
-                                                                            hm.put("publisherPic", imageUrl);
-                                                                            pr.update(hm).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                @Override
-                                                                                public void onSuccess(Void unused) {
-                                                                                    df.update(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                        @Override
-                                                                                        public void onSuccess(Void unused) {
-                                                                                            returnButton.setEnabled(true);
-                                                                                            returnButton.setBackgroundResource(R.drawable.mainbtn);
-                                                                                            Toast.makeText(EditProfileActivity.this, "Information updated", Toast.LENGTH_SHORT).show();
-                                                                                        }
-                                                                                    });
-                                                                                }
-                                                                            });
-                                                                        }
-                                                                    }
-                                                                }
-                                                            });
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(EditProfileActivity.this, "Unknow error occured please try again later", Toast.LENGTH_SHORT).show();
-                                                    return;
-                                                }
-                                            });
-                                        }
-                                    });
-
+                                    UploadImage(fileReference, hashMap, df);
                                 }
                                 else
                                 {
@@ -198,11 +151,11 @@ public class EditProfileActivity extends AppCompatActivity {
                                         public void onSuccess(Void unused) {
                                             returnButton.setEnabled(true);
                                             returnButton.setBackgroundResource(R.drawable.mainbtn);
+                                            UpdateNameInPosts();
                                             Toast.makeText(EditProfileActivity.this, "Information updated!", Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                 }
-
                             }
                         }
                     }
@@ -223,6 +176,76 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void UpdateNameInPosts() {
+        fstore.collection("Posts").whereEqualTo("publisher", user.getUid())
+                .get() //update picture in posts
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                DocumentReference pr = document.getReference();
+                                Map<String,Object> hm = new HashMap();
+                                hm.put("askedBy", name1.getText().toString()+" "+name2.getText().toString());
+                                pr.update(hm);
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void UploadImage(StorageReference fileReference, Map<String, Object> hashMap, DocumentReference df)
+    {
+        //upload to storage
+        fileReference.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        imageUrl = uri.toString();
+                        hashMap.put("profilePictureUrl", imageUrl);
+                        fstore.collection("Posts").whereEqualTo("publisher", user.getUid())
+                                .get() //update picture in posts
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            i=0;
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                DocumentReference pr = document.getReference();
+                                                Map<String,Object> hm = new HashMap();
+                                                hm.put("publisherPic", imageUrl);
+                                                pr.update(hm).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        df.update(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void unused) {
+                                                                returnButton.setEnabled(true);
+                                                                returnButton.setBackgroundResource(R.drawable.mainbtn);
+                                                                UpdateNameInPosts();
+                                                                Toast.makeText(EditProfileActivity.this, "Information updated", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(EditProfileActivity.this, "Unknow error occured please try again later", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                });
+            }
+        });
     }
 
 

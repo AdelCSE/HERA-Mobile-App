@@ -1,22 +1,33 @@
 package dz.esisba.a2cpi_project.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class PostModel implements Serializable {
    private String askedBy,publisher,Username,question,body,postid,Date,publisherPic,answerBy;
    private int likesCount,answersCount;
+   private ArrayList<String> tags;
 
-    public PostModel(String askedBy, String publisher, String username, String question, String body, String postid, String date, String publisherPic, int likesCount, int answersCount) {
+    public PostModel(String askedBy, String publisher, String username, String question, String body, String postid, String date, String publisherPic, int likesCount, int answersCount, ArrayList<String> tags) {
         this.askedBy = askedBy;
         this.publisher = publisher;
-        this.Username = username;
+        Username = username;
         this.question = question;
         this.body = body;
         this.postid = postid;
-        this.Date = date;
+        Date = date;
         this.publisherPic = publisherPic;
         this.likesCount = likesCount;
         this.answersCount = answersCount;
+        this.tags = tags;
+    }
+
+    public ArrayList<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(ArrayList<String> tags) {
+        this.tags = tags;
     }
 
     public void change(String text){

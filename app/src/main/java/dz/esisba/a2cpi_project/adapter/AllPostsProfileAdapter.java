@@ -45,11 +45,11 @@ public class AllPostsProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         if (viewType == 1){
             context = parent.getContext();
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_post, parent, false);
-            return new ViewHolder1(view,pListner);
+            return new ViewHolder1(view,pListner, AllPostsDataHolder);
         }else{
             context = parent.getContext();
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_profile_answer, parent, false);
-            return new ViewHolder2(view,pListner);
+            return new ViewHolder2(view,pListner, AllPostsDataHolder);
         }
     }
 
@@ -83,7 +83,7 @@ public class AllPostsProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public class ViewHolder1 extends RecyclerView.ViewHolder{
         ImageView img;
         TextView Question,Details,Name,Username,Likes,Answers,Date;
-        public ViewHolder1(@NonNull View itemView, PostsOnItemClickListner listner) {
+        public ViewHolder1(@NonNull View itemView, PostsOnItemClickListner listner, ArrayList<PostModel> postModel) {
             super(itemView);
             img = itemView.findViewById(R.id.img);
             Question = itemView.findViewById(R.id.question);
@@ -127,24 +127,13 @@ public class AllPostsProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     }
                 }
             });
-            itemView.findViewById(R.id.questionMenuBtn).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (listner != null){
-                        int position = getBindingAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION){
-                            listner.onMenuClick(position,view);
-                        }
-                    }
-                }
-            });
         }
     }
 
     public class ViewHolder2 extends RecyclerView.ViewHolder{
         TextView Question,Details,Username,Likes,Date;
 
-        public ViewHolder2(@NonNull View itemView , PostsOnItemClickListner listner) {
+        public ViewHolder2(@NonNull View itemView , PostsOnItemClickListner listner, ArrayList<PostModel> postModel) {
             super(itemView);
             Question = itemView.findViewById(R.id.questionpa);
             Username = itemView.findViewById(R.id.usernamepa);
@@ -170,17 +159,6 @@ public class AllPostsProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                         int position = getBindingAdapterPosition();
                         if (position != RecyclerView.NO_POSITION){
                             listner.onShareClick(position);
-                        }
-                    }
-                }
-            });
-            itemView.findViewById(R.id.answerMenuBtn).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (listner != null){
-                        int position = getBindingAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION){
-                            listner.onMenuClick(position,view);
                         }
                     }
                 }
