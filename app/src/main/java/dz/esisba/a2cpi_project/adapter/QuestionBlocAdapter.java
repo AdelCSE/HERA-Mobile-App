@@ -1,29 +1,44 @@
 package dz.esisba.a2cpi_project.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
 import dz.esisba.a2cpi_project.interfaces.OnItemClickListner;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.models.PostModel;
+import likeNotification.APIService;
+import likeNotification.Client;
+import likeNotification.Data;
+import likeNotification.MyResponse;
+import likeNotification.NotificationSender;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<PostModel> AllPostsDataHolder;
     private Context context;
     private OnItemClickListner aListner;
+    private APIService apiService;
+    private final static String TAG = "QuestionBlocAdapter";
 
     public QuestionBlocAdapter(ArrayList<PostModel> postsDataHolder , OnItemClickListner listner) {
         AllPostsDataHolder = postsDataHolder;
@@ -98,6 +113,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public class ViewHolder1 extends RecyclerView.ViewHolder {
 
+
         //Question Type
         ImageView img;
         TextView Question,Details,Name,Username,Likes,Answers,Date;
@@ -111,6 +127,8 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             Likes = itemView.findViewById(R.id.likes);
             Answers = itemView.findViewById(R.id.answers);
             Date = itemView.findViewById(R.id.postDate);
+
+
 
             itemView.findViewById(R.id.answerBtn).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -192,4 +210,26 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             customText.setTextSize(16f);
         }
     }
-}
+
+    public void sendNotifications(String usertoken, String title, String message) {
+        Data data = new Data(title, message);
+        NotificationSender sender = new NotificationSender(data, usertoken);
+        apiService.sendNotifcation(sender).enqueue(new Callback<MyResponse>() {
+
+            @Override
+            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                if (response.code() == 200) {
+                    if (response.body().success != 1) {
+                        Log.d(TAG, "onResponse: Failed ViewHolder=>sendNotification");
+//                        Toast.makeText(QuestionBlocAdapter.class,"Failed",Toast.LENGTH_LONG);
+////                        Toast.makeText(QuestionBlocAdapter.this, "Failed ", Toast.LENGTH_LONG);
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<MyResponse> call, Throwable t) {
+            }
+        });
+    }
+
+    }

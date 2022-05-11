@@ -6,4 +6,5 @@ public interface OnItemClickListner {
     void onAnswerClick(int position);
     void onShareClick(int position);
     void onMenuClick(int position, View v);
+//    void onLikeClick(int position);
 }

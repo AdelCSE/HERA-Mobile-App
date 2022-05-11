@@ -185,9 +185,9 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
     public void showAnswerDialog(){
         View view = getLayoutInflater().inflate(R.layout.activty_add_answer,null,false);
 
-        ImageButton closeAnswerBtn = (ImageButton) view.findViewById(R.id.closeAnswerBtn);
-        EditText addAnswer = (EditText) view.findViewById(R.id.answerEditTxt);
-        TextView postAnswerBtn = (TextView) view.findViewById(R.id.postAnswerBtn);
+        ImageButton closeAnswerBtn = view.findViewById(R.id.closeAnswerBtn);
+        EditText addAnswer =  view.findViewById(R.id.answerEditTxt);
+        TextView postAnswerBtn =  view.findViewById(R.id.postAnswerBtn);
         CircleImageView profileimg = view.findViewById(R.id.bottomsheetimg);
 
         Glide.with(QuestionBlocActivity.this).load(downloadUrl).into(profileimg);
