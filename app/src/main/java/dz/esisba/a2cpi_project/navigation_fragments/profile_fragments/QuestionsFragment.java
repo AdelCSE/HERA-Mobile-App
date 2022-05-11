@@ -1,5 +1,6 @@
 package dz.esisba.a2cpi_project.navigation_fragments.profile_fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -24,8 +25,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
+import dz.esisba.a2cpi_project.QuestionBlocActivity;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.adapter.PostAdapter;
 import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
@@ -106,19 +109,30 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
 
     }
 
+    public void StartQuestionBlocActivity(int position) {
+        PostModel Post1 = new PostModel(QuestionsDataHolder.get(position).getAskedBy(), QuestionsDataHolder.get(position).getPublisher()
+                , QuestionsDataHolder.get(position).getUsername(), QuestionsDataHolder.get(position).getQuestion(),
+                QuestionsDataHolder.get(position).getBody(), QuestionsDataHolder.get(position).getPostid(),
+                QuestionsDataHolder.get(position).getDate(), QuestionsDataHolder.get(position).getPublisherPic(),
+                QuestionsDataHolder.get(position).getLikesCount(), QuestionsDataHolder.get(position).getAnswersCount(), QuestionsDataHolder.get(position).getTags());
+        Intent intent = new Intent(getActivity(), QuestionBlocActivity.class);
+        intent.putExtra("Tag", (Serializable) Post1);
+        getActivity().startActivity(intent);
+
+    }
     @Override
     public void onAnswerClick(int position) {
-
+        StartQuestionBlocActivity(position);
     }
 
     @Override
     public void onShareClick(int position) {
-
-    }
-
-    @Override
-    public void onMenuClick(int position, View v, PostModel post) {
-
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        String Body = "Download this app";
+        intent.putExtra(Intent.EXTRA_TEXT,Body);
+        intent.putExtra(Intent.EXTRA_TEXT,"URL");
+        startActivity(Intent.createChooser(intent,"Share using"));
     }
 
 
@@ -129,6 +143,6 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
 
     @Override
     public void onItemClick(int position) {
-
+        StartQuestionBlocActivity(position);
     }
 }

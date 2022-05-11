@@ -9,12 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,11 +40,10 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.adapter.QuestionBlocAdapter;
-import dz.esisba.a2cpi_project.adapter.QuestionBlocAdapter;
-import dz.esisba.a2cpi_project.interfaces.OnItemClickListner;
+import dz.esisba.a2cpi_project.interfaces.QuestionsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
 
-public class QuestionBlocActivity extends AppCompatActivity implements OnItemClickListner, PopupMenu.OnMenuItemClickListener {
+public class QuestionBlocActivity extends AppCompatActivity implements QuestionsOnItemClickListner {
 
     private RecyclerView recyclerView;
     private ArrayList<PostModel> postsDataHolder;
@@ -161,13 +158,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
         startActivity(Intent.createChooser(intent,"Share using"));
     }
 
-    @Override
-    public void onMenuClick(int position,View v, PostModel post) {
-        PopupMenu popupMenu = new PopupMenu(this,v);
-        popupMenu.setOnMenuItemClickListener(this);
-        popupMenu.inflate(R.menu.post_menu);
-        popupMenu.show();
-    }
     @Override
     public void onLikeClick(int position, LottieAnimationView lottieAnimationView, TextView likesTxt, boolean isAnswer) {
         lottieAnimationView.setEnabled(false);
@@ -329,11 +319,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
         });
     }
 
-    @Override
-    public boolean onMenuItemClick(MenuItem menuItem) {
-        return false;
-    }
-
 
     public void buildRecyclerView(){
 
@@ -349,9 +334,9 @@ public class QuestionBlocActivity extends AppCompatActivity implements OnItemCli
     public void showAnswerDialog(){
         View view = getLayoutInflater().inflate(R.layout.activty_add_answer,null,false);
 
-        ImageButton closeAnswerBtn = (ImageButton) view.findViewById(R.id.closeAnswerBtn);
-        EditText addAnswer = (EditText) view.findViewById(R.id.answerEditTxt);
-        TextView postAnswerBtn = (TextView) view.findViewById(R.id.postAnswerBtn);
+        ImageButton closeAnswerBtn = view.findViewById(R.id.closeAnswerBtn);
+        EditText addAnswer =  view.findViewById(R.id.answerEditTxt);
+        TextView postAnswerBtn =  view.findViewById(R.id.postAnswerBtn);
         CircleImageView profileimg = view.findViewById(R.id.bottomsheetimg);
 
         Glide.with(QuestionBlocActivity.this).load(downloadUrl).into(profileimg);

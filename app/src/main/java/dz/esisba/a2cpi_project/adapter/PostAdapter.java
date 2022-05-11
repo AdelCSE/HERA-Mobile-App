@@ -2,10 +2,12 @@ package dz.esisba.a2cpi_project.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +37,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
     private ArrayList<PostModel> PostsHolder;
     private Context context;
     private PostsOnItemClickListner mListner;
+
+
 
     public PostAdapter(ArrayList<PostModel> postsHolder ,PostsOnItemClickListner mlistner) {
         PostsHolder = postsHolder;
@@ -98,6 +102,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
         ImageView img;
         TextView Question,Details,Name,Username,Likes,Answers,Date;
 
+        private FirebaseAuth auth;
+        private FirebaseUser user;
+        private FirebaseFirestore fstore;
+
         public myviewholder (@NonNull View itemView , PostsOnItemClickListner listner , ArrayList<PostModel> postHolder){
             super(itemView);
             img = itemView.findViewById(R.id.img);
@@ -109,6 +117,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
             Answers = itemView.findViewById(R.id.answers);
             Date = itemView.findViewById(R.id.postDate);
             likeBtn = itemView.findViewById(R.id.lottieLike);
+
+            auth = FirebaseAuth.getInstance();
+            fstore = FirebaseFirestore.getInstance();
+            user = auth.getCurrentUser();
 
             likeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -133,6 +145,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
                     }
                 }
             });
+
             itemView.findViewById(R.id.questionShareBtn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -144,6 +157,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
                     }
                 }
             });
+
             itemView.findViewById(R.id.answerBtn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -155,15 +169,30 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
                     }
                 }
             });
+
             itemView.findViewById(R.id.questionMenuBtn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (listner != null){
-                        int position = getAbsoluteAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION){
-                            listner.onMenuClick(position,view, postHolder.get(position));
+                    int position = getAbsoluteAdapterPosition();
+                    PopupMenu popupMenu = new PopupMenu(view.getContext(),view);
+                    if (user.getUid().equals(postHolder.get(position).getPublisher()))
+                        popupMenu.inflate(R.menu.my_post_menu);
+                    else popupMenu.inflate(R.menu.post_menu);
+
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            if (menuItem.getTitle().equals("Delete")) {
+                                Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
+                            else {
+                                Toast.makeText(view.getContext(), "Report", Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
                         }
-                    }
+                    });
+                    popupMenu.show();
                 }
             });
         }
