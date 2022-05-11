@@ -30,11 +30,11 @@ import dz.esisba.a2cpi_project.QuestionBlocActivity;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.adapter.AnswersAdapter;
 import dz.esisba.a2cpi_project.adapter.PostAdapter;
-import dz.esisba.a2cpi_project.interfaces.OnItemClickListner;
+import dz.esisba.a2cpi_project.interfaces.AnswersOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
 
 
-public class AnswersFragment extends Fragment implements OnItemClickListner {
+public class AnswersFragment extends Fragment implements AnswersOnItemClickListner {
 
     View parentHolder;
     RecyclerView recyclerView;
@@ -118,13 +118,6 @@ public class AnswersFragment extends Fragment implements OnItemClickListner {
         });
     }
 
-
-
-    @Override
-    public void onAnswerClick(int position) {
-
-    }
-
     @Override
     public void onShareClick(int position) {
 
@@ -133,6 +126,11 @@ public class AnswersFragment extends Fragment implements OnItemClickListner {
 
     @Override
     public void onLikeClick(int position, LottieAnimationView lottieAnimationView, TextView likesTxt, boolean isAnswer) {
+
+    }
+
+    @Override
+    public void onItemClick(int position) {
 
     }
 }

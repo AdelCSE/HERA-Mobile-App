@@ -8,18 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 
 import dz.esisba.a2cpi_project.R;
-import dz.esisba.a2cpi_project.interfaces.OnItemClickListner;
-import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
 import dz.esisba.a2cpi_project.interfaces.QuestionsOnItemClickListner;
+import dz.esisba.a2cpi_project.interfaces.SearchOnItemClick;
 
-public class TagsFragment extends Fragment implements QuestionsOnItemClickListner {
+public class TagsFragment extends Fragment implements SearchOnItemClick {
 
     View parentHolder;
     Chip all,newborn, kid, baby,
@@ -37,6 +34,11 @@ public class TagsFragment extends Fragment implements QuestionsOnItemClickListne
         ShowTagResults();
 
         return parentHolder;
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
     }
 
     @Override

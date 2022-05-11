@@ -1,5 +1,6 @@
 package dz.esisba.a2cpi_project.interfaces;
 
-public interface QuestionsOnItemClickListner extends MainInterface {
+public interface SearchOnItemClick {
+    void onItemClick(int position);
     void onAnswerClick(int position);
 }

@@ -9,12 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,11 +40,10 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.adapter.QuestionBlocAdapter;
-import dz.esisba.a2cpi_project.adapter.QuestionBlocAdapter;
-import dz.esisba.a2cpi_project.interfaces.OnItemClickListner;
+import dz.esisba.a2cpi_project.interfaces.QuestionsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
 
-public class QuestionBlocActivity extends AppCompatActivity implements OnItemClickListner {
+public class QuestionBlocActivity extends AppCompatActivity implements QuestionsOnItemClickListner {
 
     private RecyclerView recyclerView;
     private ArrayList<PostModel> postsDataHolder;
