@@ -2,6 +2,7 @@ package dz.esisba.a2cpi_project.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,8 +75,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.UsersViewH
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onItemClickListener.onItemClick(getBindingAdapterPosition());
-                    UserModel user = userModels.get(getBindingAdapterPosition());
+                    onItemClickListener.onItemClick(getAbsoluteAdapterPosition());
+                    UserModel user = userModels.get(getAbsoluteAdapterPosition());
                     if (user.getUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                     {
                         //go to user fragment
