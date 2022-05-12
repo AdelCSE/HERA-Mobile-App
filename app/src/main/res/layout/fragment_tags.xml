@@ -36,6 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:singleLine="true"
+            app:selectionRequired="true"
             app:singleSelection="true">
 
             <com.google.android.material.chip.Chip
@@ -45,6 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
                 android:text="All"
+                android:checked="true"
                 app:chipBackgroundColor="@color/white"
                 app:chipStrokeColor="@color/black"
                 app:chipStrokeWidth="1dp" />
@@ -261,10 +263,18 @@
         </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/searchRefresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/searchTags"
-        android:id="@+id/searchTagsRecview"/>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/searchTags">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/searchTags"
+            android:id="@+id/searchTagsRecview"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

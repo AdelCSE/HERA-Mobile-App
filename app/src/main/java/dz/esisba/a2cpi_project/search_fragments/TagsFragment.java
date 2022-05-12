@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,15 +28,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import dz.esisba.a2cpi_project.QuestionBlocActivity;
 import dz.esisba.a2cpi_project.R;
-import dz.esisba.a2cpi_project.adapter.PostAdapter;
 import dz.esisba.a2cpi_project.adapter.SearchRecommendationAdapter;
-import dz.esisba.a2cpi_project.interfaces.QuestionsOnItemClickListner;
 import dz.esisba.a2cpi_project.interfaces.SearchOnItemClick;
 import dz.esisba.a2cpi_project.models.PostModel;
-import dz.esisba.a2cpi_project.models.UserModel;
 
 public class TagsFragment extends Fragment implements SearchOnItemClick {
 
@@ -43,16 +43,13 @@ public class TagsFragment extends Fragment implements SearchOnItemClick {
     private RecyclerView recyclerView;
     private ArrayList<PostModel> QuestionsDataHolder;
     private SearchRecommendationAdapter adapter;
-    private FirebaseAuth auth;
-    private FirebaseUser user;
     private FirebaseFirestore fstore;
-    private DocumentReference likesRef;
     private CollectionReference postRef;
-
-    Chip all,newborn, kid, baby,
-            sleeping,healthcare,breastfeeding,needs,circumcision,routine,food,
-            fever, influenza,hepatitis,conjunctivitis,
-            experience,motherhood,tools,guidance,other;
+    private Chip all,newborn, kid, baby,
+                 sleeping,healthcare,breastfeeding,needs,circumcision,routine,food,
+                 fever, influenza,hepatitis,conjunctivitis,
+                 experience,motherhood,tools,guidance,other;
+    private SwipeRefreshLayout refresh;
 
 
     @Override
@@ -60,27 +57,52 @@ public class TagsFragment extends Fragment implements SearchOnItemClick {
                              Bundle savedInstanceState) {
         parentHolder = inflater.inflate(R.layout.fragment_tags, container, false);
 
-        auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
-        user = auth.getCurrentUser();
         postRef = fstore.collection("Posts");
         QuestionsDataHolder = new ArrayList<>();
+        refresh = parentHolder.findViewById(R.id.searchRefresh);
+
+
 
         InitChips();
-        ShowTagResults();
+        ShowTagFilterResults();
 
+        refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.notifyDataSetChanged();
+                refresh.setRefreshing(false);
+            }
+        });
         return parentHolder;
     }
 
-    public void BuildRecyclerView(){
+    //***Display questions on recyclerview***//
+    private void BuildRecyclerView(){
         recyclerView = parentHolder.findViewById(R.id.searchTagsRecview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new SearchRecommendationAdapter(QuestionsDataHolder,this);
         recyclerView.setAdapter(adapter);
     }
 
-    @Override
-    public void onItemClick(int position) {
+    //***Sort questions according to the number of likes***//
+    private void SortDataByLikes(ArrayList<PostModel> questions){
+        Collections.sort(questions, new Comparator<PostModel>() {
+            @Override
+            public int compare(PostModel question1, PostModel question2) {
+                if(question1.getLikesCount() > question2.getLikesCount()) {
+                    return -1;
+                } else if (question1.getLikesCount() < question2.getLikesCount()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+    }
+
+    //***Start Question Bloc Activity method***//
+    private void StartQuestionBlocActivity(int position){
         PostModel Post1 = new PostModel(QuestionsDataHolder.get(position).getAskedBy(), QuestionsDataHolder.get(position).getPublisher()
                 , QuestionsDataHolder.get(position).getUsername() , QuestionsDataHolder.get(position).getQuestion() ,
                 QuestionsDataHolder.get(position).getBody(),QuestionsDataHolder.get(position).getPostid(),
@@ -89,56 +111,73 @@ public class TagsFragment extends Fragment implements SearchOnItemClick {
         Intent intent = new Intent(getActivity(), QuestionBlocActivity.class);
         intent.putExtra("Tag", (Serializable) Post1);
         getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        StartQuestionBlocActivity(position);
     }
 
     @Override
     public void onAnswerClick(int position) {
-        PostModel Post1 = new PostModel(QuestionsDataHolder.get(position).getAskedBy(), QuestionsDataHolder.get(position).getPublisher()
-                , QuestionsDataHolder.get(position).getUsername() , QuestionsDataHolder.get(position).getQuestion() ,
-                QuestionsDataHolder.get(position).getBody(),QuestionsDataHolder.get(position).getPostid(),
-                QuestionsDataHolder.get(position).getDate(),QuestionsDataHolder.get(position).getPublisherPic(),
-                QuestionsDataHolder.get(position).getLikesCount(),QuestionsDataHolder.get(position).getAnswersCount(), QuestionsDataHolder.get(position).getTags());
-        Intent intent = new Intent(getActivity(), QuestionBlocActivity.class);
-        intent.putExtra("Tag", (Serializable) Post1);
-        getActivity().startActivity(intent);
+        StartQuestionBlocActivity(position);
     }
 
+    //***Fetch All Questions***//
+    private void FetchAllQuestions(){
+        postRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    QuestionsDataHolder = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        PostModel post = document.toObject(PostModel.class);
+                        QuestionsDataHolder.add(post);
+                    }
+                    SortDataByLikes(QuestionsDataHolder);
+                    BuildRecyclerView();
+                }else{
+                    Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 
-    private void ShowTagResults()
-    {
-        Toast.makeText(getActivity(), "All", Toast.LENGTH_SHORT).show();
-
+    //***Filter the questions according to the tag selected and the number of likes***//
+    private void ShowTagFilterResults() {
+        FetchAllQuestions();
         CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b){
-                    postRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                QuestionsDataHolder = new ArrayList<>();
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    PostModel post = document.toObject(PostModel.class);
-                                    ArrayList<String> tags = post.getTags();
-                                    if (tags!=null){
-                                        for (String tag : tags){
-                                            if (compoundButton.getText().toString().equals(tag)){
-                                                QuestionsDataHolder.add(post);
+                    if (compoundButton.getText().toString().equals("All")){
+                        FetchAllQuestions();
+                    }else {
+                        postRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    QuestionsDataHolder = new ArrayList<>();
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        PostModel post = document.toObject(PostModel.class);
+                                        ArrayList<String> tags = post.getTags();
+                                        if (tags!=null){
+                                            for (String tag : tags){
+                                                if (compoundButton.getText().toString().equals(tag)){
+                                                    QuestionsDataHolder.add(post);
+                                                }
                                             }
                                         }
                                     }
+                                    SortDataByLikes(QuestionsDataHolder);
+                                    BuildRecyclerView();
+                                } else {
+                                    Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
                                 }
-                                BuildRecyclerView();
-                            } else {
-                                Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
                             }
-                        }
-                    });
-
-                }else{
-
+                        });
+                    }
                 }
-
             }
         };
         all.setOnCheckedChangeListener(checkedChangeListener);
@@ -163,6 +202,7 @@ public class TagsFragment extends Fragment implements SearchOnItemClick {
         other.setOnCheckedChangeListener(checkedChangeListener);
     }
 
+    //***Initialize chips***//
     private void InitChips() {
         all = parentHolder.findViewById(R.id.allS);
         newborn = parentHolder.findViewById(R.id.newbornS);
