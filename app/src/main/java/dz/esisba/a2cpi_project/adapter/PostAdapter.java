@@ -170,6 +170,30 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
                 }
             });
 
+            itemView.findViewById(R.id.img).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listner != null){
+                        int position = getAbsoluteAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listner.onPictureClick(position);
+                        }
+                    }
+                }
+            });
+
+            itemView.findViewById(R.id.name).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listner != null){
+                        int position = getAbsoluteAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listner.onNameClick(position);
+                        }
+                    }
+                }
+            });
+
             itemView.findViewById(R.id.questionMenuBtn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -22,11 +23,14 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,6 +39,7 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.adapter.UserProfileAdapter;
+import dz.esisba.a2cpi_project.models.PostModel;
 import dz.esisba.a2cpi_project.models.UserModel;
 
 public class UserProfileActivity extends AppCompatActivity {
@@ -47,9 +52,10 @@ public class UserProfileActivity extends AppCompatActivity {
     private ImageView banner;
 
     private UserModel userModel, currentUserModel;
+    private PostModel postModel;
 
     FirebaseAuth auth;
-    FirebaseUser user;
+    FirebaseUser user,user1;
     FirebaseFirestore fstore;
 
 
@@ -80,8 +86,12 @@ public class UserProfileActivity extends AppCompatActivity {
 
         new TabLayoutMediator(tabLayout,viewPager,((tab, position) -> tab.setText(titles[position]))).attach();
 
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        fstore = FirebaseFirestore.getInstance();
 
-        userModel = (UserModel) getIntent().getSerializableExtra("Tag");
+
+
         followBtn = findViewById(R.id.followBtn);
         name = findViewById(R.id.profileName);
         usernameTxt = findViewById(R.id.usernameTxt);
@@ -92,9 +102,8 @@ public class UserProfileActivity extends AppCompatActivity {
         profilePic = findViewById(R.id.profilePic);
         banner = findViewById(R.id.banner);
 
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-        fstore = FirebaseFirestore.getInstance();
+
+        userModel = (UserModel) getIntent().getSerializableExtra("Tag");
 
         DocumentReference userRef = fstore.collection("Users").document(userModel.getUid());
         DocumentReference currentUserRef = fstore.collection("Users").document(user.getUid());
@@ -187,7 +196,6 @@ public class UserProfileActivity extends AppCompatActivity {
         });
 
     }
-
     private void SetUserInfo()
     {
         toolbarLayout.setTitle(userModel.getUsername());

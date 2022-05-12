@@ -38,13 +38,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import dz.esisba.a2cpi_project.BottomNavigationActivity;
 import dz.esisba.a2cpi_project.LoginActivity;
 import dz.esisba.a2cpi_project.QuestionBlocActivity;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.SearchActivity;
+import dz.esisba.a2cpi_project.UserProfileActivity;
 import dz.esisba.a2cpi_project.adapter.PostAdapter;
 import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
+import dz.esisba.a2cpi_project.models.UserModel;
 
 public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
@@ -141,6 +144,29 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         getActivity().startActivity(intent);
     }
 
+    public void StartUserProfileActivity(int position){
+        if (PostsDataHolder.get(position).getPublisher().equals(user.getUid())){
+            //switch to profile
+        }else{
+            DocumentReference DocRef = fstore.collection("Users").document(PostsDataHolder.get(position).getPublisher());
+            DocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        UserModel User;
+                        DocumentSnapshot doc = task.getResult();
+                        if (doc.exists()) {
+                            User = doc.toObject(UserModel.class);
+                            Intent intent = new Intent(getActivity(), UserProfileActivity.class);
+                            intent.putExtra("Tag", (Serializable) User);
+                            getActivity().startActivity(intent);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
     @Override
     public void onItemClick(int position) {
         StartQuestionBlocActivity(position);
@@ -150,6 +176,12 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     public void onAnswerClick(int position) {
         StartQuestionBlocActivity(position);
     }
+
+    @Override
+    public void onPictureClick(int position) {StartUserProfileActivity(position);}
+
+    @Override
+    public void onNameClick(int position) {StartUserProfileActivity(position);}
 
     @Override
     public void onShareClick(int position) {

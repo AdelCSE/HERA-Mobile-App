@@ -126,6 +126,16 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
     }
 
     @Override
+    public void onPictureClick(int position) {
+
+    }
+
+    @Override
+    public void onNameClick(int position) {
+
+    }
+
+    @Override
     public void onShareClick(int position) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");

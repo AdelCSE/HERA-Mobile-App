@@ -184,6 +184,30 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             fstore = FirebaseFirestore.getInstance();
             user = auth.getCurrentUser();
 
+            img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listner != null){
+                        int position = getAbsoluteAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listner.onPictureClick(position);
+                        }
+                    }
+                }
+            });
+
+            Name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listner != null){
+                        int position = getAbsoluteAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listner.onNameClick(position);
+                        }
+                    }
+                }
+            });
+
             likeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -268,6 +292,30 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             auth = FirebaseAuth.getInstance();
             fstore = FirebaseFirestore.getInstance();
             user = auth.getCurrentUser();
+
+            img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listner != null){
+                        int position = getAbsoluteAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listner.onPictureClick(position);
+                        }
+                    }
+                }
+            });
+
+            Username.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listner != null){
+                        int position = getAbsoluteAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listner.onNameClick(position);
+                        }
+                    }
+                }
+            });
 
             likeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
