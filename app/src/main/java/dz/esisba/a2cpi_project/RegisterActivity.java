@@ -126,8 +126,8 @@ public class RegisterActivity extends AppCompatActivity {
 
                                 ArrayList<String> following = new ArrayList<>();
                                 ArrayList<String> followers = new ArrayList<>();
-                                HashMap<String, Object> likes = new HashMap<>();
-                                HashMap<String, String> answerLikes = new HashMap<>();
+                                ArrayList<HashMap<String, Object>>  likes = new ArrayList<>();
+                                ArrayList<HashMap<String, String>>  answerLikes = new ArrayList<>();
 
                                 userInfor.put("following", following);
                                 userInfor.put("followers", followers);

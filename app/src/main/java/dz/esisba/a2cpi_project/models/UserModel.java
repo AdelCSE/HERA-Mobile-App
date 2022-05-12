@@ -7,8 +7,8 @@ import java.util.HashMap;
 public class UserModel implements Serializable {
     private String Name, Username, profilePictureUrl, bannerUrl, uid, bio;
     private ArrayList<String> followers, following, posts, answers;
-    private HashMap<String, Object> likes;
-    private HashMap<String, String> answerLikes;
+    private ArrayList<HashMap<String, Object>> likes;
+    private ArrayList<HashMap<String, String>> answerLikes;
 
     public UserModel(String Name, String Username, String profilePictureUrl) {
         this.Name = Name;
@@ -16,7 +16,7 @@ public class UserModel implements Serializable {
         this.Username = Username;
     }
 
-    public UserModel(String name, String username, String profilePictureUrl, String bannerUrl, String uid, String bio, ArrayList<String> followers, ArrayList<String> following, ArrayList<String> posts, ArrayList<String> answers, HashMap<String, Object> likes, HashMap<String, String> answerLikes) {
+    public UserModel(String name, String username, String profilePictureUrl, String bannerUrl, String uid, String bio, ArrayList<String> followers, ArrayList<String> following, ArrayList<String> posts, ArrayList<String> answers, ArrayList<HashMap<String, Object>> likes, ArrayList<HashMap<String, String>> answerLikes) {
         Name = name;
         Username = username;
         this.profilePictureUrl = profilePictureUrl;
@@ -101,11 +101,11 @@ public class UserModel implements Serializable {
         return answers;
     }
 
-    public HashMap getLikes() {
+    public ArrayList<HashMap<String, Object>> getLikes() {
         return likes;
     }
 
-    public HashMap getAnswerLikes() {
+    public ArrayList<HashMap<String, String>> getAnswerLikes() {
         return answerLikes;
     }
 }

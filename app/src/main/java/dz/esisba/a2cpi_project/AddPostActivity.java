@@ -221,6 +221,7 @@ public class AddPostActivity extends AppCompatActivity {
             data.put("tags",selectedTags);
             data.put("likesCount", 0);
             data.put("answersCount", 0);
+            data.put("reportsCount", 0);
 
            DocumentReference df = fstore.collection("Posts").document(postId);
            df.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {

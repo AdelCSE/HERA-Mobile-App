@@ -60,7 +60,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
 
     private String[] titles = {"All" , "Questions" , "Answers"};
-    private ArrayList<String> currUserFollowers, currUserFollowing;
+    private ArrayList<String> currUserFollowers, followings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -225,14 +225,14 @@ public class UserProfileActivity extends AppCompatActivity {
                     {
                         currentUserModel =  doc.toObject(UserModel.class);
                         currUserFollowers = userModel.getFollowers();
-                        currUserFollowing = userModel.getFollowing();
+                        followings = userModel.getFollowing();
 
                         if (currUserFollowers!=null) {
                             String i = Integer.toString(currUserFollowers.size());
                             followersCount.setText(i);
                         }
-                        if (currUserFollowing!=null) {
-                            String j = Integer.toString(currUserFollowing.size());
+                        if (followings!=null) {
+                            String j = Integer.toString(followings.size());
                             followingCount.setText(j);
                         }
 
