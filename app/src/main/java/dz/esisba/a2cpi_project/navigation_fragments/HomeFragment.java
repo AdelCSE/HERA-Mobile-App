@@ -29,6 +29,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.Serializable;
@@ -267,7 +268,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 .update(emptyToken);
     }
 
-    //Send Like Notification to the publisher
+    //Send Like Notification to the publisher, this method will be executed when the current user like a post
     public void sendNotification(String publisherToken,String title , String message){
         Data data = new Data(title,message);
         NotificationSender sender = new NotificationSender(data, publisherToken);
