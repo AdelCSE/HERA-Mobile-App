@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
@@ -206,14 +208,27 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem menuItem) {
+                            boolean b = false;
                             if (menuItem.getTitle().equals("Delete")) {
                                 Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
-                                return true;
+                                b = true;
                             }
                             else {
-                                Toast.makeText(view.getContext(), "Report", Toast.LENGTH_SHORT).show();
-                                return true;
+                                PostModel postModel = postHolder.get(position);
+                                int reportCount = postModel.getReportsCount();
+                                reportCount++;
+                                DocumentReference postRef = FirebaseFirestore.getInstance().collection("Posts").document(postModel.getPostid());
+                                HashMap<String, Object> hm = new HashMap<>();
+                                hm.put("reportsCount", reportCount);
+                                postRef.update(hm).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(view.getContext(), "Your report has been sent", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                b = true;
                             }
+                            return b;
                         }
                     });
                     popupMenu.show();

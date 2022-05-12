@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,6 +32,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 import com.google.firebase.messaging.FirebaseMessaging;
+
+import org.w3c.dom.Text;
 
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -91,6 +94,21 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         user = auth.getCurrentUser();
         postRef = fstore.collection("Posts");
 
+        /*postRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    HashMap<String, Object> hm = new HashMap<>();
+                    hm.put("reportsCount", 0);
+
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        document.getReference().update(hm);
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });*/
 
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -205,86 +223,134 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     }
 
 
+
     @Override
     public void onLikeClick(int position, LottieAnimationView lottieAnimationView, TextView likesTxt, boolean isAnswer) {
-        lottieAnimationView.setEnabled(false);
         PostModel post = new PostModel(PostsDataHolder.get(position).getAskedBy(), PostsDataHolder.get(position).getPublisher()
                 , PostsDataHolder.get(position).getUsername() , PostsDataHolder.get(position).getQuestion() ,
                 PostsDataHolder.get(position).getBody(),PostsDataHolder.get(position).getPostid(),
                 PostsDataHolder.get(position).getDate(),PostsDataHolder.get(position).getPublisherPic(),
                 PostsDataHolder.get(position).getLikesCount(),PostsDataHolder.get(position).getAnswersCount(), PostsDataHolder.get(position).getTags());
 
-        postRef.document(post.getPostid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful())
-                {
-                    DocumentSnapshot doc = task.getResult();
-                    if (doc.exists())
+        if (lottieAnimationView.getTag().equals("Like"))
+        {
+            lottieAnimationView.setSpeed(2);
+            lottieAnimationView.playAnimation();//play like animation
+            lottieAnimationView.setTag("Liked");
+
+            int i = Integer.parseInt(likesTxt.getText().toString());
+            i++;
+            likesTxt.setText(Integer.toString(i));
+
+            postRef.document(post.getPostid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful())
                     {
-                        likes = doc.getLong("likesCount").intValue();
-                        Log.d(String.valueOf(getActivity()), "initial value" +Integer.toString(likes));
-                        //likes are stored for user for faster query
-                        likesRef = fstore.collection("Users").document(user.getUid()).
-                                collection("Likes").document(post.getPostid());
-
-
-                        Map<String, Object> hm = new HashMap<>();
-                        if (lottieAnimationView.getTag().equals("Like"))
+                        DocumentSnapshot doc = task.getResult();
+                        if (doc.exists())
                         {
-                            lottieAnimationView.setSpeed(1);
-                            lottieAnimationView.playAnimation(); //play like animation
-                            Map<String,Object> userInfor = new HashMap<>(); //represents key, value
-                            userInfor.put("likedDate", date);
-                            userInfor.put("uid", user.getUid());
-                            userInfor.put("postid", post.getPostid());
-                            userInfor.put("tags", post.getTags()); //we might need tags later for recommendation system
-                            likesRef.set(userInfor).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    lottieAnimationView.setTag("Liked");
-                                    Log.d("Like", "before incrementing" +Integer.toString(likes));
-                                    likes++;
-                                    Log.d("Like", "after incrementing" +Integer.toString(likes));
-                                    hm.put("likesCount", likes);
-                                    //update likes count for the post
-                                    postRef.document(post.getPostid()).update(hm).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            post.setLikesCount(likes);
-                                            likesTxt.setText(Integer.toString(likes)); //update likes count for post
-                                            // likes = post.getLikesCount();
-                                            lottieAnimationView.setEnabled(true);
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                        else if (lottieAnimationView.getTag().equals("Liked")) {
-                            lottieAnimationView.setSpeed(-1f);
-                            lottieAnimationView.playAnimation(); //play animation in reverse
-                            likesRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() { //delete like from user
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    lottieAnimationView.setTag("Like");
-                                    likes--;
-                                    hm.put("likesCount", likes);
-                                    postRef.document(post.getPostid()).update(hm).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            post.setLikesCount(likes);
-                                            likesTxt.setText(Integer.toString(likes)); //update likes count for post
-                                            // likes = post.getLikesCount();//get current likes on post
-                                            lottieAnimationView.setEnabled(true);
-                                        }
-                                    });
-                                }
-                            });
+                            likes = doc.getLong("likesCount").intValue();
+                            //likes are stored for user for faster query
+                            likesRef = fstore.collection("Users").document(user.getUid()).
+                                    collection("Likes").document(post.getPostid());
+                                Map<String,Object> hashMap = new HashMap<>(); //represents key, value
+                                hashMap.put("uid", user.getUid());
+                                hashMap.put("postid", post.getPostid());
+                                hashMap.put("tags", post.getTags()); //we might need tags later for recommendation system
+                                likesRef.set(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        likes++;
+                                        Map<String,Object> hm = new HashMap<>();
+                                        hm.put("likesCount", likes);
+                                        //update likes count for the post
+                                        postRef.document(post.getPostid()).update(hm).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                LikeFailure(lottieAnimationView, likesTxt, position);
+                                            }
+                                        });
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        LikeFailure(lottieAnimationView, likesTxt, position);
+                                    }
+                                });
                         }
                     }
+                    else LikeFailure(lottieAnimationView, likesTxt, position);
                 }
-            }
-        });
+            });
+        } else {
+            lottieAnimationView.setSpeed(-2);
+            lottieAnimationView.playAnimation();//play like animation
+            lottieAnimationView.setTag("Like");
+
+
+            int i = Integer.parseInt(likesTxt.getText().toString());
+            i--;
+            likesTxt.setText(Integer.toString(i));
+
+            postRef.document(post.getPostid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful())
+                    {
+                        DocumentSnapshot doc = task.getResult();
+                        if (doc.exists())
+                        {
+                            likes = doc.getLong("likesCount").intValue();
+                            likesRef = fstore.collection("Users").document(user.getUid()).
+                                    collection("Likes").document(post.getPostid());
+                            likesRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    likes--;
+                                    Map<String,Object> hm = new HashMap<>();
+                                    hm.put("likesCount", likes);
+                                    //update likes count for the post
+                                    postRef.document(post.getPostid()).update(hm).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            DislikeFailure(lottieAnimationView, likesTxt, position);
+                                        }
+                                    });
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    DislikeFailure(lottieAnimationView, likesTxt, position);
+                                }
+                            });
+                        }
+                    } else DislikeFailure(lottieAnimationView, likesTxt, position);
+                }
+            });
+        }
+    }
+
+    private void DislikeFailure(LottieAnimationView lottieAnimationView, TextView likesTxt, int position)
+    {
+        lottieAnimationView.setSpeed(2);
+        lottieAnimationView.playAnimation();//play like animation
+        lottieAnimationView.setTag("Liked");
+        int i = Integer.parseInt(likesTxt.getText().toString());
+        i++;
+        likesTxt.setText(Integer.toString(i));
+
+    }
+
+    private void LikeFailure(LottieAnimationView lottieAnimationView,TextView likesTxt, int position)
+    {
+        lottieAnimationView.setSpeed(-2);
+        lottieAnimationView.playAnimation();//play like animation
+        lottieAnimationView.setTag("Like");
+        int i = Integer.parseInt(likesTxt.getText().toString());
+        i--;
+        likesTxt.setText(Integer.toString(i));
+
     }
 
     //function that delete the token of the user Because when the user is signed-out he doesn't receive Notifications
