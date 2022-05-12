@@ -1,12 +1,8 @@
 package dz.esisba.a2cpi_project;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,8 +10,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -23,8 +21,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -114,7 +112,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 //display feedback
                                 Toast.makeText(RegisterActivity.this, "User Created!", Toast.LENGTH_SHORT).show(); // for debug purposes, can be deleted later
 
-
+                                retrieveRestoreToken();
                                 //store user id into firebase
                                 DocumentReference df = fstore.collection("Users").document(user.getUid());
                                 Map<String,Object> userInfor = new HashMap<>(); //represents key, value
@@ -185,6 +183,26 @@ public class RegisterActivity extends AppCompatActivity {
         }
     });
         return valid;
+    }
+
+    private void retrieveRestoreToken(){
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            Map<String, Object> userToken=new HashMap<>();
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if(task.isSuccessful()){
+                    String token = task.getResult();
+                    userToken.put("Token", token);
+                    FirebaseFirestore.getInstance().collection("Users").document(
+                            FirebaseAuth.getInstance().getCurrentUser().getUid()).update(userToken).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Toast.makeText(RegisterActivity.this,"Succccessss",Toast.LENGTH_LONG);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     //Todo: add confirm pw logic

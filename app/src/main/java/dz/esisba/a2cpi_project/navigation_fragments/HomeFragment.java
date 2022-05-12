@@ -4,11 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,9 +25,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -48,6 +49,13 @@ import dz.esisba.a2cpi_project.adapter.PostAdapter;
 import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
 import dz.esisba.a2cpi_project.models.UserModel;
+import likeNotification.APIService;
+import likeNotification.Data;
+import likeNotification.MyResponse;
+import likeNotification.NotificationSender;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
@@ -68,6 +76,8 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     private boolean liked = false;
     private static  String date = DateFormat.getInstance().format(new Date());
     private int likes;
+    APIService apiService;
+    final static String TAG ="_____________________";
 
     @Nullable
     @Override
@@ -85,6 +95,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                clearToken(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(getActivity(), LoginActivity.class));
             }
@@ -275,4 +286,36 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
             }
         });
     }
+
+    //function that delete the token of the user Because when the user is signed-out he doesn't receive Notifications
+    private void clearToken(String uid){
+        final Map<String,Object> emptyToken = new HashMap<>();
+        emptyToken.put("Token", FieldValue.delete());
+        FirebaseFirestore
+                .getInstance()
+                .collection("Users")
+                .document(uid)
+                .update(emptyToken);
+    }
+
+    //Send Like Notification to the publisher, this method will be executed when the current user like a post
+    public void sendNotification(String publisherToken,String title , String message){
+        Data data = new Data(title,message);
+        NotificationSender sender = new NotificationSender(data, publisherToken);
+        apiService.sendNotifcation(sender).enqueue(new Callback<MyResponse>() {
+            @Override
+            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                if(response.code() == 200){
+                    if(response.body().success != 1){
+                        //Toast.makeText(HomeFragment.this, "Failed", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "onResponse: _____");
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<MyResponse> call, Throwable t) {
+            }
+        });
+    }
+
 }

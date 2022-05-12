@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.models.NotificationModel;
-import dz.esisba.a2cpi_project.models.PostModel;
 
 public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
