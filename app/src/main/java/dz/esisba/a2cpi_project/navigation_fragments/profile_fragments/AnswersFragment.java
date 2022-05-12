@@ -119,6 +119,16 @@ public class AnswersFragment extends Fragment implements AnswersOnItemClickListn
     }
 
     @Override
+    public void onPictureClick(int position) {
+
+    }
+
+    @Override
+    public void onNameClick(int position) {
+
+    }
+
+    @Override
     public void onShareClick(int position) {
 
     }

@@ -1,11 +1,5 @@
 package dz.esisba.a2cpi_project;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +9,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
@@ -32,6 +32,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,6 +43,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.adapter.QuestionBlocAdapter;
 import dz.esisba.a2cpi_project.interfaces.QuestionsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
+import dz.esisba.a2cpi_project.models.UserModel;
 
 public class QuestionBlocActivity extends AppCompatActivity implements QuestionsOnItemClickListner {
 
@@ -139,6 +141,29 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         });
     }
 
+    public void StartUserProfileActivity(int position){
+        if (postsDataHolder.get(position).getPublisher().equals(user.getUid())){
+            //switch to profile
+        }else{
+            DocumentReference DocRef = fstore.collection("Users").document(postsDataHolder.get(position).getPublisher());
+            DocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        UserModel User;
+                        DocumentSnapshot doc = task.getResult();
+                        if (doc.exists()) {
+                            User = doc.toObject(UserModel.class);
+                            Intent intent = new Intent(QuestionBlocActivity.this, UserProfileActivity.class);
+                            intent.putExtra("Tag", (Serializable) User);
+                            startActivity(intent);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
     //Add an Answer
     @Override
     public void onAnswerClick(int position) {
@@ -146,6 +171,12 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         getDialog().show();
         getDialog().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
+
+    @Override
+    public void onPictureClick(int position) {StartUserProfileActivity(position);}
+
+    @Override
+    public void onNameClick(int position) {StartUserProfileActivity(position);}
 
     //Share APP
     @Override

@@ -72,9 +72,8 @@ public class SearchFragment extends Fragment implements SearchAdapter.OnItemClic
                 .get().addOnSuccessListener(queryDocumentSnapshots -> {
 
             for (QueryDocumentSnapshot dc : queryDocumentSnapshots){
-                String dataName = Objects.requireNonNull(dc.getString("Name")).toLowerCase().trim();
                 String dataUserName = Objects.requireNonNull(dc.getString("Username")).toLowerCase().trim();
-                if(dataName.contains(s) || dataUserName.contains(s)){
+                if(dataUserName.contains(s)){
                     if(!usersArrayList.contains(dc.toObject(UserModel.class))) {
                         usersArrayList.add(dc.toObject(UserModel.class));
                     }

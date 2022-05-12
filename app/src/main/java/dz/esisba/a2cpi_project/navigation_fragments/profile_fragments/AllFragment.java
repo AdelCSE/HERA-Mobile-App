@@ -33,7 +33,7 @@ import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
 
 
-public class AllFragment extends Fragment implements PostsOnItemClickListner {
+public class AllFragment extends Fragment  {
 
     View parentHolder;
     RecyclerView recyclerView;
@@ -120,25 +120,4 @@ public class AllFragment extends Fragment implements PostsOnItemClickListner {
 
     }*/
 
-    @Override
-    public void onAnswerClick(int position) {
-
-    }
-
-    @Override
-    public void onShareClick(int position) {
-
-    }
-
-
-    @Override
-    public void onLikeClick(int position, LottieAnimationView lottieAnimationView, TextView likesTxt, boolean isAnswer) {
-
-    }
-
-
-    @Override
-    public void onItemClick(int position) {
-
-    }
 }
