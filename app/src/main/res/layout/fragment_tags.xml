@@ -44,7 +44,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
-                android:checked="true"
                 android:text="All"
                 app:chipBackgroundColor="@color/white"
                 app:chipStrokeColor="@color/black"
@@ -62,23 +61,23 @@
                 app:chipStrokeWidth="1dp" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/kidS"
-                style="@style/Widget.MaterialComponents.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="0dp"
-                android:text="kid"
-                app:chipBackgroundColor="@color/white"
-                app:chipStrokeColor="@color/black"
-                app:chipStrokeWidth="1dp" />
-
-            <com.google.android.material.chip.Chip
                 android:id="@+id/babyS"
                 style="@style/Widget.MaterialComponents.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
                 android:text="baby"
+                app:chipBackgroundColor="@color/white"
+                app:chipStrokeColor="@color/black"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/kidS"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp"
+                android:text="kid"
                 app:chipBackgroundColor="@color/white"
                 app:chipStrokeColor="@color/black"
                 app:chipStrokeWidth="1dp" />

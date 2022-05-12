@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="dz.esisba.a2cpi_project">
+    package="dz.esisba.a2cpi_project" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -15,15 +15,20 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.2CPI_PROJECT">
+        android:theme="@style/Theme.2CPI_PROJECT" >
+
         <service
             android:name="likeNotification.MyFirebaseMessagingService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
         <service
             android:name="likeNotification.MyFirebaseService"
             android:enabled="true"
             android:exported="true" />
+
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
 
         <activity
             android:name=".SplashScreenActivity"
@@ -57,7 +62,7 @@
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
