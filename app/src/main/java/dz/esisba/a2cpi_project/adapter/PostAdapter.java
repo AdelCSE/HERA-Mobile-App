@@ -22,9 +22,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,7 +67,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
         holder.Details.setText(PostsHolder.get(position).getBody());
         holder.Likes.setText(Integer.toString(PostsHolder.get(position).getLikesCount()));
         holder.Answers.setText(Integer.toString(PostsHolder.get(position).getAnswersCount()));
-        holder.Date.setText(PostsHolder.get(position).getDate().toString());
+        holder.Date.setText(PostsHolder.get(position).ConvertDate());
         RunCheckForLikes(PostsHolder.get(position), holder.likeBtn);
     }
 
@@ -236,6 +239,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
                                                 document.getReference().delete();
                                             }
                                             postRef.delete();
+                                            DocumentReference userRef = FirebaseFirestore.getInstance().collection("Users")
+                                                    .document(user.getUid());
+                                            userRef.update("posts", FieldValue.arrayRemove(postModel.getPostid()));
                                             Toast.makeText(view.getContext(), "Post deleted", Toast.LENGTH_SHORT).show();
                                         } else {
                                             Toast.makeText(view.getContext(), "Some error occurred try again later", Toast.LENGTH_SHORT).show();

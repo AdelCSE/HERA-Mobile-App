@@ -125,16 +125,16 @@ public class RegisterActivity extends AppCompatActivity {
 
                                 ArrayList<String> following = new ArrayList<>();
                                 ArrayList<String> followers = new ArrayList<>();
-                                ArrayList<HashMap<String, Object>>  likes = new ArrayList<>();
-                                ArrayList<HashMap<String, String>>  answerLikes = new ArrayList<>();
+                                ArrayList<String>  posts = new ArrayList<>();
+                                ArrayList<String>  answers = new ArrayList<>();
 
                                 userInfor.put("following", following);
                                 userInfor.put("followers", followers);
-                                userInfor.put("likes", likes);
-                                userInfor.put("answerLikes", answerLikes);
+                                userInfor.put("posts", posts);
+                                userInfor.put("answers", answers);
 
                                 //specify access level (if user is admin)
-                                userInfor.put("isUser","1");
+                                userInfor.put("isAdmin",false);
 
                                 df.set(userInfor); //pass our map to the fb document
 

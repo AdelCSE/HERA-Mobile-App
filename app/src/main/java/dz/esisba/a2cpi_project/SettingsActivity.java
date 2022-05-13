@@ -2,22 +2,27 @@ package dz.esisba.a2cpi_project;
 
 import static android.view.View.VISIBLE;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.core.view.Change;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -34,10 +39,12 @@ public class SettingsActivity extends AppCompatActivity {
     private FirebaseUser user;
     private FirebaseFirestore fstore;
     private CircleImageView settingsImg;
-    private TextView settingsName,settingsUsername;
+    private ImageButton backBtn;
+    private TextView settingsName,settingsUsername,settingsEmail;
     private ScrollView scrollView;
     private ProgressBar progressBar;
-    private LinearLayout logOut;
+    private LinearLayout logOut,changePassword;
+    private AppCompatButton editprofileBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,18 +58,53 @@ public class SettingsActivity extends AppCompatActivity {
         settingsImg = findViewById(R.id.settingsImg);
         settingsName = findViewById(R.id.settingsName);
         settingsUsername = findViewById(R.id.settingsUsername);
+        settingsEmail = findViewById(R.id.settingsEmail);
         progressBar = findViewById(R.id.settingsProgressBar);
         scrollView = findViewById(R.id.settingsScrollView);
+        backBtn = findViewById(R.id.settingsBackBtn);
         logOut = findViewById(R.id.logOutApp);
+        changePassword = findViewById(R.id.ChangePasswordBtn);
+        editprofileBtn=findViewById(R.id.settingsEditProfileBtn);
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
+        editprofileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SettingsActivity.this,EditProfileActivity.class));
+            }
+        });
 
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SettingsActivity.this,LoginActivity.class);
-                FirebaseAuth.getInstance().signOut();
-                clearToken(user.getUid());
-                startActivity(intent);
-                finish();
+                new AlertDialog.Builder(SettingsActivity.this)
+                        .setMessage("Are you sure you want to log out?")
+                        .setCancelable(false)
+                        .setPositiveButton("Log out", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(SettingsActivity.this,LoginActivity.class);
+                                FirebaseAuth.getInstance().signOut();
+                                clearToken(user.getUid());
+                                startActivity(intent);
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("Cancel",null)
+                        .show();
+            }
+        });
+
+        changePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SettingsActivity.this,ChangePasswordActivity.class));
             }
         });
 
@@ -90,6 +132,7 @@ public class SettingsActivity extends AppCompatActivity {
                             settingsName.setText(doc.get("Name").toString());
 
                         settingsUsername.setText("@"+doc.get("Username").toString());
+                        settingsEmail.setText(doc.get("Email").toString());
                     }
                     progressBar.setVisibility(View.GONE);
                     scrollView.setVisibility(VISIBLE);

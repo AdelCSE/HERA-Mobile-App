@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="dz.esisba.a2cpi_project">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="dz.esisba.a2cpi_project" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -17,6 +18,10 @@
         android:theme="@style/Theme.2CPI_PROJECT" >
 
 
+
+        <activity
+            android:name=".ChangePasswordActivity"
+            android:exported="false" />
         <activity
             android:name=".SettingsActivity"
             android:exported="false" />

@@ -1,16 +1,17 @@
 package dz.esisba.a2cpi_project;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager2.widget.ViewPager2;
+
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -34,10 +35,11 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.adapter.UserProfileAdapter;
+import dz.esisba.a2cpi_project.interfaces.SetUserModelInterface;
 import dz.esisba.a2cpi_project.models.PostModel;
 import dz.esisba.a2cpi_project.models.UserModel;
 
-public class UserProfileActivity extends AppCompatActivity {
+public class UserProfileActivity extends AppCompatActivity implements SetUserModelInterface {
     private TextView usernameTxt,name, bio, followersCount, followingCount;
     private Button followBtn;
     private static  String date = DateFormat.getInstance().format(new Date());
@@ -59,10 +61,14 @@ public class UserProfileActivity extends AppCompatActivity {
     UserProfileAdapter adapter;
     Toolbar toolbar;
 
+    public UserModel getUserModel() {
+        return userModel;
+    }
 
     private String[] titles = {"All" , "Questions" , "Answers"};
     private ArrayList<String> currUserFollowers, followings;
 
+    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -245,6 +251,12 @@ public class UserProfileActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+
+    @Override
+    public UserModel setUserModel() {
+        return userModel;
     }
 }
 

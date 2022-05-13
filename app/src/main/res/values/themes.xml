@@ -13,20 +13,25 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <!-- Custom Tab Layout Text-->
     <style name="MineCustomTabText" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">16sp</item>
     </style>
 
+    <!-- Custom Switch Button-->
     <style name="Theme.MyTheme" parent="Theme.AppCompat.Light">
         <!-- colorPrimary is used for the default action bar background -->
         <item name="colorPrimary">@color/button</item>
-
         <!-- colorPrimaryDark is used for the status bar -->
         <item name="colorPrimaryDark">@color/purple_700</item>
-
-        <!-- colorAccent is used as the default value for colorControlActivated,
-             which is used to tint widgets -->
+        <!-- colorAccent is used as the default value for colorControlActivated,which is used to tint widgets -->
         <item name="colorAccent">@color/button</item>
+    </style>
+
+    <!-- Custom Password Box -->
+    <style name="LoginTextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxStrokeColor">@color/button</item>
+        <item name="boxStrokeWidth">2dp</item>
     </style>
 
 </resources>

@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -85,7 +86,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             viewHolder1.Details.setText(AllPostsDataHolder.get(position).getBody());
             viewHolder1.Likes.setText(Integer.toString(AllPostsDataHolder.get(position).getLikesCount()));
             viewHolder1.Answers.setText(Integer.toString(AllPostsDataHolder.get(position).getAnswersCount()));
-            viewHolder1.Date.setText(AllPostsDataHolder.get(position).getDate().toString());
+            viewHolder1.Date.setText(AllPostsDataHolder.get(position).ConvertDate());
             RunCheckForLikes(AllPostsDataHolder.get(position), viewHolder1.likeBtn);
 
         }else if (holder.getItemViewType()==2){
@@ -102,7 +103,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             viewHolder2.Username.setText("@"+AllPostsDataHolder.get(position).getUsername());
             viewHolder2.Details.setText(AllPostsDataHolder.get(position).getBody());
             viewHolder2.Likes.setText(Integer.toString(AllPostsDataHolder.get(position).getLikesCount()));
-            viewHolder2.Date.setText(AllPostsDataHolder.get(position).getDate().toString());
+            viewHolder2.Date.setText(AllPostsDataHolder.get(position).ConvertDate());
             RunCheckForLikesAnswerLikes(AllPostsDataHolder.get(position), viewHolder2.likeBtn);
         }
     }
@@ -115,7 +116,8 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot doc = task.getResult();
-                    if (doc.exists()) {
+                    ArrayList<String> arrayList = (ArrayList<String>) doc.get("likes");
+                    if (arrayList.contains(user.getUid())) {
                         lottieAnimationView.setSpeed(100);
                         lottieAnimationView.playAnimation();
                         lottieAnimationView.setTag("Liked");
@@ -353,21 +355,25 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                 postHolder.remove(position);
                                 adapter.notifyItemRemoved(position);
                          //       DeleteLikes(postModel, "AnswerLikes");
-                                DocumentReference answerRef = FirebaseFirestore.getInstance().collection("Posts").
-                                        document(parentPost.getPostid()).collection("Answers").document(postModel.getPostid());
+
+                                DocumentReference dr = fstore.collection("Posts").document(parentPost.getPostid());
+                                dr.update("answersCount", FieldValue.increment(-1))
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        parentPost.setAnswersCount(parentPost.getAnswersCount()-1);
+                                        notifyItemChanged(0);
+                                    }
+                                });
+                                DocumentReference answerRef = dr.collection("Answers").document(postModel.getPostid());
                                 answerRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
+                                        DocumentReference userRef = FirebaseFirestore.getInstance().collection("Users")
+                                                .document(user.getUid());
+                                        userRef.update("answers", FieldValue.arrayRemove(postModel.getPostid()));
                                         Toast.makeText(view.getContext(), "Answer deleted", Toast.LENGTH_SHORT).show();
-                                        int answers = parentPost.getAnswersCount();
-                                        HashMap<String, Object> hm = new HashMap<>();
-                                        hm.put("answersCount", answers);
-                                        answerRef.getParent().getParent().update(hm).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void unused) {
-                                                parentPost.setAnswersCount(answers);
-                                            }
-                                        });
+
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override

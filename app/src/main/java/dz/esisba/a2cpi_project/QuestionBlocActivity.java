@@ -331,7 +331,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                         if (doc.exists())
                         {
                             likes = (ArrayList<String>) doc.get("likes");
-                            likes.remove(user.getUid());
+                            likes.add(user.getUid());
                             postsDataHolder.get(0).setLikes(likes);
                             //likes are stored for user for faster query
                             likesRef = fstore.collection("Users").document(user.getUid()).
@@ -490,7 +490,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
 
     private void PerformValidation(String answer)
     {
-        String answerId = post.getPostid() + Integer.toString(post.getAnswersCount());
+        String answerId = post.getPostid() +"#"+Integer.toString(post.getAnswersCount());
         Toast.makeText(QuestionBlocActivity.this, "Posting...", Toast.LENGTH_SHORT).show();
         HashMap<String, Object> data = new HashMap<>();
         data.put("postid", answerId);
@@ -514,6 +514,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                     dr.update("answersCount", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
+                            userRef.update("answers", FieldValue.arrayUnion(answerId));
                             post.setAnswersCount(post.getAnswersCount()+1);
                             Toast.makeText(QuestionBlocActivity.this, "Answer posted successfully", Toast.LENGTH_SHORT).show();
                             getDialog().dismiss();
