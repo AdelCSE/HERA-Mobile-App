@@ -15,7 +15,7 @@
       android:layout_marginLeft="15dp"
       android:layout_marginTop="10dp"
       android:background="@drawable/mainbtn"
-      android:src="@drawable/ic_arrow"/>
+      android:src="@drawable/ic_arrow" />
 
   <TextView
       android:layout_width="wrap_content"
@@ -25,14 +25,33 @@
       android:text="Settings"
       android:textSize="20sp"/>
 
-  <de.hdodenhof.circleimageview.CircleImageView
-      android:id="@+id/settingsImg"
-      android:layout_width="100dp"
-      android:layout_height="100dp"
-      android:layout_below="@+id/settingsBackBtn"
-      android:layout_marginTop="15dp"
-      android:layout_centerHorizontal="true"
-      android:background="@drawable/profileimg"/>
+  <ProgressBar
+      android:id="@+id/settingsProgressBar"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      android:indeterminateDrawable="@drawable/custom_progress_bar"
+      android:theme="@style/Theme.MyTheme" />
+
+  <ScrollView
+      android:id="@+id/settingsScrollView"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginTop="65dp"
+      android:visibility="gone"
+      >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+      <de.hdodenhof.circleimageview.CircleImageView
+          android:id="@+id/settingsImg"
+          android:layout_width="100dp"
+          android:layout_height="100dp"
+          android:layout_centerHorizontal="true"
+          android:layout_marginTop="5dp"
+          android:background="@drawable/profileimg" />
 
   <TextView
       android:id="@+id/settingsName"
@@ -44,41 +63,358 @@
       android:text="Name"
       android:textSize="20sp"/>
 
-  <TextView
-      android:id="@+id/settingsUsername"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@+id/settingsName"
-      android:layout_marginTop="5dp"
-      android:layout_centerHorizontal="true"
-      android:text="username"
-      android:textSize="14sp"/>
+      <TextView
+          android:id="@+id/settingsUsername"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/settingsName"
+          android:layout_centerHorizontal="true"
+          android:text="username"
+          android:textSize="14sp" />
 
   <androidx.appcompat.widget.AppCompatButton
       android:id="@+id/editProfileBtn"
-      android:layout_width="wrap_content"
+      android:layout_width="150dp"
       android:layout_height="45dp"
       android:layout_below="@+id/settingsUsername"
-      android:layout_marginTop="5dp"
       android:layout_centerHorizontal="true"
+      android:layout_marginTop="5dp"
       android:background="@drawable/googlebtn"
-      android:text="Edit profile"/>
+      android:text="Edit profile" />
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/editProfileBtn"
+      android:orientation="vertical">
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="15dp"
+      android:layout_marginTop="15dp"
+      android:layout_marginEnd="15dp"
+      android:background="@drawable/notifbox">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="15dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notifications"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
+
+          <ImageView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+            android:src="@drawable/ic_notif_settings"/>
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="10dp"
+              android:textSize="16sp"
+              android:textStyle="bold"
+              android:layout_weight="1"
+              android:text="Turn On/Off notifications"/>
+
+          <androidx.appcompat.widget.SwitchCompat
+              android:id="@+id/notificationsSwitch"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:checked="true"
+              android:theme="@style/Theme.MyTheme"
+              />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+  </RelativeLayout>
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/editProfileBtn"
+      android:layout_marginStart="15dp"
+      android:layout_marginTop="15dp"
+      android:layout_marginEnd="15dp"
+      android:background="@drawable/notifbox">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="15dp"
+          android:text="Email"
+          android:textColor="@color/black"
+          android:textSize="20sp"
+          android:textStyle="bold" />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_marginLeft="15dp"
+          android:layout_marginTop="5dp"
+          android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+          android:src="@drawable/ic_emai_settings"/>
+
+        <TextView
+            android:id="@+id/settingsEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="aa.mokadem@esi-sba.dz"
+            android:layout_marginStart="10dp"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="(Current Email)" />
+
+      </LinearLayout>
+
+      <View
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:layout_marginStart="5dp"
+          android:layout_marginTop="10dp"
+          android:layout_marginEnd="5dp"
+          android:layout_marginBottom="10dp"
+          android:background="@color/shimmer_color" />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="15dp"
+          android:text="Login"
+          android:textColor="@color/black"
+          android:textSize="20sp"
+          android:textStyle="bold" />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="5dp"
+          android:layout_marginStart="15dp"
+          >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+          android:src="@drawable/ic_passwod_settings"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:orientation="vertical">
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Change password"
+              android:textSize="16sp"
+              android:textStyle="bold" />
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center_vertical"
+              android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Try to use a strong password that you're not using elsewhere " />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:src="@drawable/ic_change_password" />
+
+          </LinearLayout>
+
+        </LinearLayout>
+
+      </LinearLayout>
+
+      <View
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:layout_marginStart="5dp"
+          android:layout_marginTop="10dp"
+          android:layout_marginEnd="5dp"
+          android:layout_marginBottom="10dp"
+          android:background="@color/shimmer_color" />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="15dp"
+          android:text="Security"
+          android:textColor="@color/black"
+          android:textSize="20sp"
+          android:textStyle="bold" />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_marginTop="5dp"
+          android:gravity="center_vertical"
+          android:layout_marginStart="15dp"
+          >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+          android:src="@drawable/ic_security_settings"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:text="We need to choose a security system"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/securitySwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:theme="@style/Theme.MyTheme"
+            />
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_below="@+id/editProfileBtn"
-        android:layout_marginTop="15dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="15dp"
         android:background="@drawable/notifbox">
 
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="15dp"
+          android:layout_marginTop="10dp"
+          android:layout_marginBottom="10dp"
+          android:layout_marginEnd="15dp"
+          android:orientation="vertical">
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Help"
+              android:textColor="@color/black"
+              android:textStyle="bold"
+              android:textSize="20sp"
+              />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_marginTop="5dp"
+            >
+          <ImageView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+            android:src="@drawable/ic_help_settings"/>
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="10dp"
+              android:textSize="16sp"
+              android:textStyle="bold"
+              android:text="Help/moderators"/>
+
+        </LinearLayout>
+
+      </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/notifbox">
+
+      <LinearLayout
+          android:id="@+id/logOutApp"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:gravity="center_vertical"
+          android:paddingLeft="15dp"
+          android:paddingTop="10dp"
+          android:paddingBottom="10dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_sign_out" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Log out"
+            android:textColor="#f64747"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+      </LinearLayout>
 
 
     </RelativeLayout>
 
+  </LinearLayout>
 
-
+    </RelativeLayout>
+  </ScrollView>
 
 
 </RelativeLayout>

@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -41,7 +42,11 @@ import org.w3c.dom.Text;
 
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +56,7 @@ import dz.esisba.a2cpi_project.LoginActivity;
 import dz.esisba.a2cpi_project.QuestionBlocActivity;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.SearchActivity;
+import dz.esisba.a2cpi_project.SettingsActivity;
 import dz.esisba.a2cpi_project.UserProfileActivity;
 import dz.esisba.a2cpi_project.adapter.PostAdapter;
 import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
@@ -70,7 +76,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     private RecyclerView recyclerView;
     private ArrayList<PostModel> PostsDataHolder;
     private PostAdapter adapter;
-    private ImageButton imageButton , searchBtn;
+    private ImageButton settingsBtn , searchBtn;
     private SwipeRefreshLayout refresh;
 
     private FirebaseAuth auth;
@@ -94,7 +100,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
         refresh = parentHolder.findViewById(R.id.homeRefreshLayout);
         searchBtn = parentHolder.findViewById(R.id.search_btn);
-        imageButton = parentHolder.findViewById(R.id.logoutBtn);
+        settingsBtn = parentHolder.findViewById(R.id.settingsBtn);
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
@@ -119,17 +125,14 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                adapter.notifyDataSetChanged();
                 refresh.setRefreshing(false);
             }
         });
 
-        imageButton.setOnClickListener(new View.OnClickListener() {
+        settingsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clearToken(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(getActivity(), LoginActivity.class));
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
             }
         });
 
@@ -371,17 +374,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         i--;
         likesTxt.setText(Integer.toString(i));
 
-    }
-
-    //function that delete the token of the user Because when the user is signed-out he doesn't receive Notifications
-    private void clearToken(String uid){
-        final Map<String,Object> emptyToken = new HashMap<>();
-        emptyToken.put("Token", FieldValue.delete());
-        FirebaseFirestore
-                .getInstance()
-                .collection("Users")
-                .document(uid)
-                .update(emptyToken);
     }
 
     //Send Like Notification to the publisher, this method will be executed when the current user like a post
