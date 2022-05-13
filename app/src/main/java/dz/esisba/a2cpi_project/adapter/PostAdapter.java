@@ -21,9 +21,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 
 import java.util.ArrayList;
@@ -52,7 +55,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
     public myviewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_post,parent,false);
-        return new myviewholder(view , mListner, PostsHolder);
+        return new myviewholder(view , mListner, PostsHolder, this);
     }
 
     @Override
@@ -93,6 +96,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
     }
 
 
+
     @Override
     public int getItemCount() {
         return PostsHolder.size();
@@ -108,7 +112,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
         private FirebaseUser user;
         private FirebaseFirestore fstore;
 
-        public myviewholder (@NonNull View itemView , PostsOnItemClickListner listner , ArrayList<PostModel> postHolder){
+        public myviewholder (@NonNull View itemView , PostsOnItemClickListner listner , ArrayList<PostModel> postHolder, PostAdapter adapter){
             super(itemView);
             img = itemView.findViewById(R.id.img);
             Question = itemView.findViewById(R.id.question);
@@ -123,6 +127,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
             auth = FirebaseAuth.getInstance();
             fstore = FirebaseFirestore.getInstance();
             user = auth.getCurrentUser();
+
 
             likeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -205,16 +210,36 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
                         popupMenu.inflate(R.menu.my_post_menu);
                     else popupMenu.inflate(R.menu.post_menu);
 
+
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem menuItem) {
                             boolean b = false;
+                            PostModel postModel = postHolder.get(position);
                             if (menuItem.getTitle().equals("Delete")) {
+                                postHolder.remove(position);
+                                adapter.notifyItemRemoved(position);
+                                DocumentReference postRef = FirebaseFirestore.getInstance().collection("Posts").document(postModel.getPostid());
+                                CollectionReference answers =FirebaseFirestore.getInstance().collection("Posts").
+                                        document(postModel.getPostid()).collection("Answers");
+                                answers.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                document.getReference().delete();
+                                            }
+                                            postRef.delete();
+                                            Toast.makeText(view.getContext(), "Post deleted", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(view.getContext(), "Some error occurred try again later", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
                                 Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
                                 b = true;
                             }
                             else {
-                                PostModel postModel = postHolder.get(position);
                                 int reportCount = postModel.getReportsCount();
                                 reportCount++;
                                 DocumentReference postRef = FirebaseFirestore.getInstance().collection("Posts").document(postModel.getPostid());

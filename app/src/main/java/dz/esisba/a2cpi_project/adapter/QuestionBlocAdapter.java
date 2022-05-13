@@ -16,14 +16,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.R;
@@ -67,7 +73,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }else{
             context = parent.getContext();
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_answer, parent, false);
-            return  new ViewHolder2(view,aListner, AllPostsDataHolder);
+            return  new ViewHolder2(view,aListner, AllPostsDataHolder, this);
         }
     }
 
@@ -130,7 +136,6 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private void RunCheckForLikesAnswerLikes(PostModel post, LottieAnimationView lottieAnimationView) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         DocumentReference likesRef = FirebaseFirestore.getInstance().collection("Users").document(user.getUid())
-               // collection("Likes").document(postid)
                 .collection("AnswerLikes").document(post.getPostid());
         likesRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override //check if the document exists, i.e current user likes the post
@@ -280,7 +285,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         private FirebaseAuth auth;
         private FirebaseUser user;
         private FirebaseFirestore fstore;
-        public ViewHolder2(@NonNull View itemView, QuestionsOnItemClickListner listner, ArrayList<PostModel> postModel) {
+        public ViewHolder2(@NonNull View itemView, QuestionsOnItemClickListner listner, ArrayList<PostModel> postHolder, QuestionBlocAdapter adapter) {
             super(itemView);
             img = itemView.findViewById(R.id.imga);
             Username = itemView.findViewById(R.id.usernamea);
@@ -346,21 +351,60 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 public void onClick(View view) {
                     int position = getAbsoluteAdapterPosition();
                     PopupMenu popupMenu = new PopupMenu(view.getContext(),view);
-                    if (user.getUid().equals(postModel.get(position).getPublisher()))
+                    if (user.getUid().equals(postHolder.get(position).getPublisher()))
                         popupMenu.inflate(R.menu.my_post_menu);
                     else popupMenu.inflate(R.menu.post_menu);
 
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem menuItem) {
+                            boolean b = false;
+                            PostModel postModel = postHolder.get(position);
+                            PostModel parentPost = AllPostsDataHolder.get(0);
                             if (menuItem.getTitle().equals("Delete")) {
-                                Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
-                                return true;
+                                postHolder.remove(position);
+                                adapter.notifyItemRemoved(position);
+                                DocumentReference answerRef = FirebaseFirestore.getInstance().collection("Posts").
+                                        document(parentPost.getPostid()).collection("Answers").document(postModel.getPostid());
+                                answerRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(view.getContext(), "Answer deleted", Toast.LENGTH_SHORT).show();
+                                        answerRef.getParent().getParent().get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot doc) {
+                                                int answers = doc.getLong("answersCount").intValue();
+                                                answers--;
+                                                HashMap<String, Object> hm = new HashMap<>();
+                                                hm.put("answersCount", answers);
+                                                answerRef.getParent().getParent().update(hm);
+                                            }
+                                        });
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(view.getContext(), "Some error occurred try again later", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                b = true;
                             }
                             else {
-                                Toast.makeText(view.getContext(), "Report", Toast.LENGTH_SHORT).show();
-                                return true;
+                                int reportCount = postModel.getReportsCount();
+                                reportCount++;
+                                DocumentReference answerRef = FirebaseFirestore.getInstance().collection("Posts").
+                                        document(parentPost.getPostid()).collection("Answers").document(postModel.getPostid());
+                                HashMap<String, Object> hm = new HashMap<>();
+                                hm.put("reportsCount", reportCount);
+                                answerRef.update(hm).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(view.getContext(), "Your report has been sent", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                b = true;
                             }
+                            return b;
                         }
                     });
                     popupMenu.show();

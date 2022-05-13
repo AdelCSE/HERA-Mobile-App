@@ -500,6 +500,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         data.put("Username", askedByUsername);
         data.put("Date", date);
         data.put("likesCount", 0);
+        data.put("reportsCount", 0);
 
         DocumentReference df = postRef.collection("Answers").document(answerId);
         df.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
