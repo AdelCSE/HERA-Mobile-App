@@ -1,14 +1,20 @@
 package dz.esisba.a2cpi_project.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.firebase.Timestamp;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PostModel implements Serializable {
-   private String askedBy,publisher,Username,question,body,postid,Date,publisherPic,answerBy;
+public class PostModel implements Serializable, Parcelable {
+   private String askedBy,publisher,Username,question,body,postid,publisherPic,answerBy;
+   private Timestamp Date;
    private int likesCount,answersCount, reportsCount;
-   private ArrayList<String> tags;
+   private ArrayList<String> tags, likes;
 
-    public PostModel(String askedBy, String publisher, String username, String question, String body, String postid, String date, String publisherPic, int likesCount, int answersCount, ArrayList<String> tags) {
+    public PostModel(String askedBy, String publisher, String username, String question, String body, String postid, Timestamp date, String publisherPic, int likesCount, int answersCount, ArrayList<String> tags) {
         this.askedBy = askedBy;
         this.publisher = publisher;
         Username = username;
@@ -22,7 +28,8 @@ public class PostModel implements Serializable {
         this.tags = tags;
     }
 
-    public PostModel(String askedBy, String publisher, String username, String question, String body, String postid, String date, String publisherPic, String answerBy, int likesCount, int answersCount, int reportsCount, ArrayList<String> tags) {
+
+    public PostModel(String askedBy, String publisher, String username, String question, String body, String postid, Timestamp date, String publisherPic, String answerBy, int likesCount, int answersCount, int reportsCount, ArrayList<String> tags, ArrayList<String> likes) {
         this.askedBy = askedBy;
         this.publisher = publisher;
         Username = username;
@@ -36,7 +43,37 @@ public class PostModel implements Serializable {
         this.answersCount = answersCount;
         this.reportsCount = reportsCount;
         this.tags = tags;
+        this.likes = likes;
     }
+
+    protected PostModel(Parcel in) {
+        askedBy = in.readString();
+        publisher = in.readString();
+        Username = in.readString();
+        question = in.readString();
+        body = in.readString();
+        postid = in.readString();
+        publisherPic = in.readString();
+        answerBy = in.readString();
+        Date = in.readParcelable(Timestamp.class.getClassLoader());
+        likesCount = in.readInt();
+        answersCount = in.readInt();
+        reportsCount = in.readInt();
+        tags = in.createStringArrayList();
+        likes = in.createStringArrayList();
+    }
+
+    public static final Creator<PostModel> CREATOR = new Creator<PostModel>() {
+        @Override
+        public PostModel createFromParcel(Parcel in) {
+            return new PostModel(in);
+        }
+
+        @Override
+        public PostModel[] newArray(int size) {
+            return new PostModel[size];
+        }
+    };
 
     public ArrayList<String> getTags() {
         return tags;
@@ -85,7 +122,7 @@ public class PostModel implements Serializable {
         return postid;
     }
 
-    public String getDate() {
+    public Timestamp getDate() {
         return Date;
     }
 
@@ -117,7 +154,7 @@ public class PostModel implements Serializable {
         this.body = body;
     }
 
-    public void setDate(String date) {
+    public void setDate(Timestamp date) {
         Date = date;
     }
 
@@ -139,5 +176,36 @@ public class PostModel implements Serializable {
 
     public void setReportsCount(int reportsCount) {
         this.reportsCount = reportsCount;
+    }
+
+    public ArrayList<String> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(ArrayList<String> likes) {
+        this.likes = likes;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(askedBy);
+        parcel.writeString(publisher);
+        parcel.writeString(Username);
+        parcel.writeString(question);
+        parcel.writeString(body);
+        parcel.writeString(postid);
+        parcel.writeString(publisherPic);
+        parcel.writeString(answerBy);
+        parcel.writeParcelable(Date, i);
+        parcel.writeInt(likesCount);
+        parcel.writeInt(answersCount);
+        parcel.writeInt(reportsCount);
+        parcel.writeStringList(tags);
+        parcel.writeStringList(likes);
     }
 }

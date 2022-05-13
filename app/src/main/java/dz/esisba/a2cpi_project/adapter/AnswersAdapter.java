@@ -36,7 +36,7 @@ public class AnswersAdapter extends RecyclerView.Adapter<AnswersAdapter.myviewho
         holder.Username.setText(AnswerHolder.get(position).getUsername());
         holder.Details.setText(AnswerHolder.get(position).getBody());
         holder.Likes.setText(Integer.toString(AnswerHolder.get(position).getLikesCount()));
-        holder.Date.setText(AnswerHolder.get(position).getDate());
+        holder.Date.setText(AnswerHolder.get(position).getDate().toString());
     }
 
     @Override

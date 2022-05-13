@@ -28,6 +28,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -35,6 +36,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -63,7 +65,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
     private String downloadUrl;
     private PostModel post;
     private int count;
-    private int likes;
+    private ArrayList<String> likes;
     private DocumentReference postRef;
 
     @Override
@@ -232,7 +234,9 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                         DocumentSnapshot doc = task.getResult();
                         if (doc.exists())
                         {
-                            likes = doc.getLong("likesCount").intValue();
+                            likes = (ArrayList<String>) doc.get("likes");
+                            likes.add(user.getUid());
+                            postsDataHolder.get(position).setLikes(likes);
                             //likes are stored for user for faster query
                             likesRef = fstore.collection("Users").document(user.getUid()).
                                     collection("AnswerLikes").document(p.getPostid());
@@ -240,21 +244,11 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                             hashMap.put("uid", user.getUid());
                             hashMap.put("postid", post.getPostid());
                             hashMap.put("answerid", p.getPostid()); //we might need tags later for recommendation system
-                            likesRef.set(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    likes++;
-                                    Map<String,Object> hm = new HashMap<>();
-                                    hm.put("likesCount", likes);
-                                    //update likes count for the post
-                                    postRef.update(hm).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            LikeFailure(lottieAnimationView, likesTxt, position);
-                                        }
-                                    });
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
+                            Map<String,Object> hm = new HashMap<>();
+                            hm.put("likes", likes);
+                            hm.put("likesCount", likes.size());
+                            //update likes count for the post
+                            postRef.update(hm).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     LikeFailure(lottieAnimationView, likesTxt, position);
@@ -284,16 +278,17 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                         DocumentSnapshot doc = task.getResult();
                         if (doc.exists())
                         {
-                            likes = doc.getLong("likesCount").intValue();
+                            likes = (ArrayList<String>) doc.get("likes");
+                            likes.remove(user.getUid());
+                            postsDataHolder.get(position).setLikes(likes);
                             likesRef = fstore.collection("Users").document(user.getUid()).
                                     collection("AnswerLikes").document(p.getPostid());
                             likesRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    likes--;
                                     Map<String,Object> hm = new HashMap<>();
-                                    hm.put("likesCount", likes);
-                                    //update likes count for the post
+                                    hm.put("likes", likes);
+                                    hm.put("likesCount", likes.size());
                                     postRef.update(hm).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
@@ -336,7 +331,9 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                         DocumentSnapshot doc = task.getResult();
                         if (doc.exists())
                         {
-                            likes = doc.getLong("likesCount").intValue();
+                            likes = (ArrayList<String>) doc.get("likes");
+                            likes.remove(user.getUid());
+                            postsDataHolder.get(0).setLikes(likes);
                             //likes are stored for user for faster query
                             likesRef = fstore.collection("Users").document(user.getUid()).
                                     collection("Likes").document(post.getPostid());
@@ -347,9 +344,9 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                             likesRef.set(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    likes++;
                                     Map<String,Object> hm = new HashMap<>();
-                                    hm.put("likesCount", likes);
+                                    hm.put("likes", likes);
+                                    hm.put("likesCount", likes.size());
                                     //update likes count for the post
                                     postRef.update(hm).addOnFailureListener(new OnFailureListener() {
                                         @Override
@@ -369,7 +366,8 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                     else LikeFailure(lottieAnimationView, likesTxt, position);
                 }
             });
-        } else {
+        } else
+        {
             lottieAnimationView.setSpeed(-2);
             lottieAnimationView.playAnimation();//play like animation
             lottieAnimationView.setTag("Like");
@@ -387,15 +385,18 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                         DocumentSnapshot doc = task.getResult();
                         if (doc.exists())
                         {
-                            likes = doc.getLong("likesCount").intValue();
+                            likes = (ArrayList<String>) doc.get("likes");
+                            likes.remove(user.getUid());
+                            postsDataHolder.get(0).setLikes(likes);
                             likesRef = fstore.collection("Users").document(user.getUid()).
                                     collection("Likes").document(post.getPostid());
                             likesRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    likes--;
+                                    post.setLikes(likes);
                                     Map<String,Object> hm = new HashMap<>();
-                                    hm.put("likesCount", likes);
+                                    hm.put("likes", likes);
+                                    hm.put("likesCount", likes.size());
                                     //update likes count for the post
                                     postRef.update(hm).addOnFailureListener(new OnFailureListener() {
                                         @Override
@@ -427,7 +428,8 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         recyclerView.setAdapter(adapter);
     }
 
-    String date = DateFormat.getInstance().format(new Date());
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    Date date = new Date();
 
     public void showAnswerDialog(){
         View view = getLayoutInflater().inflate(R.layout.activty_add_answer,null,false);
@@ -501,34 +503,25 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         data.put("Date", date);
         data.put("likesCount", 0);
         data.put("reportsCount", 0);
+        ArrayList<String> likes = new ArrayList();
+        data.put("likes", likes);
 
         DocumentReference df = postRef.collection("Answers").document(answerId);
         df.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Task<QuerySnapshot> answerReference = postRef.collection("Answers")
-                            .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful())
-                                    {
-                                        count = task.getResult().size();
-                                        HashMap<String, Object> hm = new HashMap<>();
-                                        hm.put("answersCount", count);
-                                        postRef.update(hm).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void unused) {
-                                                Toast.makeText(QuestionBlocActivity.this, "Answer posted successfully", Toast.LENGTH_SHORT).show();
-                                                getDialog().dismiss();
-                                                startActivity(new Intent(getApplicationContext(), BottomNavigationActivity.class));
-                                                finish();
-                                            }
-                                        });
-
-                                    }
-                                }
-                            });
+                    DocumentReference dr = fstore.collection("Posts").document(post.getPostid());
+                    dr.update("answersCount", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            post.setAnswersCount(post.getAnswersCount()+1);
+                            Toast.makeText(QuestionBlocActivity.this, "Answer posted successfully", Toast.LENGTH_SHORT).show();
+                            getDialog().dismiss();
+                            startActivity(new Intent(getApplicationContext(), BottomNavigationActivity.class));
+                            finish();
+                        }
+                    });
                 }
                 else
                 {
@@ -579,6 +572,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
     public void setDialog(BottomSheetDialog dialog) {
         this.dialog = dialog;
     }
+
 
 
 }

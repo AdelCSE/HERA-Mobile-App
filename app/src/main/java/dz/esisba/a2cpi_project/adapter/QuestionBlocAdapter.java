@@ -88,7 +88,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             viewHolder1.Details.setText(AllPostsDataHolder.get(position).getBody());
             viewHolder1.Likes.setText(Integer.toString(AllPostsDataHolder.get(position).getLikesCount()));
             viewHolder1.Answers.setText(Integer.toString(AllPostsDataHolder.get(position).getAnswersCount()));
-            viewHolder1.Date.setText(AllPostsDataHolder.get(position).getDate());
+            viewHolder1.Date.setText(AllPostsDataHolder.get(position).getDate().toString());
             RunCheckForLikes(AllPostsDataHolder.get(position), viewHolder1.likeBtn);
 
         }else if (holder.getItemViewType()==2){
@@ -105,15 +105,14 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             viewHolder2.Username.setText("@"+AllPostsDataHolder.get(position).getUsername());
             viewHolder2.Details.setText(AllPostsDataHolder.get(position).getBody());
             viewHolder2.Likes.setText(Integer.toString(AllPostsDataHolder.get(position).getLikesCount()));
-            viewHolder2.Date.setText(AllPostsDataHolder.get(position).getDate());
+            viewHolder2.Date.setText(AllPostsDataHolder.get(position).getDate().toString());
             RunCheckForLikesAnswerLikes(AllPostsDataHolder.get(position), viewHolder2.likeBtn);
         }
     }
 
     private void RunCheckForLikes(PostModel post, LottieAnimationView lottieAnimationView) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        DocumentReference likesRef = FirebaseFirestore.getInstance().collection("Users").document(user.getUid()).
-                collection("Likes").document(post.getPostid());
+        DocumentReference likesRef = FirebaseFirestore.getInstance().collection("Posts").document(post.getPostid());
         likesRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override //check if the document exists, i.e current user likes the post
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -134,26 +133,18 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     private void RunCheckForLikesAnswerLikes(PostModel post, LottieAnimationView lottieAnimationView) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        DocumentReference likesRef = FirebaseFirestore.getInstance().collection("Users").document(user.getUid())
-                .collection("AnswerLikes").document(post.getPostid());
-        likesRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override //check if the document exists, i.e current user likes the post
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot doc = task.getResult();
-                    if (doc.exists()) {
-                        lottieAnimationView.setSpeed(100);
-                        lottieAnimationView.playAnimation();
-                        lottieAnimationView.setTag("Liked");
-                    }
-                    else
-                    {
-                        lottieAnimationView.setTag("Like");
-                    }
-                }
-            }
-        });
+        ArrayList<String> likes = post.getLikes();
+
+        if (likes.contains(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+        {
+            lottieAnimationView.setSpeed(100);
+            lottieAnimationView.playAnimation();
+            lottieAnimationView.setTag("Liked");
+        }
+        else
+        {
+            lottieAnimationView.setTag("Like");
+        };
     }
 
     @Override
@@ -364,6 +355,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             if (menuItem.getTitle().equals("Delete")) {
                                 postHolder.remove(position);
                                 adapter.notifyItemRemoved(position);
+                         //       DeleteLikes(postModel, "AnswerLikes");
                                 DocumentReference answerRef = FirebaseFirestore.getInstance().collection("Posts").
                                         document(parentPost.getPostid()).collection("Answers").document(postModel.getPostid());
                                 answerRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -410,6 +402,68 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 }
             });
         }
+        /*private void DeleteLikes(PostModel postModel, String collection)
+        {
+            if (collection.equals("Likes"))
+            {
+                CollectionReference userRef = fstore.collection("Users");
+                DocumentReference postRef = fstore.collection("Posts")
+                        .document(postModel.getPostid());
+                postRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot doc) {
+                        ArrayList<String> likes = (ArrayList<String>) doc.get("likes");
+                        for (String id: likes) {
+                            Task<QuerySnapshot> cr = userRef.document(id).collection(collection).
+                                    get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            document.getReference().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+            else
+            {
+                CollectionReference userRef = fstore.collection("Users");
+                DocumentReference postRef = fstore.collection("Posts")
+                        .document(AllPostsDataHolder.get(0).getPostid()).
+                                collection("Answers").document(postModel.getPostid());
+                postRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot doc) {
+                        ArrayList<String> likes = (ArrayList<String>) doc.get("likes");
+                        for (String id: likes) {
+                            Task<QuerySnapshot> cr = userRef.document(id).collection(collection).
+                                    get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            document.getReference().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        }*/
     }
 
     public class ViewHolder3 extends RecyclerView.ViewHolder {

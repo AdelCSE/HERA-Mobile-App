@@ -89,7 +89,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
     private boolean liked = false;
     private static  String date = DateFormat.getInstance().format(new Date());
-    private int likes;
+    private ArrayList<String> likes;
     APIService apiService;
     final static String TAG ="_____________________";
 
@@ -258,6 +258,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
             int i = Integer.parseInt(likesTxt.getText().toString());
             i++;
             likesTxt.setText(Integer.toString(i));
+            PostsDataHolder.get(position).setLikesCount(i);
 
             postRef.document(post.getPostid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -267,7 +268,9 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                         DocumentSnapshot doc = task.getResult();
                         if (doc.exists())
                         {
-                            likes = doc.getLong("likesCount").intValue();
+                            likes = (ArrayList<String>) doc.get("likes");
+                            likes.add(user.getUid());
+                            PostsDataHolder.get(position).setLikes(likes);
                             //likes are stored for user for faster query
                             likesRef = fstore.collection("Users").document(user.getUid()).
                                     collection("Likes").document(post.getPostid());
@@ -278,9 +281,9 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                                 likesRef.set(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
-                                        likes++;
                                         Map<String,Object> hm = new HashMap<>();
-                                        hm.put("likesCount", likes);
+                                        hm.put("likes", likes);
+                                        hm.put("likesCount", likes.size());
                                         //update likes count for the post
                                         postRef.document(post.getPostid()).update(hm).addOnFailureListener(new OnFailureListener() {
                                             @Override
@@ -309,6 +312,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
             int i = Integer.parseInt(likesTxt.getText().toString());
             i--;
             likesTxt.setText(Integer.toString(i));
+            PostsDataHolder.get(position).setLikesCount(i);
 
             postRef.document(post.getPostid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -318,15 +322,17 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                         DocumentSnapshot doc = task.getResult();
                         if (doc.exists())
                         {
-                            likes = doc.getLong("likesCount").intValue();
+                            likes = (ArrayList<String>) doc.get("likes");
+                            likes.remove(user.getUid());
+                            PostsDataHolder.get(position).setLikes(likes);
                             likesRef = fstore.collection("Users").document(user.getUid()).
                                     collection("Likes").document(post.getPostid());
                             likesRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    likes--;
                                     Map<String,Object> hm = new HashMap<>();
-                                    hm.put("likesCount", likes);
+                                    hm.put("likes", likes);
+                                    hm.put("likesCount", likes.size());
                                     //update likes count for the post
                                     postRef.document(post.getPostid()).update(hm).addOnFailureListener(new OnFailureListener() {
                                         @Override

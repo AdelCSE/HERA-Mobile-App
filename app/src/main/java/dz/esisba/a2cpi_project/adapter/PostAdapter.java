@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -35,7 +34,6 @@ import java.util.HashMap;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
-import dz.esisba.a2cpi_project.navigation_fragments.ProfileFragment;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> {
 
@@ -68,15 +66,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
         holder.Details.setText(PostsHolder.get(position).getBody());
         holder.Likes.setText(Integer.toString(PostsHolder.get(position).getLikesCount()));
         holder.Answers.setText(Integer.toString(PostsHolder.get(position).getAnswersCount()));
-        holder.Date.setText(PostsHolder.get(position).getDate());
+        holder.Date.setText(PostsHolder.get(position).getDate().toString());
         RunCheckForLikes(PostsHolder.get(position), holder.likeBtn);
     }
 
     private void RunCheckForLikes(PostModel post, LottieAnimationView lottieAnimationView) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        DocumentReference likesRef = FirebaseFirestore.getInstance().collection("Users").document(user.getUid()).
-                collection("Likes").document(post.getPostid());
-        likesRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        ArrayList<String> likes = post.getLikes();
+
+        if (likes.contains(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+        {
+            lottieAnimationView.setSpeed(100);
+            lottieAnimationView.playAnimation();
+            lottieAnimationView.setTag("Liked");
+        }
+        else
+        {
+            lottieAnimationView.setTag("Like");
+        }
+        /*likesRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override //check if the document exists, i.e current user likes the post
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -92,7 +99,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
                     }
                 }
             }
-        });
+        });*/
     }
 
 
@@ -219,6 +226,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
                             if (menuItem.getTitle().equals("Delete")) {
                                 postHolder.remove(position);
                                 adapter.notifyItemRemoved(position);
+                                //DeleteLikes(postModel, "Likes");
                                 DocumentReference postRef = FirebaseFirestore.getInstance().collection("Posts").document(postModel.getPostid());
                                 CollectionReference answers =FirebaseFirestore.getInstance().collection("Posts").
                                         document(postModel.getPostid()).collection("Answers");
@@ -260,5 +268,35 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
                 }
             });
         }
+
+        /*private void DeleteLikes(PostModel postModel, String collection)
+        {
+            CollectionReference userRef = FirebaseFirestore.getInstance().collection("Users");
+            DocumentReference postRef = FirebaseFirestore.getInstance().collection("Posts")
+                    .document(postModel.getPostid());
+            postRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot doc) {
+                    ArrayList<String> likes = (ArrayList<String>) doc.get("likes");
+                    for (String id: likes) {
+                        Task<QuerySnapshot> cr = userRef.document(id).collection(collection).
+                                get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        document.getReference().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }*/
     }
 }

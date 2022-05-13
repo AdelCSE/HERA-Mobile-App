@@ -43,7 +43,7 @@ public class SearchRecommendationAdapter extends RecyclerView.Adapter<SearchReco
         Glide.with(context).load(QuestionsHolder.get(position).getPublisherPic()).into(holder.img);
         holder.Question.setText(QuestionsHolder.get(position).getQuestion());
         holder.Username.setText("@"+QuestionsHolder.get(position).getUsername());
-        holder.Date.setText(QuestionsHolder.get(position).getDate());
+        holder.Date.setText(QuestionsHolder.get(position).getDate().toString());
     }
 
     @Override

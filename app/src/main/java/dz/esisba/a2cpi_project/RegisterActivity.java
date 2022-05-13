@@ -25,6 +25,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,7 +33,8 @@ import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private static  String date = DateFormat.getInstance().format(new Date());
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    Date date = new Date();
 
     EditText  nameEditTxt, emailEditTxt, pwEditTxt, confirmPwEditTxt;
     Button registerBtn;
