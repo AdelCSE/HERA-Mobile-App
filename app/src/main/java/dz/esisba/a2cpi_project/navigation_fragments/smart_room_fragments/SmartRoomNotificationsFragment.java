@@ -1,14 +1,13 @@
 package dz.esisba.a2cpi_project.navigation_fragments.smart_room_fragments;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import dz.esisba.a2cpi_project.R;
 

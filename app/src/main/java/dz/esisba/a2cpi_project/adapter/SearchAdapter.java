@@ -2,7 +2,6 @@ package dz.esisba.a2cpi_project.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.UserProfileActivity;
 import dz.esisba.a2cpi_project.models.UserModel;
-import dz.esisba.a2cpi_project.navigation_fragments.ProfileFragment;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.UsersViewHolder> {
 
