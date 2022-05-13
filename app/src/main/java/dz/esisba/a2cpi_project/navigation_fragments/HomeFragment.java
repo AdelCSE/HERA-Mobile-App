@@ -1,5 +1,7 @@
 package dz.esisba.a2cpi_project.navigation_fragments;
 
+import static android.view.View.GONE;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,8 +17,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -67,7 +71,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     private ArrayList<PostModel> PostsDataHolder;
     private PostAdapter adapter;
     private ImageButton imageButton , searchBtn;
-
+    private SwipeRefreshLayout refresh;
 
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -75,6 +79,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     private DocumentReference likesRef;
     private CollectionReference postRef;
     private String downloadUrl;
+    ShimmerFrameLayout shimmer;
 
     private boolean liked = false;
     private static  String date = DateFormat.getInstance().format(new Date());
@@ -87,6 +92,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         parentHolder = inflater.inflate(R.layout.fragment_home,container,false);
 
+        refresh = parentHolder.findViewById(R.id.homeRefreshLayout);
         searchBtn = parentHolder.findViewById(R.id.search_btn);
         imageButton = parentHolder.findViewById(R.id.logoutBtn);
         auth = FirebaseAuth.getInstance();
@@ -109,6 +115,14 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 }
             }
         });*/
+
+        refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.notifyDataSetChanged();
+                refresh.setRefreshing(false);
+            }
+        });
 
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override

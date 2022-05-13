@@ -17,14 +17,15 @@ import java.util.ArrayList;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
 import dz.esisba.a2cpi_project.interfaces.QuestionsOnItemClickListner;
+import dz.esisba.a2cpi_project.interfaces.SearchOnItemClick;
 import dz.esisba.a2cpi_project.models.PostModel;
 
 public class SearchRecommendationAdapter extends RecyclerView.Adapter<SearchRecommendationAdapter.ViewHolder1> {
     private ArrayList<PostModel> QuestionsHolder;
     private Context context;
-    private QuestionsOnItemClickListner mListner;
+    private SearchOnItemClick mListner;
 
-    public SearchRecommendationAdapter(ArrayList<PostModel> questionsHolder, QuestionsOnItemClickListner mListner) {
+    public SearchRecommendationAdapter(ArrayList<PostModel> questionsHolder, SearchOnItemClick mListner) {
         QuestionsHolder = questionsHolder;
         this.mListner = mListner;
     }
@@ -55,7 +56,7 @@ public class SearchRecommendationAdapter extends RecyclerView.Adapter<SearchReco
         ImageView AnswerBtn;
         ImageView img;
         TextView Question,Username,Date;
-        public ViewHolder1(@NonNull View itemView,QuestionsOnItemClickListner listner) {
+        public ViewHolder1(@NonNull View itemView,SearchOnItemClick listner) {
             super(itemView);
             img = itemView.findViewById(R.id.imgRQ);
             Question = itemView.findViewById(R.id.questionRQ);
@@ -63,6 +64,17 @@ public class SearchRecommendationAdapter extends RecyclerView.Adapter<SearchReco
             Date = itemView.findViewById(R.id.dateRQ);
 
             itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listner != null){
+                        int position = getAbsoluteAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listner.onItemClick(position);
+                        }
+                    }
+                }
+            });
+            itemView.findViewById(R.id.answerBtnRQ).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (listner != null){
