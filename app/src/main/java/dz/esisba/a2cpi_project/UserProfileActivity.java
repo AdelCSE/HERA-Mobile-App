@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,14 +23,10 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,10 +35,11 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.adapter.UserProfileAdapter;
+import dz.esisba.a2cpi_project.interfaces.SetUserModelInterface;
 import dz.esisba.a2cpi_project.models.PostModel;
 import dz.esisba.a2cpi_project.models.UserModel;
 
-public class UserProfileActivity extends AppCompatActivity {
+public class UserProfileActivity extends AppCompatActivity implements SetUserModelInterface {
     private TextView usernameTxt,name, bio, followersCount, followingCount;
     private Button followBtn;
     private static  String date = DateFormat.getInstance().format(new Date());
@@ -64,10 +61,14 @@ public class UserProfileActivity extends AppCompatActivity {
     UserProfileAdapter adapter;
     Toolbar toolbar;
 
+    public UserModel getUserModel() {
+        return userModel;
+    }
 
     private String[] titles = {"All" , "Questions" , "Answers"};
     private ArrayList<String> currUserFollowers, followings;
 
+    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -250,6 +251,12 @@ public class UserProfileActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+
+    @Override
+    public UserModel setUserModel() {
+        return userModel;
     }
 }
 

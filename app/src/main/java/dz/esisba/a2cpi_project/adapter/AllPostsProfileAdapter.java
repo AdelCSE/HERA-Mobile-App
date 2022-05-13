@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
@@ -63,14 +64,15 @@ public class AllPostsProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             viewHolder1.Details.setText(AllPostsDataHolder.get(position).getBody());
             viewHolder1.Likes.setText(Integer.toString(AllPostsDataHolder.get(position).getLikesCount()));
             viewHolder1.Answers.setText(Integer.toString(AllPostsDataHolder.get(position).getAnswersCount()));
-            viewHolder1.Date.setText(AllPostsDataHolder.get(position).getDate().toString());
+            viewHolder1.Date.setText(AllPostsDataHolder.get(position).ConvertDate());
         }else {
             ViewHolder2 viewHolder2 = (ViewHolder2) holder;
+            Glide.with(context).load(AllPostsDataHolder.get(position).getPublisherPic()).into(viewHolder2.img);
             viewHolder2.Question.setText(AllPostsDataHolder.get(position).getQuestion());
             viewHolder2.Username.setText("@"+AllPostsDataHolder.get(position).getUsername());
             viewHolder2.Details.setText(AllPostsDataHolder.get(position).getBody());
             viewHolder2.Likes.setText(Integer.toString(AllPostsDataHolder.get(position).getLikesCount()));
-            viewHolder2.Date.setText(AllPostsDataHolder.get(position).getDate().toString());
+            viewHolder2.Date.setText(AllPostsDataHolder.get(position).ConvertDate());
         }
     }
 
@@ -80,7 +82,7 @@ public class AllPostsProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     public class ViewHolder1 extends RecyclerView.ViewHolder{
-        ImageView img;
+        CircleImageView img;
         TextView Question,Details,Name,Username,Likes,Answers,Date;
         public ViewHolder1(@NonNull View itemView, PostsOnItemClickListner listner, ArrayList<PostModel> postModel) {
             super(itemView);
@@ -130,10 +132,12 @@ public class AllPostsProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     public class ViewHolder2 extends RecyclerView.ViewHolder{
+        CircleImageView img;
         TextView Question,Details,Username,Likes,Date;
 
         public ViewHolder2(@NonNull View itemView , PostsOnItemClickListner listner, ArrayList<PostModel> postModel) {
             super(itemView);
+            img = itemView.findViewById(R.id.imgpa);
             Question = itemView.findViewById(R.id.questionpa);
             Username = itemView.findViewById(R.id.usernamepa);
             Details = itemView.findViewById(R.id.detailspa);
