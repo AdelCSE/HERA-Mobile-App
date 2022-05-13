@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,6 +46,7 @@ public class TagsFragment extends Fragment implements SearchOnItemClick {
     private SearchRecommendationAdapter adapter;
     private FirebaseFirestore fstore;
     private CollectionReference postRef;
+    private ImageButton backBtn;
     private Chip all,newborn, kid, baby,
                  sleeping,healthcare,breastfeeding,needs,circumcision,routine,food,
                  fever, influenza,hepatitis,conjunctivitis,
@@ -61,6 +63,14 @@ public class TagsFragment extends Fragment implements SearchOnItemClick {
         postRef = fstore.collection("Posts");
         QuestionsDataHolder = new ArrayList<>();
         refresh = parentHolder.findViewById(R.id.searchRefresh);
+        backBtn = parentHolder.findViewById(R.id.tagsFilterBackBtn);
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                requireActivity().onBackPressed();
+            }
+        });
 
 
 

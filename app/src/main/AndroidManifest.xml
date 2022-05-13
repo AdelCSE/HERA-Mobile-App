@@ -25,11 +25,12 @@
             android:name="likeNotification.MyFirebaseService"
             android:enabled="true"
             android:exported="true" />
-
+        <activity
+            android:name=".ChangePasswordActivity"
+            android:exported="false" />
         <activity
             android:name=".SettingsActivity"
             android:exported="false" />
-
         <activity
             android:name=".SplashScreenActivity"
             android:exported="false" />
