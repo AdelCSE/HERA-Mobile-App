@@ -31,7 +31,9 @@ import dz.esisba.a2cpi_project.QuestionBlocActivity;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.adapter.PostAdapter;
 import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
+import dz.esisba.a2cpi_project.interfaces.SetUserModelInterface;
 import dz.esisba.a2cpi_project.models.PostModel;
+import dz.esisba.a2cpi_project.models.UserModel;
 
 public class QuestionsFragment extends Fragment implements PostsOnItemClickListner {
 
@@ -39,6 +41,8 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
     RecyclerView recyclerView;
     ArrayList<PostModel> QuestionsDataHolder;
     PostAdapter adapter;
+
+    private UserModel userModel;
 
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -75,22 +79,23 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
 
         //recyclerView.setAdapter(new PostAdapter(QuestionsDataHolder));//
 
+        SetUserModelInterface id = (SetUserModelInterface) getActivity();
+        userModel = id.setUserModel();
+
         FetchPosts();
 
         return parentHolder;
     }
 
     private void FetchPosts() {
-        QuestionsDataHolder = new ArrayList<>();
 
-        postRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+        postRef.whereEqualTo("publisher", userModel.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         PostModel post = document.toObject(PostModel.class);
-                        if(user.getUid().equals(post.getPublisher()))
-                        QuestionsDataHolder.add(post);
                     }
                     buildRecyclerView();
                 } else {

@@ -491,7 +491,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
 
     private void PerformValidation(String answer)
     {
-        String answerId = post.getPostid() + Integer.toString(post.getAnswersCount());
+        String answerId = post.getPostid() +"#"+Integer.toString(post.getAnswersCount());
         Toast.makeText(QuestionBlocActivity.this, "Posting...", Toast.LENGTH_SHORT).show();
         HashMap<String, Object> data = new HashMap<>();
         data.put("postid", answerId);

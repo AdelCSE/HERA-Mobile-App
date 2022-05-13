@@ -1,5 +1,6 @@
 package dz.esisba.a2cpi_project.navigation_fragments.profile_fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +28,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-import dz.esisba.a2cpi_project.QuestionBlocActivity;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.adapter.AnswersAdapter;
-import dz.esisba.a2cpi_project.adapter.PostAdapter;
 import dz.esisba.a2cpi_project.interfaces.AnswersOnItemClickListner;
+import dz.esisba.a2cpi_project.interfaces.SetUserModelInterface;
 import dz.esisba.a2cpi_project.models.PostModel;
+import dz.esisba.a2cpi_project.models.UserModel;
 
 
 public class AnswersFragment extends Fragment implements AnswersOnItemClickListner {
@@ -40,6 +42,10 @@ public class AnswersFragment extends Fragment implements AnswersOnItemClickListn
     RecyclerView recyclerView;
     ArrayList<PostModel> AnswersDataHolder;
     AnswersAdapter adapter;
+
+    Context context;
+
+    private UserModel userModel;
 
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -59,6 +65,7 @@ public class AnswersFragment extends Fragment implements AnswersOnItemClickListn
         postRef = fstore.collection("Posts");
 
         AnswersDataHolder = new ArrayList<>();
+        context = parentHolder.getContext();
 
         /*PostModel Post1 = new PostModel(R.drawable.exemple, "Adel Mokadem" , "@addy1001" , "What's your Question1" , "details here","1000",null,"11:11 AM • 29 APR 22");
         AnswersDataHolder.add(Post1);
@@ -71,7 +78,10 @@ public class AnswersFragment extends Fragment implements AnswersOnItemClickListn
         PostModel Post5 = new PostModel(R.drawable.exemple, "Adel Mokadem" , "@addy1001" , "What's your Question5" , "details here","1000",null,"08:25 AM • 29 APR 22");
         AnswersDataHolder.add(Post5);*/
 
-        FetchAnswers();
+        SetUserModelInterface id = (SetUserModelInterface) getActivity();
+        userModel = id.setUserModel();
+        if (userModel==null) Toast.makeText(context, "null", Toast.LENGTH_SHORT).show();
+       // FetchAnswers();
 
         return parentHolder;
     }
@@ -86,36 +96,30 @@ public class AnswersFragment extends Fragment implements AnswersOnItemClickListn
 
     public void FetchAnswers(){
         AnswersDataHolder = new ArrayList<>();
-
-        postRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        PostModel post = document.toObject(PostModel.class);
-                        DocumentReference DocRef = postRef.document(post.getPostid());
-                        DocRef.collection("Answers").whereEqualTo("publisher",user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task1) {
-                                if (task1.isSuccessful()) {
-                                    for (QueryDocumentSnapshot document1 : task1.getResult()) {
-                                        PostModel answer = document1.toObject(PostModel.class);
-                                        answer.setAnswersCount(-1);
-                                        AnswersDataHolder.add(answer);
-                                        buildRecyclerView();
-                                    }
-                                } else {
-                                    Toast.makeText(getContext(), "Network error", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-
+        ArrayList<String> answers = userModel.getAnswers();
+        ArrayList<String> postIDs = new ArrayList<>();
+        for (String s: answers) {
+            String id = s.split("#")[0];
+            if(!postIDs.contains(id)) postIDs.add(id);
+        }
+        for (String id: postIDs) {
+            postRef.document(id).collection("Answers").whereEqualTo("publisher", userModel.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            PostModel answer = document.toObject(PostModel.class);
+                            answer.setAnswersCount(-1);
+                            AnswersDataHolder.add(answer);
+                        }
+                        buildRecyclerView();
+                    } else {
+                        Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
+            });
+        }
+
     }
 
     @Override
