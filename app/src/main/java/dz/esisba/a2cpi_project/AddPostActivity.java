@@ -28,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -195,7 +196,8 @@ public class AddPostActivity extends AppCompatActivity {
         return questionEditTxt.getText().toString().trim();
     }
 
-    String date = DateFormat.getInstance().format(new Date());
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    Date date = new Date();
     DocumentReference ref = FirebaseFirestore.getInstance().collection("Posts").document();
 
     String getBodyEditTxt() {
@@ -222,6 +224,8 @@ public class AddPostActivity extends AppCompatActivity {
             data.put("likesCount", 0);
             data.put("answersCount", 0);
             data.put("reportsCount", 0);
+            ArrayList likes = new ArrayList();
+            data.put("likes", likes);
 
            DocumentReference df = fstore.collection("Posts").document(postId);
            df.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {

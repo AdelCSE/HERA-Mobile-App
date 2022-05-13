@@ -63,14 +63,14 @@ public class AllPostsProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             viewHolder1.Details.setText(AllPostsDataHolder.get(position).getBody());
             viewHolder1.Likes.setText(Integer.toString(AllPostsDataHolder.get(position).getLikesCount()));
             viewHolder1.Answers.setText(Integer.toString(AllPostsDataHolder.get(position).getAnswersCount()));
-            viewHolder1.Date.setText(AllPostsDataHolder.get(position).getDate());
+            viewHolder1.Date.setText(AllPostsDataHolder.get(position).getDate().toString());
         }else {
             ViewHolder2 viewHolder2 = (ViewHolder2) holder;
             viewHolder2.Question.setText(AllPostsDataHolder.get(position).getQuestion());
             viewHolder2.Username.setText("@"+AllPostsDataHolder.get(position).getUsername());
             viewHolder2.Details.setText(AllPostsDataHolder.get(position).getBody());
             viewHolder2.Likes.setText(Integer.toString(AllPostsDataHolder.get(position).getLikesCount()));
-            viewHolder2.Date.setText(AllPostsDataHolder.get(position).getDate());
+            viewHolder2.Date.setText(AllPostsDataHolder.get(position).getDate().toString());
         }
     }
 
