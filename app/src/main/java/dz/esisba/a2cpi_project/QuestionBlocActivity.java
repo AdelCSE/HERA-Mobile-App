@@ -507,7 +507,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Task<QuerySnapshot> followingReference = postRef.collection("Answers")
+                    Task<QuerySnapshot> answerReference = postRef.collection("Answers")
                             .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {

@@ -370,14 +370,13 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                     @Override
                                     public void onSuccess(Void unused) {
                                         Toast.makeText(view.getContext(), "Answer deleted", Toast.LENGTH_SHORT).show();
-                                        answerRef.getParent().getParent().get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        int answers = parentPost.getAnswersCount();
+                                        HashMap<String, Object> hm = new HashMap<>();
+                                        hm.put("answersCount", answers);
+                                        answerRef.getParent().getParent().update(hm).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
-                                            public void onSuccess(DocumentSnapshot doc) {
-                                                int answers = doc.getLong("answersCount").intValue();
-                                                answers--;
-                                                HashMap<String, Object> hm = new HashMap<>();
-                                                hm.put("answersCount", answers);
-                                                answerRef.getParent().getParent().update(hm);
+                                            public void onSuccess(Void unused) {
+                                                parentPost.setAnswersCount(answers);
                                             }
                                         });
                                     }
