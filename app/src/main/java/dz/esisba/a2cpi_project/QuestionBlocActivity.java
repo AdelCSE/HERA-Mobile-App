@@ -494,6 +494,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         Toast.makeText(QuestionBlocActivity.this, "Posting...", Toast.LENGTH_SHORT).show();
         HashMap<String, Object> data = new HashMap<>();
         data.put("postid", answerId);
+        data.put("question", post.getQuestion());
         data.put("publisherPic", downloadUrl);
         data.put("body", answer);
         data.put("publisher", user.getUid().toString());

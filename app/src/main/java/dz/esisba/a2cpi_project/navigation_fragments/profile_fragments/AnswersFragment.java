@@ -1,6 +1,7 @@
 package dz.esisba.a2cpi_project.navigation_fragments.profile_fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -124,7 +125,12 @@ public class AnswersFragment extends Fragment implements AnswersOnItemClickListn
 
     @Override
     public void onShareClick(int position) {
-
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        String Body = "Download this app";
+        intent.putExtra(Intent.EXTRA_TEXT,Body);
+        intent.putExtra(Intent.EXTRA_TEXT,"URL");
+        startActivity(Intent.createChooser(intent,"Share using"));
     }
 
 
