@@ -1,19 +1,17 @@
 package dz.esisba.a2cpi_project.navigation_fragments.profile_fragments;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import java.util.ArrayList;
 
 import dz.esisba.a2cpi_project.R;
-import dz.esisba.a2cpi_project.adapter.NotificationAdapter;
 import dz.esisba.a2cpi_project.adapter.RequestAdapter;
 import dz.esisba.a2cpi_project.models.RequestModel;
 

@@ -17,15 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.2CPI_PROJECT" >
 
-        <service
-            android:name="likeNotification.MyFirebaseMessagingService"
-            android:enabled="true"
-            android:exported="true" />
-        <service
-            android:name="likeNotification.MyFirebaseService"
-            android:enabled="true"
-            android:exported="true" />
 
+
+        <activity
+            android:name=".ChangePasswordActivity"
+            android:exported="false" />
         <activity
             android:name=".SettingsActivity"
             android:exported="false" />
@@ -69,6 +65,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name="NotificationTest.FirebaseMessagingService"
+            android:permission="TODO"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

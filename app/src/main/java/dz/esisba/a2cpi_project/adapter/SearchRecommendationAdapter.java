@@ -15,8 +15,6 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 import dz.esisba.a2cpi_project.R;
-import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
-import dz.esisba.a2cpi_project.interfaces.QuestionsOnItemClickListner;
 import dz.esisba.a2cpi_project.interfaces.SearchOnItemClick;
 import dz.esisba.a2cpi_project.models.PostModel;
 

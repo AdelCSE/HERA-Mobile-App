@@ -1,7 +1,7 @@
 package dz.esisba.a2cpi_project.navigation_fragments;
 
-import static android.view.View.GONE;
-
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,32 +25,24 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.Source;
 import com.google.firebase.messaging.FirebaseMessaging;
-
-import org.w3c.dom.Text;
 
 import java.io.Serializable;
 import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import NotificationTest.FcmNotificationsSender;
 import dz.esisba.a2cpi_project.BottomNavigationActivity;
 import dz.esisba.a2cpi_project.LoginActivity;
 import dz.esisba.a2cpi_project.QuestionBlocActivity;
@@ -62,13 +54,7 @@ import dz.esisba.a2cpi_project.adapter.PostAdapter;
 import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
 import dz.esisba.a2cpi_project.models.UserModel;
-import likeNotification.APIService;
-import likeNotification.Data;
-import likeNotification.MyResponse;
-import likeNotification.NotificationSender;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+
 
 public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
@@ -86,11 +72,12 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     private CollectionReference postRef;
     private String downloadUrl;
     ShimmerFrameLayout shimmer;
+    Activity MainActivity;
 
     private boolean liked = false;
     private static  String date = DateFormat.getInstance().format(new Date());
     private ArrayList<String> likes;
-    APIService apiService;
+
     final static String TAG ="_____________________";
 
     @Nullable
@@ -248,6 +235,27 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 PostsDataHolder.get(position).getBody(),PostsDataHolder.get(position).getPostid(),
                 PostsDataHolder.get(position).getDate(),PostsDataHolder.get(position).getPublisherPic(),
                 PostsDataHolder.get(position).getLikesCount(),PostsDataHolder.get(position).getAnswersCount(), PostsDataHolder.get(position).getTags());
+        Log.d("___________________", "onLikeClick: _________");
+
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                String token= task.getResult();
+                Log.d("--///////", "////"+token+"/////");
+            }
+            else{
+                Log.d("-----------    --", "onCreate: FFFFFFFFFFFFFF");
+            }
+        });
+
+
+        Notify("eWa992FOTI2EBtSVkN6rpw:APA91bFwNJLp6X3cN-lBVrInzpYqz285bmBS3ikvyu5MqX8OaKfXZ1lM5e1TwlRuDp2LbjmVopn1ur3gA-RXFlPlDGJQnYHPUDdvZIcCBfNEptRtGxISD9KM6B9xIJBGQ8ll4_7C_KHp",
+                "We Adel Waslatek Notification ?",
+                "ila waslatek golli");
+
+
+
+
+
 
         if (lottieAnimationView.getTag().equals("Like"))
         {
@@ -376,24 +384,22 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
     }
 
-    //Send Like Notification to the publisher, this method will be executed when the current user like a post
-    public void sendNotification(String publisherToken,String title , String message){
-        Data data = new Data(title,message);
-        NotificationSender sender = new NotificationSender(data, publisherToken);
-        apiService.sendNotifcation(sender).enqueue(new Callback<MyResponse>() {
-            @Override
-            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                if(response.code() == 200){
-                    if(response.body().success != 1){
-                        //Toast.makeText(HomeFragment.this, "Failed", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "onResponse: _____");
-                    }
-                }
-            }
-            @Override
-            public void onFailure(Call<MyResponse> call, Throwable t) {
-            }
-        });
+//    public void clearToken(){
+//
+//    }
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    public void Notify(String publisherToken,String title,String message){
+        FcmNotificationsSender send = new FcmNotificationsSender(
+                publisherToken,
+                title,
+                message,
+                getActivity(),
+                HomeFragment.super.getActivity());
+
+        send.SendNotifications();
+        Log.d("----------------", "Notification function: ////////////");
     }
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 }

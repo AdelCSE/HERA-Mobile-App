@@ -6,13 +6,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import dz.esisba.a2cpi_project.navigation_fragments.NotificationsFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.profile_fragments.AllFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.profile_fragments.AnswersFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.profile_fragments.QuestionsFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.profile_fragments.RequestsFragment;
-import dz.esisba.a2cpi_project.navigation_fragments.smart_room_fragments.SmartRoomNotificationsFragment;
-import dz.esisba.a2cpi_project.navigation_fragments.smart_room_fragments.SmartRoomStatisticsFragment;
 
 public class ProfileAdapter extends FragmentStateAdapter {
 

@@ -2,7 +2,6 @@ package dz.esisba.a2cpi_project.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class UserModel implements Serializable {
     private String Name, Username, profilePictureUrl, bannerUrl, uid, bio;

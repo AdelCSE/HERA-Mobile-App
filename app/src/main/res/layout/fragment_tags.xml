@@ -7,7 +7,7 @@
     tools:context=".search_fragments.TagsFragment">
 
     <ImageButton
-        android:id="@+id/backBtn"
+        android:id="@+id/tagsFilterBackBtn"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginLeft="15dp"
