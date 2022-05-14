@@ -33,7 +33,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.auth.Token;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
 
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -237,28 +239,24 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 PostsDataHolder.get(position).getLikesCount(),PostsDataHolder.get(position).getAnswersCount(), PostsDataHolder.get(position).getTags());
         Log.d("___________________", "onLikeClick: _________");
 
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
-                String token= task.getResult();
-                Log.d("--///////", "////"+token+"/////");
-            }
-            else{
-                Log.d("-----------    --", "onCreate: FFFFFFFFFFFFFF");
-            }
-        });
-
-
-        Notify("eWa992FOTI2EBtSVkN6rpw:APA91bFwNJLp6X3cN-lBVrInzpYqz285bmBS3ikvyu5MqX8OaKfXZ1lM5e1TwlRuDp2LbjmVopn1ur3gA-RXFlPlDGJQnYHPUDdvZIcCBfNEptRtGxISD9KM6B9xIJBGQ8ll4_7C_KHp",
-                "We Adel Waslatek Notification ?",
-                "ila waslatek golli");
-
-
-
-
 
 
         if (lottieAnimationView.getTag().equals("Like"))
         {
+            fstore.collection("Users").document(post.getPublisher()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()){
+                        String s=task.getResult().getString("Token");
+                        Log.d("=================", "============"+s);
+                        Notify(task.getResult().getString("Token"),
+                                user.getDisplayName()+" Like Your Post",
+                                "Click Here To Open Your Post");
+                    }
+
+                }
+            });
+
             lottieAnimationView.setSpeed(2);
             lottieAnimationView.playAnimation();//play like animation
             lottieAnimationView.setTag("Liked");
@@ -360,6 +358,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 }
             });
         }
+        //updateToken();
     }
 
     private void DislikeFailure(LottieAnimationView lottieAnimationView, TextView likesTxt, int position)
@@ -384,10 +383,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
     }
 
-//    public void clearToken(){
-//
-//    }
-    ////////////////////////////////////////////////////////////////////////////////////////////
+
     public void Notify(String publisherToken,String title,String message){
         FcmNotificationsSender send = new FcmNotificationsSender(
                 publisherToken,
@@ -399,7 +395,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         send.SendNotifications();
         Log.d("----------------", "Notification function: ////////////");
     }
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 }
+
+//TODO Add updateToken Function
