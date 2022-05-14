@@ -1,7 +1,7 @@
 package dz.esisba.a2cpi_project.navigation_fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,9 +33,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.auth.Token;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingService;
 
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -45,8 +42,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import NotificationTest.FcmNotificationsSender;
-import dz.esisba.a2cpi_project.BottomNavigationActivity;
-import dz.esisba.a2cpi_project.LoginActivity;
 import dz.esisba.a2cpi_project.QuestionBlocActivity;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.SearchActivity;
@@ -74,7 +69,8 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     private CollectionReference postRef;
     private String downloadUrl;
     ShimmerFrameLayout shimmer;
-    Activity MainActivity;
+
+
 
     private boolean liked = false;
     private static  String date = DateFormat.getInstance().format(new Date());
@@ -237,29 +233,34 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 PostsDataHolder.get(position).getBody(),PostsDataHolder.get(position).getPostid(),
                 PostsDataHolder.get(position).getDate(),PostsDataHolder.get(position).getPublisherPic(),
                 PostsDataHolder.get(position).getLikesCount(),PostsDataHolder.get(position).getAnswersCount(), PostsDataHolder.get(position).getTags());
-        Log.d("___________________", "onLikeClick: _________");
-
 
 
         if (lottieAnimationView.getTag().equals("Like"))
         {
+
+            //sending like notification to the publisher
+            Task<DocumentSnapshot> s = fstore.collection("Users").document(user.getUid()).get();
             fstore.collection("Users").document(post.getPublisher()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @SuppressLint("LongLogTag")
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if(task.isSuccessful()){
-                        String s=task.getResult().getString("Token");
-                        Log.d("=================", "============"+s);
+                    if(task.isSuccessful()&& s.isSuccessful()){
                         Notify(task.getResult().getString("Token"),
-                                user.getDisplayName()+" Like Your Post",
-                                "Click Here To Open Your Post");
+                                s.getResult().getString("Name")+"Liked your shit",
+                                "Click To See Your Post",
+                                HomeFragment.super.getActivity());
                     }
-
+                    else{
+                        //Toast.maketext
+                        Log.d("Calling notify likeOnclik", "onComplete: Failure");
+                    }
                 }
             });
 
-            lottieAnimationView.setSpeed(2);
+            lottieAnimationView.setSpeed(3);
             lottieAnimationView.playAnimation();//play like animation
             lottieAnimationView.setTag("Liked");
+
 
             int i = Integer.parseInt(likesTxt.getText().toString());
             i++;
@@ -384,17 +385,31 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     }
 
 
-    public void Notify(String publisherToken,String title,String message){
-        FcmNotificationsSender send = new FcmNotificationsSender(
-                publisherToken,
-                title,
-                message,
-                getActivity(),
-                HomeFragment.super.getActivity());
+    public void Notify(String publisherToken,String title,String message,Activity activity){
 
-        send.SendNotifications();
-        Log.d("----------------", "Notification function: ////////////");
+        fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    if(task.getResult().getString("Token").equals(publisherToken)) {
+                        FcmNotificationsSender send = new FcmNotificationsSender(
+                                publisherToken,
+                                title,
+                                message,
+                                getActivity(),
+                                activity);
+                        send.SendNotifications();
+                    }
+                }
+            }
+        });
     }
 }
 
-//TODO Add updateToken Function
+//TODO Add updateToken Function [Optional]
+/*
+Type of Notification
+1/ like => 1.1/like of post tedik lel post  1.2/ like of answer tedik lel answer
+2/follow => profile li darlek follow
+3/Smart Room [Not Ready yet]
+ */

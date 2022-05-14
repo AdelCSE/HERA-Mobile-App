@@ -6,7 +6,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -33,11 +35,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import NotificationTest.FcmNotificationsSender;
 import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.adapter.UserProfileAdapter;
 import dz.esisba.a2cpi_project.interfaces.GetUserInterface;
 import dz.esisba.a2cpi_project.models.PostModel;
 import dz.esisba.a2cpi_project.models.UserModel;
+import dz.esisba.a2cpi_project.navigation_fragments.HomeFragment;
 
 public class UserProfileActivity extends AppCompatActivity implements GetUserInterface {
     private TextView usernameTxt,name, bio, followersCount, followingCount;
@@ -52,7 +56,7 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
     private PostModel postModel;
 
     FirebaseAuth auth;
-    FirebaseUser user,user1;
+    FirebaseUser user;
     FirebaseFirestore fstore;
 
 
@@ -115,6 +119,25 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
             public void onClick(View view) {
                 if (followBtn.getTag().equals("follow"))
                 {
+                    //sending like notification to the publisher
+                    Task<DocumentSnapshot> s = fstore.collection("Users").document(user.getUid()).get();
+                    fstore.collection("Users").document(postModel.getPublisher()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @SuppressLint("LongLogTag")
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if(task.isSuccessful()&& s.isSuccessful()){
+                                Notify(task.getResult().getString("Token"),
+                                        s.getResult().getString("Name")+"Followed You",
+                                        "Click To See His Profile",
+                                        UserProfileActivity.this);
+                                Log.d("Calling notify likeOnclik", "onComplete: SSSucccuess");
+                            }
+                            else{
+                                Log.d("Calling notify likeOnclik", "onComplete: Failure");
+                            }
+                        }
+                    });
+
                     followBtn.setText("Unfollow");
                     followBtn.setTag("following");
 
@@ -255,5 +278,25 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
     @Override
     public UserModel getUserModel() {
         return userModel;
+    }
+
+    public void Notify(String publisherToken, String title, String message, Activity activity){
+
+        fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    if(task.getResult().getString("Token").equals(publisherToken)) {
+                        FcmNotificationsSender send = new FcmNotificationsSender(
+                                publisherToken,
+                                title,
+                                message,
+                                getApplicationContext(),
+                                activity);
+                        send.SendNotifications();
+                    }
+                }
+            }
+        });
     }
 }

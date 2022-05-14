@@ -8,8 +8,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.RemoteMessage;
@@ -23,11 +27,14 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
     NotificationManager mNotificationManager;
 
+    @Override
+    public void onNewToken(@NonNull String token) {
+        super.onNewToken(token);
+    }
 
     @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-
 
 
         int resourceImage = getResources().getIdentifier(Objects.requireNonNull(remoteMessage.getNotification()).getIcon(), "drawable", getPackageName());
