@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import dz.esisba.a2cpi_project.QuestionBlocActivity;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.adapter.PostAdapter;
+import dz.esisba.a2cpi_project.adapter.QuestionsAdapter;
 import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
 import dz.esisba.a2cpi_project.interfaces.GetUserInterface;
 import dz.esisba.a2cpi_project.models.PostModel;
@@ -40,7 +41,7 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
     View parentHolder;
     RecyclerView recyclerView;
     ArrayList<PostModel> QuestionsDataHolder;
-    PostAdapter adapter;
+    QuestionsAdapter adapter;
 
     private UserModel userModel;
 
@@ -100,7 +101,7 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
     public void buildRecyclerView() {
         recyclerView = parentHolder.findViewById(R.id.recviewQuestions);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new PostAdapter(QuestionsDataHolder,this);
+        adapter = new QuestionsAdapter(QuestionsDataHolder,this);
         recyclerView.setAdapter(adapter);
 
     }
@@ -143,9 +144,7 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
 
 
     @Override
-    public void onLikeClick(int position, LottieAnimationView lottieAnimationView, TextView likesTxt, boolean isAnswer) {
-
-    }
+    public void onLikeClick(int position, LottieAnimationView lottieAnimationView, TextView likesTxt, boolean isAnswer) {}
 
     @Override
     public void onItemClick(int position) {

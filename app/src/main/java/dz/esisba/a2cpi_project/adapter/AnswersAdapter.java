@@ -42,7 +42,7 @@ public class AnswersAdapter extends RecyclerView.Adapter<AnswersAdapter.myviewho
         holder.Question.setText(AnswerHolder.get(position).getQuestion());
         holder.Username.setText(AnswerHolder.get(position).getUsername());
         holder.Details.setText(AnswerHolder.get(position).getBody());
-        holder.Likes.setText(Integer.toString(AnswerHolder.get(position).getLikesCount()));
+        holder.Likes.setText(Integer.toString(AnswerHolder.get(position).getLikesCount())+" Likes");
         holder.Date.setText(AnswerHolder.get(position).ConvertDate());
     }
 
@@ -74,6 +74,13 @@ public class AnswersAdapter extends RecyclerView.Adapter<AnswersAdapter.myviewho
                             listner.onShareClick(position);
                         }
                     }
+                }
+            });
+
+            itemView.findViewById(R.id.answerMenuBtnpa).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
                 }
             });
         }

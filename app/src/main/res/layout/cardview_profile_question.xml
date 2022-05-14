@@ -29,7 +29,7 @@
                 android:textStyle="bold"
                 android:textSize="16sp"
                 android:text="What's your Question ?"
-                android:id="@+id/question"/>
+                android:id="@+id/questionp"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
                     android:layout_height="45dp"
                     android:layout_marginLeft="15dp"
                     android:src="@drawable/profileimg"
-                    android:id="@+id/img"/>
+                    android:id="@+id/imgp"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -59,10 +59,10 @@
                         android:textSize="12sp"
                         android:textColor="@color/black"
                         android:textStyle="bold"
-                        android:id="@+id/name"/>
+                        android:id="@+id/namep"/>
 
                     <TextView
-                        android:id="@+id/usernamep"
+                        android:id="@+id/usernamepq"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/name"
@@ -82,7 +82,7 @@
                 android:textSize="14sp"
                 android:textColor="@color/black"
                 android:text="details here "
-                android:id="@+id/details"/>
+                android:id="@+id/detailsp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -91,7 +91,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="15dp"
                 android:textSize="11sp"
-                android:id="@+id/postDate"/>
+                android:id="@+id/postDatep"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -104,31 +104,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-
+                    android:layout_marginStart="15dp"
                     android:layout_gravity="center_vertical">
 
-                    <LinearLayout
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_marginStart="15dp"
-                        >
-
-                        <com.airbnb.lottie.LottieAnimationView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:scaleY="2"
-                            android:scaleX="2"
-                            app:lottie_rawRes="@raw/likebtn"
-                            android:tag="Like"
-                            android:id="@+id/lottieLike"/>
-
-                    </LinearLayout>
-
-
-
-
                     <TextView
-                        android:id="@+id/likes"
+                        android:id="@+id/likesp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -137,7 +117,7 @@
                         android:textSize="12sp" />
 
                     <ImageButton
-                        android:id="@+id/answerBtn"
+                        android:id="@+id/answerBtnp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -146,7 +126,7 @@
                         android:src="@drawable/ic_edit" />
 
                     <TextView
-                        android:id="@+id/answers"
+                        android:id="@+id/answersp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -156,7 +136,7 @@
                         android:textSize="12sp" />
 
                     <ImageButton
-                        android:id="@+id/questionShareBtn"
+                        android:id="@+id/questionShareBtnp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -166,10 +146,8 @@
 
                 </LinearLayout>
 
-
-
                 <ImageButton
-                    android:id="@+id/questionMenuBtn"
+                    android:id="@+id/questionMenuBtnp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
