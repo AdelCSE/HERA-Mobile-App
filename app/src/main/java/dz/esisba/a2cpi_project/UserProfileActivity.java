@@ -35,11 +35,11 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.adapter.UserProfileAdapter;
-import dz.esisba.a2cpi_project.interfaces.SetUserModelInterface;
+import dz.esisba.a2cpi_project.interfaces.GetUserInterface;
 import dz.esisba.a2cpi_project.models.PostModel;
 import dz.esisba.a2cpi_project.models.UserModel;
 
-public class UserProfileActivity extends AppCompatActivity implements SetUserModelInterface {
+public class UserProfileActivity extends AppCompatActivity implements GetUserInterface {
     private TextView usernameTxt,name, bio, followersCount, followingCount;
     private Button followBtn;
     private static  String date = DateFormat.getInstance().format(new Date());
@@ -61,9 +61,7 @@ public class UserProfileActivity extends AppCompatActivity implements SetUserMod
     UserProfileAdapter adapter;
     Toolbar toolbar;
 
-    public UserModel getUserModel() {
-        return userModel;
-    }
+
 
     private String[] titles = {"All" , "Questions" , "Answers"};
     private ArrayList<String> currUserFollowers, followings;
@@ -255,10 +253,7 @@ public class UserProfileActivity extends AppCompatActivity implements SetUserMod
 
 
     @Override
-    public UserModel setUserModel() {
+    public UserModel getUserModel() {
         return userModel;
     }
 }
-
-//TODO: retrieve the name
-//TODO: add followers and following count

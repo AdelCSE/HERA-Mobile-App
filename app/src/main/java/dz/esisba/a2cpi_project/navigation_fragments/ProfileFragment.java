@@ -46,6 +46,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.EditProfileActivity;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.adapter.ProfileAdapter;
+import dz.esisba.a2cpi_project.interfaces.GetUserInterface;
 import dz.esisba.a2cpi_project.models.UserModel;
 
 public class ProfileFragment extends Fragment {
@@ -114,7 +115,6 @@ public class ProfileFragment extends Fragment {
         fstore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference().child("profileImages");
         bannerReference = FirebaseStorage.getInstance().getReference().child("profileBanners");
-
 
         DocumentReference df = fstore.collection("Users").document(user.getUid());
         GetCurrentUserModelAndSetInfo();
@@ -198,50 +198,39 @@ public class ProfileFragment extends Fragment {
 
     private void GetCurrentUserModelAndSetInfo()
     {
-        DocumentReference df = fstore.collection("Users").document(user.getUid());
-        df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful())
-                {
-                    DocumentSnapshot doc = task.getResult();
-                    if (doc.exists())
-                    {
-                        userModel =  doc.toObject(UserModel.class);
-                        followers = userModel.getFollowers();
-                        followings = userModel.getFollowing();
+        GetUserInterface id = (GetUserInterface) getActivity();
+        userModel = id.getUserModel();
 
-                        if (followers!=null) {
-                            String i = Integer.toString(followers.size());
-                            followersCount.setText(i);
-                        }
-                        if (followings!=null) {
-                            String j = Integer.toString(followings.size());
-                            followingCount.setText(j);
-                        }
+        followers = userModel.getFollowers();
+        followings = userModel.getFollowing();
 
-                        //set username
-                        toolbarLayout.setTitle(doc.get("Username").toString());
+        if (followers!=null) {
+            String i = Integer.toString(followers.size());
+            followersCount.setText(i);
+        }
+        if (followings!=null) {
+            String j = Integer.toString(followings.size());
+            followingCount.setText(j);
+        }
 
-                        if (doc.get("profilePictureUrl")!= null) { //set profile pic
-                            String downloadUrl = doc.get("profilePictureUrl").toString(); //TODO: ADD ON SUCCESS LISTENER
-                            Glide.with(ProfileFragment.this).load(downloadUrl).into(profileImg);
-                        }
-                        if (doc.get("bannerUrl")!= null) { //set banner
-                            String downloadUrl = doc.get("bannerUrl").toString();
-                            Glide.with(ProfileFragment.this).load(downloadUrl).into(banner);
-                        }
-                        if (doc.get("Name")!= null) { //set name
-                            name.setText(doc.get("Name").toString());
-                        }
-                        if(doc.get("Bio")!=null)
-                        { //set bio
-                            bio.setText(doc.get("Bio").toString());
-                        }
-                    }
-                }
-            }
-        });
+        //set username
+        toolbarLayout.setTitle(userModel.getUsername());
+
+        if (userModel.getProfilePictureUrl()!= null) { //set profile pic
+            String downloadUrl = userModel.getProfilePictureUrl();
+            Glide.with(ProfileFragment.this).load(downloadUrl).into(profileImg);
+        }
+        if (userModel.getBannerUrl()!= null) { //set banner
+            String downloadUrl = userModel.getBannerUrl();
+            Glide.with(ProfileFragment.this).load(downloadUrl).into(banner);
+        }
+        if (userModel.getName()!= null) { //set name
+            name.setText(userModel.getName());
+        }
+        if(userModel.getBio()!=null)
+        { //set bio
+            bio.setText(userModel.getBio());
+        }
     }
 
     private final ActivityResultLauncher<Intent> startForMediaPickerResult = registerForActivityResult(

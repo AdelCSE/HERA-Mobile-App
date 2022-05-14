@@ -35,16 +35,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import dz.esisba.a2cpi_project.interfaces.GetUserInterface;
+import dz.esisba.a2cpi_project.models.UserModel;
 import dz.esisba.a2cpi_project.navigation_fragments.AddPostFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.HomeFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.NotificationsFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.ProfileFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.SmartRoomFragment;
 
-public class BottomNavigationActivity extends AppCompatActivity {
+public class BottomNavigationActivity extends AppCompatActivity implements GetUserInterface {
 
     private FirebaseAuth auth;
     private FirebaseUser user;
+    UserModel currUser;
     private FirebaseFirestore fstore;
     private DocumentReference askedByRef;
     private String downloadUrl;
@@ -81,10 +84,26 @@ public class BottomNavigationActivity extends AppCompatActivity {
             }
         });
 
-        /*auth = FirebaseAuth.getInstance();
+        //get current user model
+        auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
         DocumentReference df = fstore.collection("Users").document(user.getUid());
+        df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful())
+                {
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc.exists())
+                    {
+                        currUser = doc.toObject(UserModel.class);
+                    }
+                }
+            }
+        });
+
+       /* DocumentReference df = fstore.collection("Users").document(user.getUid());
         //grab the existing info
         df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -154,4 +173,9 @@ public class BottomNavigationActivity extends AppCompatActivity {
                     return true;
                 }
             };
+
+    @Override
+    public UserModel getUserModel() {
+        return currUser;
+    }
 }

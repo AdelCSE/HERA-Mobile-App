@@ -31,7 +31,7 @@ import dz.esisba.a2cpi_project.QuestionBlocActivity;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.adapter.PostAdapter;
 import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
-import dz.esisba.a2cpi_project.interfaces.SetUserModelInterface;
+import dz.esisba.a2cpi_project.interfaces.GetUserInterface;
 import dz.esisba.a2cpi_project.models.PostModel;
 import dz.esisba.a2cpi_project.models.UserModel;
 
@@ -66,21 +66,12 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
 
         QuestionsDataHolder = new ArrayList<>();
 
-        /*PostModel Post1 = new PostModel(R.drawable.exemple, "Adel Mokadem" , "@addy1001" , "What's your Question1" , "details here","1000","500","11:11 AM • 29 APR 22");
-        QuestionsDataHolder.add(Post1);
-        PostModel Post2 = new PostModel(R.drawable.exemple, "Adel Mokadem" , "@addy1001" , "What's your Question2" , "details here","1000","500","11:08 AM • 29 APR 22");
-        QuestionsDataHolder.add(Post2);
-        PostModel Post3 = new PostModel(R.drawable.exemple, "Adel Mokadem" , "@addy1001" , "What's your Question3" , "details here","1000","500","10:45 AM • 29 APR 22");
-        QuestionsDataHolder.add(Post3);
-        PostModel Post4 = new PostModel(R.drawable.exemple, "Adel Mokadem" , "@addy1001" , "What's your Question4" , "details here","1000","500","10:30 AM • 29 APR 22");
-        QuestionsDataHolder.add(Post4);
-        PostModel Post5 = new PostModel(R.drawable.exemple, "Adel Mokadem" , "@addy1001" , "What's your Question5" , "details here","1000","500","08:25 AM • 29 APR 22");
-        QuestionsDataHolder.add(Post5);*/
 
         //recyclerView.setAdapter(new PostAdapter(QuestionsDataHolder));//
 
-        SetUserModelInterface id = (SetUserModelInterface) getActivity();
-        userModel = id.setUserModel();
+        GetUserInterface id = (GetUserInterface) getActivity();
+        userModel = id.getUserModel();
+       // if (userModel!=null) Toast.makeText(getActivity(), userModel.getUid(), Toast.LENGTH_SHORT).show();
 
         FetchPosts();
 
@@ -88,7 +79,7 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
     }
 
     private void FetchPosts() {
-
+        QuestionsDataHolder = new ArrayList<>();
 
         postRef.whereEqualTo("publisher", userModel.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -96,6 +87,7 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         PostModel post = document.toObject(PostModel.class);
+                        QuestionsDataHolder.add(post);
                     }
                     buildRecyclerView();
                 } else {
