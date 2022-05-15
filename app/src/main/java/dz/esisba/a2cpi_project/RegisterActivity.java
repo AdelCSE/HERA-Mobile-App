@@ -35,7 +35,7 @@ public class RegisterActivity extends AppCompatActivity {
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
     Date date = new Date();
 
-    EditText  nameEditTxt, emailEditTxt, pwEditTxt, confirmPwEditTxt;
+    EditText usernameEditTxt, emailEditTxt, pwEditTxt, confirmPwEditTxt, nameEditTxt;
     Button registerBtn;
     TextView loginBtn;
     FirebaseAuth auth;
@@ -49,6 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        usernameEditTxt = findViewById(R.id.usernameEditTxt);
         nameEditTxt = findViewById(R.id.nameEditTxt);
         emailEditTxt = findViewById(R.id.emailEditTxt);
         pwEditTxt = findViewById(R.id.passwordEditTxt);
@@ -68,18 +69,24 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String email = emailEditTxt.getText().toString().trim();
                 String password = pwEditTxt.getText().toString().trim();
+                String username = usernameEditTxt.getText().toString().trim();
                 String name = nameEditTxt.getText().toString().trim();
 
                 //name processing
+                if (TextUtils.isEmpty(username))
+                {
+                    usernameEditTxt.setError("Username is required!");
+                    return;
+                }
                 if (TextUtils.isEmpty(name))
                 {
                     nameEditTxt.setError("Name is required!");
                     return;
                 }
                 //regular expression to validate uername
-                if(!name.matches("^[a-zA-Z0-9._-]{3,}$"))
+                if(!username.matches("^[a-zA-Z0-9._-]{3,}$"))
                 {
-                    nameEditTxt.setError("Please enter a valid user name");
+                    usernameEditTxt.setError("Please enter a valid username");
                 }
 
                 //email processing
@@ -99,7 +106,7 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 }
 
-                if(CheckExistingUser(name))
+                if(CheckExistingUser(username))
                 {
                     progressBar.setVisibility(view.VISIBLE);
                     //registering user into firebase
@@ -118,7 +125,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 DocumentReference df = fstore.collection("Users").document(user.getUid());
                                 Map<String,Object> userInfor = new HashMap<>(); //represents key, value
                                 //can be used to categorise our data and organize it
-                                userInfor.put("Username", nameEditTxt.getText().toString());//user name categorie
+                                userInfor.put("Username", usernameEditTxt.getText().toString());
+                                userInfor.put("Name", nameEditTxt.getText().toString());//user name categorie
                                 userInfor.put("Email", email); //email categorie
                                 userInfor.put("uid", user.getUid());
                                 userInfor.put("createdAt", date);
@@ -176,7 +184,7 @@ public class RegisterActivity extends AppCompatActivity {
              if (task.getResult().size()>0) {
                  valid = false;
                  progressBar.setVisibility(View.GONE);
-                 nameEditTxt.setError("Username already exists");
+                 usernameEditTxt.setError("Username already exists");
              }
              else valid = true;
             }
