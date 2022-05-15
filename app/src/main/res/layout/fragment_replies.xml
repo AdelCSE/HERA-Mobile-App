@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".navigation_fragments.profile_fragments.AllFragment">
+    tools:context=".navigation_fragments.profile_fragments.RepliesFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="2dp"
         android:paddingBottom="80dp"
-        android:id="@+id/recviewAll"/>
+        android:id="@+id/recviewReplies"/>
 
 </FrameLayout>

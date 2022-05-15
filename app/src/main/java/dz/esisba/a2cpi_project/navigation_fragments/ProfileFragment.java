@@ -73,7 +73,7 @@ public class ProfileFragment extends Fragment {
     ProfileAdapter adapter;
 
 
-    private String[] titles = {"All" , "Questions" , "Answers" , "Requests"};
+    private String[] titles = {"Questions" , "Answers" , "Requests", "Replies"};
 
 
     @Nullable

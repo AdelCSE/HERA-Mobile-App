@@ -1,6 +1,7 @@
 package dz.esisba.a2cpi_project;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
@@ -10,7 +11,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,15 +25,19 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -39,25 +47,26 @@ import NotificationTest.FcmNotificationsSender;
 import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.adapter.UserProfileAdapter;
 import dz.esisba.a2cpi_project.interfaces.GetUserInterface;
-import dz.esisba.a2cpi_project.models.PostModel;
 import dz.esisba.a2cpi_project.models.UserModel;
-import dz.esisba.a2cpi_project.navigation_fragments.HomeFragment;
 
 public class UserProfileActivity extends AppCompatActivity implements GetUserInterface {
     private TextView usernameTxt,name, bio, followersCount, followingCount;
-    private Button followBtn;
+    private Button followBtn,askQuestion;
     private static  String date = DateFormat.getInstance().format(new Date());
     private static Boolean following = false;
     private CollapsingToolbarLayout toolbarLayout;
     private CircleImageView profilePic;
     private ImageView banner;
+    private BottomSheetDialog dialog;
+    private String askedByName,askedByUsername = "";
+    private DocumentReference askedByRef;
 
     private UserModel userModel, currentUserModel;
 
     FirebaseAuth auth;
     FirebaseUser user;
     FirebaseFirestore fstore;
-
+    private String downloadUrl;
 
     ViewPager2 viewPager;
     TabLayout tabLayout;
@@ -66,7 +75,7 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
 
 
 
-    private String[] titles = {"All" , "Questions" , "Answers"};
+    private String[] titles = {"Questions" , "Answers"};
     private ArrayList<String> currUserFollowers, followings;
 
     @SuppressLint("ResourceType")
@@ -85,7 +94,6 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
 
         adapter = new UserProfileAdapter(getSupportFragmentManager(),getLifecycle());
         viewPager.setAdapter(adapter);
-
         new TabLayoutMediator(tabLayout,viewPager,((tab, position) -> tab.setText(titles[position]))).attach();
 
         auth = FirebaseAuth.getInstance();
@@ -102,9 +110,37 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
         profilePic = findViewById(R.id.profilePic);
         banner = findViewById(R.id.banner);
 
+        askQuestion = findViewById(R.id.askQuestionBtn);
+        dialog = new BottomSheetDialog(this);
+
+        //Get Name and Username of the online user//
+        askedByRef = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
+        askedByRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(this.toString(), "Listen failed.", e);
+                    return;
+                }
+                if (snapshot != null && snapshot.exists()) {
+                    askedByUsername = snapshot.get("Username").toString();
+                    if (snapshot.get("profilePictureUrl") != null) {
+                        downloadUrl = snapshot.get("profilePictureUrl").toString();
+                    }
+                    if (snapshot.get("Name")!= null)
+                    {
+                        askedByName = snapshot.get("Name").toString();
+                    }
+                }
+                else {
+                    Log.d(this.toString(), "Current data: null");
+                }
+            }
+        });
+
 
         userModel = (UserModel) getIntent().getSerializableExtra("Tag");
-
         DocumentReference userRef = fstore.collection("Users").document(userModel.getUid());
         DocumentReference currentUserRef = fstore.collection("Users").document(user.getUid());
 
@@ -206,6 +242,15 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
             }
         });
 
+        askQuestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showQuestionDialog();
+                dialog.show();
+                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            }
+        });
+
     }
     private void SetUserInfo()
     {
@@ -262,6 +307,79 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
             }
         });
     }
+
+
+    //*** Show Question Dialog ***//
+    private void showQuestionDialog(){
+        View view = getLayoutInflater().inflate(R.layout.request_bottom_sheet_dialog,null,false);
+
+        ImageButton closeQuestionBtn = view.findViewById(R.id.closeQuestionBtn);
+        EditText askQuestion =  view.findViewById(R.id.sendQuestionEditTxt);
+        TextView sendQuestion =  view.findViewById(R.id.sendQuestionBtn);
+        CircleImageView profileimg = view.findViewById(R.id.questionBottomsheetImg);
+
+        Glide.with(UserProfileActivity.this).load(downloadUrl).into(profileimg);
+
+        closeQuestionBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        sendQuestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!askQuestion.getText().toString().isEmpty())
+                {
+                    PerformValidation(askQuestion.getText().toString());
+                    dialog.dismiss();
+                }else {
+                    askQuestion.setError("Enter your question");
+                }
+            }
+        });
+        dialog.setContentView(view);
+    }
+
+
+
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    Date requestDate = new Date();
+
+
+    //*** Set Request data in Firebase ***//
+    private void PerformValidation(String question){
+        userModel = (UserModel) getIntent().getSerializableExtra("Tag");
+        DocumentReference requestRef = FirebaseFirestore.getInstance().collection("Users").document(userModel.getUid())
+                .collection("Requests").document();
+        String requestId = requestRef.getId();
+        Toast.makeText(UserProfileActivity.this, "Sending...", Toast.LENGTH_SHORT).show();
+        HashMap<String, Object> data = new HashMap<>();
+
+        data.put("RequestId",requestId);
+        data.put("Question",question);
+        data.put("Name",askedByName);
+        data.put("Username",askedByUsername);
+        data.put("Date",requestDate);
+        data.put("ProfilePictureUrl",downloadUrl);
+        data.put("Uid",user.getUid());
+
+        DocumentReference df = fstore.collection("Users").document(userModel.getUid())
+                .collection("Requests").document(requestId);
+        df.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(UserProfileActivity.this, "Question has been sent successfully", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(UserProfileActivity.this, "Could not send question " + task.getException().toString(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
 
 
     @Override
