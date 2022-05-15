@@ -15,6 +15,7 @@ import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -27,6 +28,14 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
     NotificationManager mNotificationManager;
 
+    public void broadcastIntent() {
+        Intent intent = new Intent();
+        intent.setAction("com.myApp.CUSTOM_EVENT");
+        // We should use LocalBroadcastManager when we want INTRA app
+        // communication
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+    }
+
     @Override
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
@@ -35,6 +44,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
+
 
 
         int resourceImage = getResources().getIdentifier(Objects.requireNonNull(remoteMessage.getNotification()).getIcon(), "drawable", getPackageName());

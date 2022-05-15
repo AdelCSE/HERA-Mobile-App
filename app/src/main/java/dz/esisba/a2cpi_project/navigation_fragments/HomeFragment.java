@@ -381,7 +381,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         int i = Integer.parseInt(likesTxt.getText().toString());
         i--;
         likesTxt.setText(Integer.toString(i));
-
     }
 
 
@@ -391,7 +390,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
-                    if(task.getResult().getString("Token").equals(publisherToken)) {
+                    if(!task.getResult().getString("Token").equals(publisherToken)) {
                         FcmNotificationsSender send = new FcmNotificationsSender(
                                 publisherToken,
                                 title,

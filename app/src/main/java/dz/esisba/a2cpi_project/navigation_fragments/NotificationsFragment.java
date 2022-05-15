@@ -1,5 +1,6 @@
 package dz.esisba.a2cpi_project.navigation_fragments;
 
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +29,8 @@ public class NotificationsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         parentHolder = inflater.inflate(R.layout.fragment_notifications,container,false);
+
+
 
         recyclerView = parentHolder.findViewById(R.id.notifrecview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
