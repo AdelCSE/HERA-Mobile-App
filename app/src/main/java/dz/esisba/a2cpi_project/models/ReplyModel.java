@@ -3,26 +3,27 @@ package dz.esisba.a2cpi_project.models;
 import com.google.firebase.Timestamp;
 import java.text.SimpleDateFormat;
 
-public class RequestModel {
-    private String Username,Name,Question,Uid,RequestId,ProfilePictureUrl;
-    private com.google.firebase.Timestamp Date;
+public class ReplyModel {
+    private String Username,Name,Question,Reply,Uid,ReplyId,ProfilePictureUrl;
+    private Timestamp Date;
 
-    public RequestModel(String username, String name, String question, com.google.firebase.Timestamp date, String uid, String requestId, String profilePic) {
+    public ReplyModel(String username, String name, String question, String reply, String uid, String requestId, String profilePictureUrl, Timestamp date) {
         Username = username;
         Name = name;
         Question = question;
-        Date = date;
+        Reply = reply;
         Uid = uid;
-        RequestId = requestId;
-        ProfilePictureUrl = profilePic;
+        ReplyId = requestId;
+        ProfilePictureUrl = profilePictureUrl;
+        Date = date;
+    }
+
+    public ReplyModel() {
     }
 
     public String ConvertDate() {
         SimpleDateFormat sfd = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         return sfd.format(getDate().toDate());
-    }
-
-    public RequestModel() {
     }
 
     public String getUsername() {
@@ -49,12 +50,12 @@ public class RequestModel {
         Question = question;
     }
 
-    public com.google.firebase.Timestamp getDate() {
-        return Date;
+    public String getReply() {
+        return Reply;
     }
 
-    public void setDate(Timestamp date) {
-        Date = date;
+    public void setReply(String reply) {
+        Reply = reply;
     }
 
     public String getUid() {
@@ -65,19 +66,25 @@ public class RequestModel {
         Uid = uid;
     }
 
-    public String getRequestId() {
-        return RequestId;
+    public String getReplyId() {
+        return ReplyId;
     }
 
-    public void setRequestId(String requestId) {
-        RequestId = requestId;
+    public void setReplyId(String requestId) {
+        ReplyId = requestId;
     }
 
     public String getProfilePictureUrl() {
         return ProfilePictureUrl;
     }
 
-    public void setProfilePictureUrl(String profilePic) {
-        ProfilePictureUrl = profilePic;
+    public void setProfilePictureUrl(String profilePictureUrl) { ProfilePictureUrl = profilePictureUrl;}
+
+    public Timestamp getDate() {
+        return Date;
+    }
+
+    public void setDate(Timestamp date) {
+        Date = date;
     }
 }

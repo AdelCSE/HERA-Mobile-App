@@ -205,14 +205,16 @@
                     app:tabTextAppearance="@style/MineCustomTabText"
                     android:background="@android:color/transparent"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content"
+                    android:minHeight="?attr/actionBarSize"
+                    app:tabMode="scrollable"
+                    />
 
             </com.google.android.material.appbar.AppBarLayout>
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/viewPagerp"
                 android:layout_width="match_parent"
-
                 android:layout_height="fill_parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

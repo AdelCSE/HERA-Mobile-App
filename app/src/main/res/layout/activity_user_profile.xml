@@ -184,6 +184,7 @@
 
                     android:textColor="@color/white" />
                 <Button
+                    android:id="@+id/askQuestionBtn"
                     android:layout_width="98dp"
                     android:layout_height="40dp"
                     android:background="@drawable/fllwbtn"

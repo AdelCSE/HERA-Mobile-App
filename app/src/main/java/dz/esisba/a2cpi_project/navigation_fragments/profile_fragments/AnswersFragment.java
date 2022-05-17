@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -93,7 +94,10 @@ public class AnswersFragment extends Fragment implements AnswersOnItemClickListn
                 if(!postIDs.contains(id)) postIDs.add(id);
             }
             for (String id: postIDs) {
-                postRef.document(id).collection("Answers").whereEqualTo("publisher", userModel.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                postRef.document(id).collection("Answers")
+                        .whereEqualTo("publisher", userModel.getUid())
+                        .orderBy("Date", Query.Direction.DESCENDING)
+                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
