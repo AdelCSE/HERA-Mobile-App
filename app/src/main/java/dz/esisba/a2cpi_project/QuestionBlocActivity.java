@@ -1,5 +1,7 @@
 package dz.esisba.a2cpi_project;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,8 +25,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -41,11 +45,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import NotificationTest.FcmNotificationsSender;
 import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.adapter.QuestionBlocAdapter;
 import dz.esisba.a2cpi_project.interfaces.QuestionsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
 import dz.esisba.a2cpi_project.models.UserModel;
+import dz.esisba.a2cpi_project.navigation_fragments.HomeFragment;
 
 public class QuestionBlocActivity extends AppCompatActivity implements QuestionsOnItemClickListner {
 
@@ -216,6 +222,26 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         .document(p.getPostid());
         if (lottieAnimationView.getTag().equals("Like"))
         {
+
+            //sending like answer notification to the publisher ********************************************************************************************************************
+            Task<DocumentSnapshot> s = fstore.collection("Users").document(user.getUid()).get(); //current user data
+            fstore.collection("Users").document(p.getPublisher()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()&& s.isSuccessful()){
+                        NotifyAnswer(task.getResult().getString("Token"),
+                                s.getResult().getString("Name"), //current user name
+                                QuestionBlocActivity.this,
+                                position);
+                    }
+                    else{
+                        //Toast.maketext
+                        Log.d("Calling notify", "onComplete: Failure");
+                    }
+                }
+            });
+
+
             lottieAnimationView.setSpeed(2);
             lottieAnimationView.playAnimation();//play like animation
             lottieAnimationView.setTag("Liked");
@@ -313,6 +339,25 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         postRef = fstore.collection("Posts").document(p.getPostid());
         if (lottieAnimationView.getTag().equals("Like"))
         {
+            //sending like notification to the publisher ********************************************************************************************************************
+            Task<DocumentSnapshot> s = fstore.collection("Users").document(user.getUid()).get();
+            fstore.collection("Users").document(p.getPublisher()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()&& s.isSuccessful()){
+                        NotifyPost(task.getResult().getString("Token"),
+                                s.getResult().getString("Name"),
+                                QuestionBlocActivity.this,
+                                0);
+                    }
+                    else{
+                        //Toast.maketext
+                        Log.d("Calling notify", "onComplete: Failure");
+                    }
+                }
+            });
+
+
             lottieAnimationView.setSpeed(2);
             lottieAnimationView.playAnimation();//play like animation
             lottieAnimationView.setTag("Liked");
@@ -575,5 +620,62 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
     }
 
 
+    public void NotifyPost(String publisherToken, String title, Activity activity, int position){
 
+        fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    if(!task.getResult().getString("Token").equals(publisherToken) || true) {           //****************** check  this condition ***true
+                        FcmNotificationsSender send = new FcmNotificationsSender(
+                                publisherToken,
+                                title+" Liked your Post",
+                                "Click To See All Notifications",
+                                activity);
+                        send.SendNotifications();
+                    }
+                }
+            }
+        });
+        //add notifier data to notified user (name )  ******* this is for the recyclerView **********
+        PostModel postModel = new PostModel(postsDataHolder.get(position).getPostid());
+        CollectionReference DocRef = fstore.collection("Users").document(postsDataHolder.get(position).getPublisher()).collection("Notifications");
+        //add the notification data to the notification collection of the notified user
+        Map<String, Object> notif = new HashMap<>();
+        notif.put("postId", postModel.getPostid());
+        notif.put("userName", title);
+        notif.put("Time", Timestamp.now());
+        //add the document to the notification collection
+        DocRef.add(notif);
+    }
+
+    public void NotifyAnswer(String publisherToken, String title,  Activity activity, int position){
+
+        fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    if(!task.getResult().getString("Token").equals(publisherToken) || true) {           //****************** check  this condition ***true
+                        FcmNotificationsSender send = new FcmNotificationsSender(
+                                publisherToken,
+                                title+" Liked your Answer !",
+                                "Click To See All Notifications",
+                                activity);
+                        send.SendNotifications();
+                    }
+                }
+            }
+        });
+        //add notifier data to notified user (name )  ******* this is for the recyclerView **********
+        PostModel postModel = new PostModel(postsDataHolder.get(position).getPostid());
+        CollectionReference DocRef = fstore.collection("Users").document(postsDataHolder.get(position).getPublisher()).collection("Notifications");
+        //add the notification data to the notification collection of the notified user
+        Map<String, Object> notif = new HashMap<>();
+        notif.put("postId", postModel.getPostid());
+        notif.put("userName", title);
+        notif.put("Time", Timestamp.now());
+        notif.put("Position",position-1);
+        //add the document to the notification collection
+        DocRef.add(notif);
+    }
 }

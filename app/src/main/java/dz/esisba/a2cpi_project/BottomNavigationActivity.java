@@ -1,26 +1,17 @@
 package dz.esisba.a2cpi_project;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -29,15 +20,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 import dz.esisba.a2cpi_project.interfaces.GetUserInterface;
 import dz.esisba.a2cpi_project.models.UserModel;
-import dz.esisba.a2cpi_project.navigation_fragments.AddPostFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.HomeFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.NotificationsFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.ProfileFragment;
@@ -70,6 +55,9 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
         bottomNav.getMenu().getItem(2).setEnabled(false);
 
         bottomNav.setOnItemSelectedListener(navListener);
+
+
+//        int intentFragment = getIntent().getExtras().getInt("frgToLoad");
 
         //Here we're setting the home fragment as default fragment
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,

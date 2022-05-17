@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -235,24 +236,21 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 PostsDataHolder.get(position).getLikesCount(),PostsDataHolder.get(position).getAnswersCount(), PostsDataHolder.get(position).getTags());
 
 
+
+
         if (lottieAnimationView.getTag().equals("Like"))
         {
 
             //sending like notification to the publisher
             Task<DocumentSnapshot> s = fstore.collection("Users").document(user.getUid()).get();
             fstore.collection("Users").document(post.getPublisher()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @SuppressLint("LongLogTag")
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if(task.isSuccessful()&& s.isSuccessful()){
                         Notify(task.getResult().getString("Token"),
-                                s.getResult().getString("Name")+"Liked your shit",
-                                "Click To See Your Post",
-                                HomeFragment.super.getActivity());
-                    }
-                    else{
-                        //Toast.maketext
-                        Log.d("Calling notify likeOnclik", "onComplete: Failure");
+                                s.getResult().getString("Name"),
+                                getActivity(),
+                                position);
                     }
                 }
             });
@@ -384,31 +382,46 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     }
 
 
-    public void Notify(String publisherToken,String title,String message,Activity activity){
+    public void Notify(String publisherToken,String title,Activity activity,int position){
 
         fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
-                    if(!task.getResult().getString("Token").equals(publisherToken)) {
+                    if(!task.getResult().getString("Token").equals(publisherToken) || true) {
                         FcmNotificationsSender send = new FcmNotificationsSender(
                                 publisherToken,
-                                title,
-                                message,
-                                getActivity(),
+                                title+" Liked your Post !",
+                                "Click To See All Notifications",
                                 activity);
                         send.SendNotifications();
                     }
                 }
             }
         });
+
+        //add notifier data to notified user (name )  ******* this is for the recyclerView **********
+        PostModel postModel = new PostModel(PostsDataHolder.get(position).getPostid());
+
+        CollectionReference DocRef = fstore.collection("Users").document(PostsDataHolder.get(position).getPublisher()).collection("Notifications");
+        //add the notification data to the notification collection of the notified user
+        Map<String, Object> notif = new HashMap<>();
+        notif.put("postId", postModel.getPostid());
+        notif.put("userName", title);
+        notif.put("Time", Timestamp.now());
+        //add the document to the notification collection
+        DocRef.add(notif);
+
+
     }
+
+
 }
 
 //TODO Add updateToken Function [Optional]
-/*
-Type of Notification
-1/ like => 1.1/like of post tedik lel post  1.2/ like of answer tedik lel answer
-2/follow => profile li darlek follow
-3/Smart Room [Not Ready yet]
- */
+//*************Important*******firebase notification*********
+//Notification Types :
+/*   0 => Follow                UserId
+ *    1 => Like post            postId
+ *    2 => Like answer          postd + position of the answer
+ * */

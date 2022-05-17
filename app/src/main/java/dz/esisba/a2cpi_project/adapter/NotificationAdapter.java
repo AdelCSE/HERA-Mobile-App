@@ -1,5 +1,6 @@
 package dz.esisba.a2cpi_project.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +18,10 @@ import dz.esisba.a2cpi_project.models.NotificationModel;
 public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     ArrayList<NotificationModel> NotificationsHolder;
+    private Context context;
 
-    public NotificationAdapter(ArrayList<NotificationModel> notificationsHolder) {
+    public NotificationAdapter(Context context , ArrayList<NotificationModel> notificationsHolder) {
+        this.context = context;
         NotificationsHolder = notificationsHolder;
     }
 

@@ -22,18 +22,17 @@ public class FcmNotificationsSender  {
     String userFcmToken;
     String title;
     String body;
-    Context mContext;
+
     Activity mActivity;
 
 
     private final String postUrl = "https://fcm.googleapis.com/fcm/send";
     private final String fcmServerKey ="AAAA__EKjFk:APA91bGb7jv0cPB5wd-1fMU5jqF_uiXaCnxNulgOWItGO8sFsguI440-J81Lib25H2O9Tdi7zGCCEjGJTPb_xf6CRVBlm_YbwuNADN7LSnoP1WoKinwurBW53E4ku8GqLdQbzj8nv8aG";
 
-    public FcmNotificationsSender(String userFcmToken, String title, String body, Context mContext, Activity mActivity) {
+    public FcmNotificationsSender(String userFcmToken, String title, String body, Activity mActivity) {
         this.userFcmToken = userFcmToken;
         this.title = title;
         this.body = body;
-        this.mContext = mContext;
         this.mActivity = mActivity;
 
 

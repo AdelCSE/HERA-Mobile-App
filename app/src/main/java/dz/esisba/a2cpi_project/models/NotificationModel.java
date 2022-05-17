@@ -1,14 +1,27 @@
 package dz.esisba.a2cpi_project.models;
 
+import com.google.firebase.firestore.Exclude;
+
 public class NotificationModel {
     String Username, NotificationText, Date;
     int Image;
+
+    @Exclude
+    private String key;
 
     public NotificationModel(String username, String notificationText, String date, int image) {
         Username = username;
         NotificationText = notificationText;
         Date = date;
         Image = image;
+    }
+
+    public NotificationModel() {
+    }
+
+    public <T extends NotificationModel> T withId(final String id) {
+        this.key = id;
+        return (T) this;
     }
 
     public String getUsername() {

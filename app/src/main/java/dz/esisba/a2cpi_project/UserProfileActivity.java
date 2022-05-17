@@ -1,10 +1,5 @@
 package dz.esisba.a2cpi_project;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager2.widget.ViewPager2;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
@@ -15,6 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager2.widget.ViewPager2;
+
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -39,9 +40,7 @@ import NotificationTest.FcmNotificationsSender;
 import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.adapter.UserProfileAdapter;
 import dz.esisba.a2cpi_project.interfaces.GetUserInterface;
-import dz.esisba.a2cpi_project.models.PostModel;
 import dz.esisba.a2cpi_project.models.UserModel;
-import dz.esisba.a2cpi_project.navigation_fragments.HomeFragment;
 
 public class UserProfileActivity extends AppCompatActivity implements GetUserInterface {
     private TextView usernameTxt,name, bio, followersCount, followingCount;
@@ -118,11 +117,10 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
                 {
                     //sending follow notification to the publisher
                     Task<DocumentSnapshot> s = currentUserRef.get(); //this is the current user
-                    userRef.get().addOnCompleteListener(task -> {
+                    userRef.get().addOnCompleteListener(task -> {   //userRef is the publisher
                         if(task.isSuccessful()&& s.isSuccessful())
-                            Notify(task.getResult().getString("Token"),
-                                    s.getResult().getString("Name")+"Followed You",
-                                    "Click To See His Profile",
+                            Notify(task,
+                                    s.getResult().getString("Name"),
                                     UserProfileActivity.this);
                             Log.d("notify likeOnclik", "onComplete: SSSucccuess");
                     });
@@ -270,22 +268,54 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
     }
 
 
-    public void Notify(String publisherToken, String title, String message, Activity activity){
+/////////////////////////////////////////////////////////////////////Notificatiion
+    public void Notify(Task<DocumentSnapshot> publisherTask, String title, Activity activity){
+        DocumentReference userRef = fstore.collection("Users").document(userModel.getUid());
+
         fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
-                    if(!task.getResult().getString("Token").equals(publisherToken)) {
+                    if(!task.getResult().getString("Token").equals(publisherTask.getResult().getString("Token"))) {
                         FcmNotificationsSender send = new FcmNotificationsSender(
-                                publisherToken,
-                                title,
-                                message,
-                                getApplicationContext(),
-                                activity);
+                                publisherTask.getResult().getString("Token"),
+                                title+" Followed You !",
+                                "Click To See All Notifications",
+                                UserProfileActivity.this);
                         send.SendNotifications();
+
+
                     }
                 }
             }
         });
-    }
+
+        //add notifier data to notified user (name )  ******* this is for the recyclerView **********
+        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {//userRef is the notified
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    Map<String, Object> notif = new HashMap<>();
+                    notif.put("userId",user.getUid());
+                    notif.put("userName", title);
+                    notif.put("Time", Timestamp.now());
+                    userRef.collection("Notifications")
+                            .add(notif); //add the notification data to the notification collection of the notified user
+
+                }
+            }
+        });
+        }
 }
+
+//*************Important*******firebase notification*********
+//Notification Types :
+/*   0 => Follow
+*    1 => Like post
+*    2 => Like answer
+* */
+
+/*
+notifid = li tawsslah notification
+notifier = li yersel notification
+ */
