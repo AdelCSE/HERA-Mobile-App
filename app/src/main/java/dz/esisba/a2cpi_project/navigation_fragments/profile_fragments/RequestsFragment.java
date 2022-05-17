@@ -31,6 +31,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -110,7 +111,7 @@ public class RequestsFragment extends Fragment implements SearchOnItemClick {
     private void fetchRequests(){
         RequestsDataHolder = new ArrayList<>();
 
-        requestRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        requestRef.orderBy("Date", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){

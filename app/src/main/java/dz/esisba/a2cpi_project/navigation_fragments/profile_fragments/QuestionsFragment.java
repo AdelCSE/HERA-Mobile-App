@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -82,7 +83,7 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
     private void FetchPosts() {
         QuestionsDataHolder = new ArrayList<>();
 
-        postRef.whereEqualTo("publisher", userModel.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        postRef.whereEqualTo("publisher", userModel.getUid()).orderBy("Date", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {

@@ -18,10 +18,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.adapter.RepliesAdapter;
@@ -60,7 +65,7 @@ public class RepliesFragment extends Fragment {
     private void FetchReplies(){
         RepliesDataHolder = new ArrayList<>();
 
-        replyRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        replyRef.orderBy("Date", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){

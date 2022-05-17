@@ -41,7 +41,8 @@ public class SearchRecommendationAdapter extends RecyclerView.Adapter<SearchReco
         Glide.with(context).load(QuestionsHolder.get(position).getPublisherPic()).into(holder.img);
         holder.Question.setText(QuestionsHolder.get(position).getQuestion());
         holder.Username.setText("@"+QuestionsHolder.get(position).getUsername());
-        holder.Date.setText(QuestionsHolder.get(position).getDate().toString());
+        holder.Date.setText(QuestionsHolder.get(position).ConvertDate());
+        holder.AnswersCount.setText(Integer.toString(QuestionsHolder.get(position).getAnswersCount()));
     }
 
     @Override
@@ -53,13 +54,14 @@ public class SearchRecommendationAdapter extends RecyclerView.Adapter<SearchReco
 
         ImageView AnswerBtn;
         ImageView img;
-        TextView Question,Username,Date;
+        TextView Question,Username,Date,AnswersCount;
         public ViewHolder1(@NonNull View itemView,SearchOnItemClick listner) {
             super(itemView);
             img = itemView.findViewById(R.id.imgRQ);
             Question = itemView.findViewById(R.id.questionRQ);
             Username = itemView.findViewById(R.id.usernameRQ);
             Date = itemView.findViewById(R.id.dateRQ);
+            AnswersCount = itemView.findViewById(R.id.TagSearchAnswers);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

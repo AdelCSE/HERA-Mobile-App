@@ -31,6 +31,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -138,7 +139,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     private void FetchPosts() {
         PostsDataHolder = new ArrayList<>();
 
-        postRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        postRef.orderBy("Date", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
