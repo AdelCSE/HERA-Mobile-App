@@ -222,7 +222,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         .document(p.getPostid());
         if (lottieAnimationView.getTag().equals("Like"))
         {
-
             //sending like answer notification to the publisher ********************************************************************************************************************
             Task<DocumentSnapshot> s = fstore.collection("Users").document(user.getUid()).get(); //current user data
             fstore.collection("Users").document(p.getPublisher()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -475,6 +474,8 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
     Date date = new Date();
 
+
+
     public void showAnswerDialog(){
         View view = getLayoutInflater().inflate(R.layout.activty_add_answer,null,false);
 
@@ -493,6 +494,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         });
 
 
+
         postAnswerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -501,6 +503,23 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                 {
                     PerformValidation(addAnswer.getText().toString());
                 }else {
+                    //sending like answer notification to the publisher ********************************************************************************************************************
+                    Task<DocumentSnapshot> s = fstore.collection("Users").document(user.getUid()).get(); //current user data
+                    fstore.collection("Users").document(post.getPublisher()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if(task.isSuccessful()&& s.isSuccessful()){
+                                NotifyAnswer(task.getResult().getString("Token"),
+                                        s.getResult().getString("Name"), //current user name
+                                        QuestionBlocActivity.this,
+                                        postAnswerBtn.getVerticalScrollbarPosition());
+                            }
+                            else{
+                                //Toast.maketext
+                                Log.d("Calling notify", "onComplete: Failure");
+                            }
+                        }
+                    });
                     getDialog().dismiss();
                     startActivity(new Intent(getApplicationContext(), BottomNavigationActivity.class));
                     finish();
@@ -642,9 +661,12 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         CollectionReference DocRef = fstore.collection("Users").document(postsDataHolder.get(position).getPublisher()).collection("Notifications");
         //add the notification data to the notification collection of the notified user
         Map<String, Object> notif = new HashMap<>();
+        notif.put("Type", 1);
         notif.put("postId", postModel.getPostid());
-        notif.put("userName", title);
-        notif.put("Time", Timestamp.now());
+        notif.put("Username", title);
+        notif.put("Date", Timestamp.now());
+        notif.put("Image",auth.getCurrentUser().getPhotoUrl() );
+        notif.put("userId",auth.getCurrentUser().getUid() );
         //add the document to the notification collection
         DocRef.add(notif);
     }
@@ -667,14 +689,16 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
             }
         });
         //add notifier data to notified user (name )  ******* this is for the recyclerView **********
-        PostModel postModel = new PostModel(postsDataHolder.get(position).getPostid());
-        CollectionReference DocRef = fstore.collection("Users").document(postsDataHolder.get(position).getPublisher()).collection("Notifications");
+        PostModel postModel = new PostModel(postsDataHolder.get(0).getPostid());
+        CollectionReference DocRef = fstore.collection("Users").document(postsDataHolder.get(0).getPublisher()).collection("Notifications");
         //add the notification data to the notification collection of the notified user
         Map<String, Object> notif = new HashMap<>();
+        notif.put("Type", 2);
         notif.put("postId", postModel.getPostid());
-        notif.put("userName", title);
-        notif.put("Time", Timestamp.now());
-        notif.put("Position",position-1);
+        notif.put("Username", title);
+        notif.put("Date", Timestamp.now());
+        notif.put("Image",auth.getCurrentUser().getPhotoUrl() );
+        notif.put("userId",auth.getCurrentUser().getUid() );
         //add the document to the notification collection
         DocRef.add(notif);
     }

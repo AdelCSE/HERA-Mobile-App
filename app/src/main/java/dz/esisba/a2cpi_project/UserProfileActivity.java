@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -420,9 +421,12 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()) {
                     Map<String, Object> notif = new HashMap<>();
+                    notif.put("Type", 0);
                     notif.put("userId",user.getUid());
-                    notif.put("userName", title);
-                    notif.put("Time", Timestamp.now());
+                    notif.put("Username", title);
+                    notif.put("Date", Timestamp.now());
+                    notif.put("postId", null);
+                    notif.put("Image", auth.getCurrentUser().getPhotoUrl());
                     userRef.collection("Notifications")
                             .add(notif); //add the notification data to the notification collection of the notified user
 

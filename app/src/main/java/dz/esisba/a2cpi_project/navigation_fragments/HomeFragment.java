@@ -404,12 +404,16 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         //add notifier data to notified user (name )  ******* this is for the recyclerView **********
         PostModel postModel = new PostModel(PostsDataHolder.get(position).getPostid());
 
+
         CollectionReference DocRef = fstore.collection("Users").document(PostsDataHolder.get(position).getPublisher()).collection("Notifications");
         //add the notification data to the notification collection of the notified user
         Map<String, Object> notif = new HashMap<>();
+        notif.put("Type", 1);
         notif.put("postId", postModel.getPostid());
-        notif.put("userName", title);
-        notif.put("Time", Timestamp.now());
+        notif.put("Username", title);
+        notif.put("Date", Timestamp.now());
+        notif.put("Image",auth.getCurrentUser().getPhotoUrl() );
+        notif.put("userId",auth.getCurrentUser().getUid() );
         //add the document to the notification collection
         DocRef.add(notif);
 
