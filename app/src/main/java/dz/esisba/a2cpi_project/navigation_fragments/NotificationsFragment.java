@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,10 +14,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,15 +39,20 @@ import dz.esisba.a2cpi_project.UserProfileActivity;
 import dz.esisba.a2cpi_project.adapter.NotificationAdapter;
 import dz.esisba.a2cpi_project.adapter.SearchAdapter;
 import dz.esisba.a2cpi_project.models.NotificationModel;
+import dz.esisba.a2cpi_project.models.PostModel;
 import dz.esisba.a2cpi_project.models.UserModel;
 
 public class NotificationsFragment extends Fragment {
 
-    View parentHolder;
-    RecyclerView recyclerView;
-    ArrayList<NotificationModel> NotificationsDataHolder;
-    NotificationAdapter mAdapter;
+    private View parentHolder;
+    private RecyclerView recyclerView;
+    private ArrayList<NotificationModel> NotificationsDataHolder;
+    private NotificationAdapter mAdapter;
 
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+    private FirebaseFirestore fstore;
+    private CollectionReference notifRef;
 
 
     @Nullable
@@ -50,95 +60,42 @@ public class NotificationsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         parentHolder = inflater.inflate(R.layout.fragment_notifications,container,false);
 
-
-
-        recyclerView = parentHolder.findViewById(R.id.notifrecview);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        NotificationsDataHolder = new ArrayList<>();
-
-        mAdapter = new NotificationAdapter(getActivity(), NotificationsDataHolder);
-        recyclerView.setAdapter(mAdapter);
-
-
-
-        String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-//        Task<QuerySnapshot> s = FirebaseFirestore.getInstance()
-//                .collection("Users")
-//                .document(user)
-//                .collection("Notifications")
-//                .get();
-
-        Query query = FirebaseFirestore.getInstance()
-                .collection("Users")
-                .document(user)
-                .collection("Notifications")
-                .orderBy("Time");
-
-
-
-//                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-//                        if(error!=null) {
-//                            Log.d("______________", "Firestore error" + error.getMessage());
-//                            return;
-//                        }
-//                            for(DocumentChange dc : value.getDocumentChanges()) {
-//                                if (dc.getType() == DocumentChange.Type.ADDED) {
-//                                    if(dc.getDocument().get("UserId")!=null){
-//                                        QueryDocumentSnapshot d = dc.getDocument();
-//                                        NotificationsDataHolder.add(new NotificationModel(d.getString("userName"),
-//                                                "Liked your Post",
-//                                                d.getString("Time"),
-//                                                R.drawable.exemple));
-//                                    }
-//                                    //NotificationsDataHolder.add(dc.getDocument().toObject(NotificationModel.class));
-////                                    else if()
-//                                }
-//                                mAdapter.notifyDataSetChanged();
-//                            }
-//                    }
-//                });
-
-
-
-
-//        NotificationModel Notification1 = new NotificationModel(null, null , null , -1);
-//        NotificationsDataHolder.add(Notification1);
-//        NotificationModel Notification2 = new NotificationModel("Yassine", "liked your question" , "24m" , R.drawable.exemple);
-//        NotificationsDataHolder.add(Notification2);
-//        NotificationModel Notification3 = new NotificationModel("Ribel", "answered your question" , "30m" , R.drawable.exemple);
-//        NotificationsDataHolder.add(Notification3);
-//        NotificationModel Notification4 = new NotificationModel("yacine", "liked your question" , "30m" , R.drawable.exemple);
-//        NotificationsDataHolder.add(Notification4);
-//        NotificationModel Notification5 = new NotificationModel("Rachid", "liked your question" , "30m" , R.drawable.exemple);
-//        NotificationsDataHolder.add(Notification5);
-//        NotificationModel Notification6 = new NotificationModel("Rachid", "liked your question" , "30m" , R.drawable.exemple);
-//        NotificationsDataHolder.add(Notification6);
-//        NotificationModel Notification7 = new NotificationModel("Rachid", "liked your question" , "30m" , R.drawable.exemple);
-//        NotificationsDataHolder.add(Notification7);
-//        NotificationModel Notification8 = new NotificationModel("Rachid", "liked your question" , "30m" , R.drawable.exemple);
-//        NotificationsDataHolder.add(Notification8);
-//        NotificationModel Notification9 = new NotificationModel("Rachid", "liked your question" , "30m" , R.drawable.exemple);
-//        NotificationsDataHolder.add(Notification9);
-//        NotificationModel Notification10 = new NotificationModel("Rachid", "liked your question" , "30m" , R.drawable.exemple);
-//        NotificationsDataHolder.add(Notification10);
-//        NotificationModel Notification11 = new NotificationModel("Rachid", "liked your question" , "30m" , R.drawable.exemple);
-//        NotificationsDataHolder.add(Notification11);
-//        NotificationModel Notification12 = new NotificationModel("Rachid", "liked your question" , "30m" , R.drawable.exemple);
-//        NotificationsDataHolder.add(Notification12);
-//        NotificationModel Notification13 = new NotificationModel("Addy1001", "liked your question" , "23m" , R.drawable.exemple);
-//        NotificationsDataHolder.add(Notification13);
-//        NotificationModel Notification14 = new NotificationModel("Addy1001", "liked your question" , "23m" , R.drawable.exemple);
-//        NotificationsDataHolder.add(Notification14);
-
-
+        auth = FirebaseAuth.getInstance();
+        fstore = FirebaseFirestore.getInstance();
+        user = auth.getCurrentUser();
+        FetchNotifications();
 
 
         return parentHolder;
+    }
+
+    public void FetchNotifications(){
+        NotificationsDataHolder = new ArrayList<>();
+        NotificationModel Notification1 = new NotificationModel(null, -1 , null , null , null ,null);
+        NotificationsDataHolder.add(Notification1);
+        notifRef = fstore.collection("Users").document(user.getUid()).collection("Notifications");
+        notifRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        NotificationModel notification = document.toObject(NotificationModel.class);
+                        NotificationsDataHolder.add(notification);
+                    }
+                    buildRecyclerView();
+                }else{
+                    Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    public void buildRecyclerView(){
+        recyclerView = parentHolder.findViewById(R.id.notifrecview);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mAdapter = new NotificationAdapter(NotificationsDataHolder);
+        recyclerView.setAdapter(mAdapter);
     }
 
     // fel OnClick te3 Follow Notification

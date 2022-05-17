@@ -56,30 +56,26 @@ import dz.esisba.a2cpi_project.interfaces.GetUserInterface;
 import dz.esisba.a2cpi_project.models.UserModel;
 
 public class UserProfileActivity extends AppCompatActivity implements GetUserInterface {
+
     private TextView usernameTxt,name, bio, followersCount, followingCount;
-    private Button followBtn,askQuestion;
-    private static  String date = DateFormat.getInstance().format(new Date());
-    private static Boolean following = false;
-    private CollapsingToolbarLayout toolbarLayout;
-    private CircleImageView profilePic;
     private ImageView banner;
+    private CircleImageView profilePic;
+    private Button followBtn,askQuestion;
+    private CollapsingToolbarLayout toolbarLayout;
     private BottomSheetDialog dialog;
     private String askedByName,askedByUsername = "";
     private DocumentReference askedByRef;
-
     private UserModel userModel, currentUserModel;
 
-    FirebaseAuth auth;
-    FirebaseUser user;
-    FirebaseFirestore fstore;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+    private FirebaseFirestore fstore;
     private String downloadUrl;
 
-    ViewPager2 viewPager;
-    TabLayout tabLayout;
-    UserProfileAdapter adapter;
-    Toolbar toolbar;
-
-
+    private ViewPager2 viewPager;
+    private TabLayout tabLayout;
+    private UserProfileAdapter adapter;
+    private Toolbar toolbar;
 
     private String[] titles = {"Questions" , "Answers"};
     private ArrayList<String> currUserFollowers, followings;
@@ -144,7 +140,6 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
                 }
             }
         });
-
 
         userModel = (UserModel) getIntent().getSerializableExtra("Tag");
         DocumentReference userRef = fstore.collection("Users").document(userModel.getUid());
@@ -347,11 +342,7 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
         dialog.setContentView(view);
     }
 
-
-
-    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
     Date requestDate = new Date();
-
 
     //*** Set Request data in Firebase ***//
     private void PerformValidation(String question){
@@ -385,15 +376,12 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
         });
     }
 
-
-
     @Override
     public UserModel getUserModel() {
         return userModel;
     }
 
 
-/////////////////////////////////////////////////////////////////////Notificatiion
     public void Notify(Task<DocumentSnapshot> publisherTask, String title, Activity activity){
         DocumentReference userRef = fstore.collection("Users").document(userModel.getUid());
 
@@ -422,18 +410,17 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
                 if(task.isSuccessful()) {
                     Map<String, Object> notif = new HashMap<>();
                     notif.put("Type", 0);
-                    notif.put("userId",user.getUid());
+                    notif.put("UserId",user.getUid());
                     notif.put("Username", title);
                     notif.put("Date", Timestamp.now());
-                    notif.put("postId", null);
-                    notif.put("Image", auth.getCurrentUser().getPhotoUrl());
+                    notif.put("PostId", null);
+                    notif.put("Image", downloadUrl);
                     userRef.collection("Notifications")
                             .add(notif); //add the notification data to the notification collection of the notified user
-
                 }
             }
         });
-        }
+    }
 }
 
 //*************Important*******firebase notification*********

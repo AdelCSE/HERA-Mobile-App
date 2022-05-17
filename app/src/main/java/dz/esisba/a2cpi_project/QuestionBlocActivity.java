@@ -85,8 +85,8 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
-
         userRef = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
+
         //get username of poster
         userRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -119,12 +119,10 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         postsDataHolder = new ArrayList<>();
 
         FetchAnswers();
-
     }
 
     //Display answers
-    private void FetchAnswers()
-    {
+    private void FetchAnswers() {
         postsDataHolder = new ArrayList<>();
         postsDataHolder.add(post);
 
@@ -205,19 +203,15 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                 postsDataHolder.get(position).getBody(),postsDataHolder.get(position).getPostid(),
                 postsDataHolder.get(position).getDate(),postsDataHolder.get(position).getPublisherPic(),
                 postsDataHolder.get(position).getLikesCount(),postsDataHolder.get(position).getAnswersCount(), postsDataHolder.get(position).getTags());
-        if (!isAnswer)
-        {
+        if (!isAnswer) {
             PerformLikeAction(lottieAnimationView, likesTxt,  post, position);
         }
-        else 
-        {
+        else {
             PerformLikeActionForAnswer(lottieAnimationView, likesTxt, post, position);
         }
-
     }
 
-    private void PerformLikeActionForAnswer(LottieAnimationView lottieAnimationView, TextView likesTxt, PostModel p, int position)
-    {
+    private void PerformLikeActionForAnswer(LottieAnimationView lottieAnimationView, TextView likesTxt, PostModel p, int position) {
         postRef = fstore.collection("Posts").document(post.getPostid()).collection("Answers")
         .document(p.getPostid());
         if (lottieAnimationView.getTag().equals("Like"))
@@ -240,7 +234,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                 }
             });
 
-
             lottieAnimationView.setSpeed(2);
             lottieAnimationView.playAnimation();//play like animation
             lottieAnimationView.setTag("Liked");
@@ -248,7 +241,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
             int i = Integer.parseInt(likesTxt.getText().toString());
             i++;
             likesTxt.setText(Integer.toString(i));
-
 
             postRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -287,7 +279,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
             lottieAnimationView.setSpeed(-2);
             lottieAnimationView.playAnimation();//play like animation
             lottieAnimationView.setTag("Like");
-
 
             int i = Integer.parseInt(likesTxt.getText().toString());
             i--;
@@ -333,8 +324,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         }
     }
 
-    private void PerformLikeAction(LottieAnimationView lottieAnimationView, TextView likesTxt, PostModel p, int position)
-    {
+    private void PerformLikeAction(LottieAnimationView lottieAnimationView, TextView likesTxt, PostModel p, int position) {
         postRef = fstore.collection("Posts").document(p.getPostid());
         if (lottieAnimationView.getTag().equals("Like"))
         {
@@ -356,7 +346,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                 }
             });
 
-
             lottieAnimationView.setSpeed(2);
             lottieAnimationView.playAnimation();//play like animation
             lottieAnimationView.setTag("Liked");
@@ -364,7 +353,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
             int i = Integer.parseInt(likesTxt.getText().toString());
             i++;
             likesTxt.setText(Integer.toString(i));
-
 
             postRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -409,8 +397,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                     else LikeFailure(lottieAnimationView, likesTxt, position);
                 }
             });
-        } else
-        {
+        } else {
             lottieAnimationView.setSpeed(-2);
             lottieAnimationView.playAnimation();//play like animation
             lottieAnimationView.setTag("Like");
@@ -461,20 +448,14 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         }
     }
 
-
     public void buildRecyclerView(){
-
         setRecyclerView(findViewById(R.id.recviewa));
         getRecyclerView().setLayoutManager(new LinearLayoutManager(this));
-
         adapter = new QuestionBlocAdapter(postsDataHolder,this);
         recyclerView.setAdapter(adapter);
     }
 
-    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
     Date date = new Date();
-
-
 
     public void showAnswerDialog(){
         View view = getLayoutInflater().inflate(R.layout.activty_add_answer,null,false);
@@ -492,8 +473,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                 getDialog().dismiss();
             }
         });
-
-
 
         postAnswerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -526,25 +505,21 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                 }
             }
         });
-
         getDialog().setContentView(view);
     }
 
-    private void DislikeFailure(LottieAnimationView lottieAnimationView, TextView likesTxt, int position)
-    {
+    private void DislikeFailure(LottieAnimationView lottieAnimationView, TextView likesTxt, int position) {
         lottieAnimationView.setSpeed(2);
         lottieAnimationView.playAnimation();//play like animation
         lottieAnimationView.setTag("Liked");
         int i = Integer.parseInt(likesTxt.getText().toString());
         i++;
         likesTxt.setText(Integer.toString(i));
-
     }
 
-    private void LikeFailure(LottieAnimationView lottieAnimationView,TextView likesTxt, int position)
-    {
+    private void LikeFailure(LottieAnimationView lottieAnimationView,TextView likesTxt, int position) {
         lottieAnimationView.setSpeed(-2);
-        lottieAnimationView.playAnimation();//play like animation
+        lottieAnimationView.playAnimation();
         lottieAnimationView.setTag("Like");
         int i = Integer.parseInt(likesTxt.getText().toString());
         i--;
@@ -552,8 +527,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
 
     }
 
-    private void PerformValidation(String answer)
-    {
+    private void PerformValidation(String answer) {
         String answerId = post.getPostid() +"#"+Integer.toString(post.getAnswersCount());
         Toast.makeText(QuestionBlocActivity.this, "Posting...", Toast.LENGTH_SHORT).show();
         HashMap<String, Object> data = new HashMap<>();
@@ -662,11 +636,11 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         //add the notification data to the notification collection of the notified user
         Map<String, Object> notif = new HashMap<>();
         notif.put("Type", 1);
-        notif.put("postId", postModel.getPostid());
+        notif.put("PostId", postModel.getPostid());
         notif.put("Username", title);
         notif.put("Date", Timestamp.now());
-        notif.put("Image",auth.getCurrentUser().getPhotoUrl() );
-        notif.put("userId",auth.getCurrentUser().getUid() );
+        notif.put("Image",downloadUrl);
+        notif.put("UserId",user.getUid() );
         //add the document to the notification collection
         DocRef.add(notif);
     }
@@ -694,11 +668,11 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         //add the notification data to the notification collection of the notified user
         Map<String, Object> notif = new HashMap<>();
         notif.put("Type", 2);
-        notif.put("postId", postModel.getPostid());
+        notif.put("PostId", postModel.getPostid());
         notif.put("Username", title);
         notif.put("Date", Timestamp.now());
-        notif.put("Image",auth.getCurrentUser().getPhotoUrl() );
-        notif.put("userId",auth.getCurrentUser().getUid() );
+        notif.put("Image",downloadUrl);
+        notif.put("UserId",user.getUid() );
         //add the document to the notification collection
         DocRef.add(notif);
     }

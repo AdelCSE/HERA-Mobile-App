@@ -44,7 +44,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
 //        int resourceImage = getResources().getIdentifier(Objects.requireNonNull(remoteMessage.getNotification()).getIcon(), "drawable", getPackageName());
 
-        Intent resultIntent = new Intent(this, BottomNavigationActivity.class);
+        Intent resultIntent = new Intent(this, SettingsActivity.class);
         resultIntent.putExtra("menuFragment", NotificationsFragment.class);
         @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent = PendingIntent.getActivity(this, 10, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
