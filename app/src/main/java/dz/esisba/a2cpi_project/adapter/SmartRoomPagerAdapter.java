@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import dz.esisba.a2cpi_project.navigation_fragments.NotificationsFragment;
+import dz.esisba.a2cpi_project.navigation_fragments.CharityFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.smart_room_fragments.SmartRoomNotificationsFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.smart_room_fragments.SmartRoomStatisticsFragment;
 
@@ -27,7 +27,7 @@ public class SmartRoomPagerAdapter extends FragmentStateAdapter{
             case 1:
                 return new SmartRoomStatisticsFragment();
         }
-        return new NotificationsFragment();
+        return new CharityFragment();
     }
 
     @Override

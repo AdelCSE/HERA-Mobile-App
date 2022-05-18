@@ -31,11 +31,11 @@ android:background="@drawable/back">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="Home"
+            android:text="Hera"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="15dp"
             android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/settingsBtn"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
@@ -46,6 +46,17 @@ android:background="@drawable/back">
             android:layout_marginRight="15dp"
             android:background="@drawable/mainbtn"
             android:src="@drawable/ic_searchmain"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/notification_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="65dp"
+            android:background="@drawable/mainbtn"
+            android:src="@drawable/ic_bell"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

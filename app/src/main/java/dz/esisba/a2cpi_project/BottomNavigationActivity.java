@@ -39,7 +39,7 @@ import dz.esisba.a2cpi_project.interfaces.GetUserInterface;
 import dz.esisba.a2cpi_project.models.UserModel;
 import dz.esisba.a2cpi_project.navigation_fragments.AddPostFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.HomeFragment;
-import dz.esisba.a2cpi_project.navigation_fragments.NotificationsFragment;
+import dz.esisba.a2cpi_project.navigation_fragments.CharityFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.ProfileFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.SmartRoomFragment;
 
@@ -162,7 +162,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
                             selectedFragment = new SmartRoomFragment();
                             break;
                         case R.id.nav_notif:
-                            selectedFragment = new NotificationsFragment();
+                            selectedFragment = new CharityFragment();
                             break;
                         case R.id.nav_profile:
                             selectedFragment = new ProfileFragment();
