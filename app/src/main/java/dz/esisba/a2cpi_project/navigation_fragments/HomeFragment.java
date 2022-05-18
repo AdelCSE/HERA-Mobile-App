@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import NotificationTest.FcmNotificationsSender;
+import dz.esisba.a2cpi_project.NotificationsActivity;
 import dz.esisba.a2cpi_project.QuestionBlocActivity;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.SearchActivity;
@@ -60,7 +61,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     private ArrayList<PostModel> PostsDataHolder;
     private ArrayList<String> likes;
     private PostAdapter adapter;
-    private ImageButton settingsBtn , searchBtn;
+    private ImageButton settingsBtn , searchBtn , notificationsBtn;
     private SwipeRefreshLayout refresh;
 
     private FirebaseAuth auth;
@@ -79,6 +80,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         refresh = parentHolder.findViewById(R.id.homeRefreshLayout);
         searchBtn = parentHolder.findViewById(R.id.search_btn);
         settingsBtn = parentHolder.findViewById(R.id.settingsBtn);
+        notificationsBtn = parentHolder.findViewById(R.id.notification_btn);
 
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
@@ -116,6 +118,14 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
+            }
+        });
+
+        //Start Notifications Activity
+        notificationsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), NotificationsActivity.class));
             }
         });
 
