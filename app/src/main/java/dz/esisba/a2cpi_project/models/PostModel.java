@@ -8,7 +8,6 @@ import com.google.firebase.Timestamp;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class PostModel implements Serializable, Parcelable {
    private String askedBy,publisher,Username,question,body,postid,publisherPic,answerBy;
@@ -28,6 +27,10 @@ public class PostModel implements Serializable, Parcelable {
         this.likesCount = likesCount;
         this.answersCount = answersCount;
         this.tags = tags;
+    }
+
+    public PostModel (String postid){
+        this.postid=postid;
     }
 
 
@@ -50,7 +53,7 @@ public class PostModel implements Serializable, Parcelable {
 
     public String ConvertDate()
     {
-        SimpleDateFormat sfd = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy • HH:mm");
         return  sfd.format(getDate().toDate());
     }
 

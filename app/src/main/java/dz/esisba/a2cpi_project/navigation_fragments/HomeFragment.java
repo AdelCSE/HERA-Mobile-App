@@ -1,6 +1,5 @@
 package dz.esisba.a2cpi_project.navigation_fragments;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,25 +19,26 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,6 +59,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     private View parentHolder;
     private RecyclerView recyclerView;
     private ArrayList<PostModel> PostsDataHolder;
+    private ArrayList<String> likes;
     private PostAdapter adapter;
     private ImageButton settingsBtn , searchBtn;
     private SwipeRefreshLayout refresh;
@@ -66,18 +67,10 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     private FirebaseAuth auth;
     private FirebaseUser user;
     private FirebaseFirestore fstore;
-    private DocumentReference likesRef;
+    private DocumentReference likesRef,userInfos;
     private CollectionReference postRef;
     private String downloadUrl;
-    ShimmerFrameLayout shimmer;
 
-
-
-    private boolean liked = false;
-    private static  String date = DateFormat.getInstance().format(new Date());
-    private ArrayList<String> likes;
-
-    final static String TAG ="_____________________";
 
     @Nullable
     @Override
@@ -87,26 +80,31 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         refresh = parentHolder.findViewById(R.id.homeRefreshLayout);
         searchBtn = parentHolder.findViewById(R.id.search_btn);
         settingsBtn = parentHolder.findViewById(R.id.settingsBtn);
+
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
         postRef = fstore.collection("Posts");
+        userInfos = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
 
-        /*postRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        userInfos.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    HashMap<String, Object> hm = new HashMap<>();
-                    hm.put("reportsCount", 0);
-
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        document.getReference().update(hm);
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(this.toString(), "Listen failed.", e);
+                    return;
+                }
+                if (snapshot != null && snapshot.exists()) {
+                    if (snapshot.get("profilePictureUrl") != null) {
+                        downloadUrl = snapshot.get("profilePictureUrl").toString();
                     }
-                } else {
-                    Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Log.d(this.toString(), "Current data: null");
                 }
             }
-        });*/
+        });
 
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -139,7 +137,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     private void FetchPosts() {
         PostsDataHolder = new ArrayList<>();
 
-        postRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        postRef.orderBy("Date", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -165,6 +163,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
     }
 
+    //Start Question Bloc Activity
     public void StartQuestionBlocActivity(int position){
         PostModel Post1 = new PostModel(PostsDataHolder.get(position).getAskedBy(), PostsDataHolder.get(position).getPublisher()
                 , PostsDataHolder.get(position).getUsername() , PostsDataHolder.get(position).getQuestion() ,
@@ -176,6 +175,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         getActivity().startActivity(intent);
     }
 
+    //Start User Profile Activity
     public void StartUserProfileActivity(int position){
         if (PostsDataHolder.get(position).getPublisher().equals(user.getUid())){
             //switch to profile
@@ -225,8 +225,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         startActivity(Intent.createChooser(intent,"Share using"));
     }
 
-
-
     @Override
     public void onLikeClick(int position, LottieAnimationView lottieAnimationView, TextView likesTxt, boolean isAnswer) {
         PostModel post = new PostModel(PostsDataHolder.get(position).getAskedBy(), PostsDataHolder.get(position).getPublisher()
@@ -235,25 +233,18 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 PostsDataHolder.get(position).getDate(),PostsDataHolder.get(position).getPublisherPic(),
                 PostsDataHolder.get(position).getLikesCount(),PostsDataHolder.get(position).getAnswersCount(), PostsDataHolder.get(position).getTags());
 
-
-        if (lottieAnimationView.getTag().equals("Like"))
-        {
+        if (lottieAnimationView.getTag().equals("Like")) {
 
             //sending like notification to the publisher
             Task<DocumentSnapshot> s = fstore.collection("Users").document(user.getUid()).get();
             fstore.collection("Users").document(post.getPublisher()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @SuppressLint("LongLogTag")
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if(task.isSuccessful()&& s.isSuccessful()){
                         Notify(task.getResult().getString("Token"),
-                                s.getResult().getString("Name")+"Liked your shit",
-                                "Click To See Your Post",
-                                HomeFragment.super.getActivity());
-                    }
-                    else{
-                        //Toast.maketext
-                        Log.d("Calling notify likeOnclik", "onComplete: Failure");
+                                s.getResult().getString("Name"),
+                                getActivity(),
+                                position);
                     }
                 }
             });
@@ -261,7 +252,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
             lottieAnimationView.setSpeed(3);
             lottieAnimationView.playAnimation();//play like animation
             lottieAnimationView.setTag("Liked");
-
 
             int i = Integer.parseInt(likesTxt.getText().toString());
             i++;
@@ -279,24 +269,33 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                             likes = (ArrayList<String>) doc.get("likes");
                             likes.add(user.getUid());
                             PostsDataHolder.get(position).setLikes(likes);
+                            //likes are stored for user for faster query
                             likesRef = fstore.collection("Users").document(user.getUid()).
                                     collection("Likes").document(post.getPostid());
-
-                            Map<String,Object> hm = new HashMap<>();
-                            hm.put("likes", likes);
-                            hm.put("likesCount", likes.size());
-                            //update likes count for the post
-                            postRef.document(post.getPostid()).update(hm).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    LikeFailure(lottieAnimationView, likesTxt, position);
-                                }
-                            }).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    SetLikesForUser(post.getTags(), 1);
-                                }
-                            });
+                                Map<String,Object> hashMap = new HashMap<>(); //represents key, value
+                                hashMap.put("uid", user.getUid());
+                                hashMap.put("postid", post.getPostid());
+                                hashMap.put("tags", post.getTags()); //we might need tags later for recommendation system
+                                likesRef.set(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Map<String,Object> hm = new HashMap<>();
+                                        hm.put("likes", likes);
+                                        hm.put("likesCount", likes.size());
+                                        //update likes count for the post
+                                        postRef.document(post.getPostid()).update(hm).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                LikeFailure(lottieAnimationView, likesTxt, position);
+                                            }
+                                        });
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        LikeFailure(lottieAnimationView, likesTxt, position);
+                                    }
+                                });
                         }
                     }
                     else LikeFailure(lottieAnimationView, likesTxt, position);
@@ -306,7 +305,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
             lottieAnimationView.setSpeed(-2);
             lottieAnimationView.playAnimation();//play like animation
             lottieAnimationView.setTag("Like");
-
 
             int i = Integer.parseInt(likesTxt.getText().toString());
             i--;
@@ -326,19 +324,24 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                             PostsDataHolder.get(position).setLikes(likes);
                             likesRef = fstore.collection("Users").document(user.getUid()).
                                     collection("Likes").document(post.getPostid());
-                            Map<String,Object> hm = new HashMap<>();
-                            hm.put("likes", likes);
-                            hm.put("likesCount", likes.size());
-                            //update likes count for the post
-                            postRef.document(post.getPostid()).update(hm).addOnFailureListener(new OnFailureListener() {
+                            likesRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Map<String,Object> hm = new HashMap<>();
+                                    hm.put("likes", likes);
+                                    hm.put("likesCount", likes.size());
+                                    //update likes count for the post
+                                    postRef.document(post.getPostid()).update(hm).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            DislikeFailure(lottieAnimationView, likesTxt, position);
+                                        }
+                                    });
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     DislikeFailure(lottieAnimationView, likesTxt, position);
-                                }
-                            }).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    SetLikesForUser(post.getTags(), -1);
                                 }
                             });
                         }
@@ -350,29 +353,16 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     }
 
 
-    private void SetLikesForUser(ArrayList<String> tags, int i)
-    {
-        CollectionReference userRef = fstore.collection("Users").document(user.getUid())
-                .collection("LikedTags");
-        for (String tag: tags) {
-            DocumentReference tagRef = userRef.document(tag);
-            tagRef.update("occurrence", FieldValue.increment(i));
-        }
-    }
-
-    private void DislikeFailure(LottieAnimationView lottieAnimationView, TextView likesTxt, int position)
-    {
+    private void DislikeFailure(LottieAnimationView lottieAnimationView, TextView likesTxt, int position) {
         lottieAnimationView.setSpeed(2);
         lottieAnimationView.playAnimation();//play like animation
         lottieAnimationView.setTag("Liked");
         int i = Integer.parseInt(likesTxt.getText().toString());
         i++;
         likesTxt.setText(Integer.toString(i));
-
     }
 
-    private void LikeFailure(LottieAnimationView lottieAnimationView,TextView likesTxt, int position)
-    {
+    private void LikeFailure(LottieAnimationView lottieAnimationView,TextView likesTxt, int position) {
         lottieAnimationView.setSpeed(-2);
         lottieAnimationView.playAnimation();//play like animation
         lottieAnimationView.setTag("Like");
@@ -382,31 +372,46 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     }
 
 
-    public void Notify(String publisherToken,String title,String message,Activity activity){
+    public void Notify(String publisherToken,String title,Activity activity,int position) {
 
         fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
-                    if(!task.getResult().getString("Token").equals(publisherToken)) {
+                    if(!task.getResult().getString("Token").equals(publisherToken) || true) {
                         FcmNotificationsSender send = new FcmNotificationsSender(
                                 publisherToken,
-                                title,
-                                message,
-                                getActivity(),
+                                title+" Liked your Post !",
+                                "Click To See All Notifications",
                                 activity);
                         send.SendNotifications();
                     }
                 }
             }
         });
+
+        //add notifier data to notified user (name )  ******* this is for the recyclerView **********
+        PostModel postModel = new PostModel(PostsDataHolder.get(position).getPostid());
+
+        CollectionReference DocRef = fstore.collection("Users").document(PostsDataHolder.get(position).getPublisher()).collection("Notifications");
+        //add the notification data to the notification collection of the notified user
+        Map<String, Object> notif = new HashMap<>();
+        notif.put("Type", 1);
+        notif.put("PostId", postModel.getPostid());
+        notif.put("Username", title);
+        notif.put("Date", Timestamp.now());
+        notif.put("Image",downloadUrl);
+        notif.put("UserId",auth.getCurrentUser().getUid() );
+        //add the document to the notification collection
+        DocRef.add(notif);
     }
+
 }
 
 //TODO Add updateToken Function [Optional]
-/*
-Type of Notification
-1/ like => 1.1/like of post tedik lel post  1.2/ like of answer tedik lel answer
-2/follow => profile li darlek follow
-3/Smart Room [Not Ready yet]
- */
+//*************Important*******firebase notification*********
+//Notification Types :
+/*    0 => Follow                UserId
+ *    1 => Like post            postId
+ *    2 => Like answer          postd + position of the answer
+ * */

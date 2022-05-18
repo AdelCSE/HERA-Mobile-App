@@ -1,5 +1,7 @@
 package dz.esisba.a2cpi_project;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,8 +25,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -41,11 +45,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import NotificationTest.FcmNotificationsSender;
 import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.adapter.QuestionBlocAdapter;
 import dz.esisba.a2cpi_project.interfaces.QuestionsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
 import dz.esisba.a2cpi_project.models.UserModel;
+import dz.esisba.a2cpi_project.navigation_fragments.HomeFragment;
 
 public class QuestionBlocActivity extends AppCompatActivity implements QuestionsOnItemClickListner {
 
@@ -79,8 +85,8 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
-
         userRef = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
+
         //get username of poster
         userRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -113,12 +119,10 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         postsDataHolder = new ArrayList<>();
 
         FetchAnswers();
-
     }
 
     //Display answers
-    private void FetchAnswers()
-    {
+    private void FetchAnswers() {
         postsDataHolder = new ArrayList<>();
         postsDataHolder.add(post);
 
@@ -199,23 +203,37 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                 postsDataHolder.get(position).getBody(),postsDataHolder.get(position).getPostid(),
                 postsDataHolder.get(position).getDate(),postsDataHolder.get(position).getPublisherPic(),
                 postsDataHolder.get(position).getLikesCount(),postsDataHolder.get(position).getAnswersCount(), postsDataHolder.get(position).getTags());
-        if (!isAnswer)
-        {
+        if (!isAnswer) {
             PerformLikeAction(lottieAnimationView, likesTxt,  post, position);
         }
-        else 
-        {
+        else {
             PerformLikeActionForAnswer(lottieAnimationView, likesTxt, post, position);
         }
-
     }
 
-    private void PerformLikeActionForAnswer(LottieAnimationView lottieAnimationView, TextView likesTxt, PostModel p, int position)
-    {
+    private void PerformLikeActionForAnswer(LottieAnimationView lottieAnimationView, TextView likesTxt, PostModel p, int position) {
         postRef = fstore.collection("Posts").document(post.getPostid()).collection("Answers")
         .document(p.getPostid());
         if (lottieAnimationView.getTag().equals("Like"))
         {
+            //sending like answer notification to the publisher ********************************************************************************************************************
+            Task<DocumentSnapshot> s = fstore.collection("Users").document(user.getUid()).get(); //current user data
+            fstore.collection("Users").document(p.getPublisher()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()&& s.isSuccessful()){
+                        NotifyAnswer(task.getResult().getString("Token"),
+                                s.getResult().getString("Name"), //current user name
+                                QuestionBlocActivity.this,
+                                position);
+                    }
+                    else{
+                        //Toast.maketext
+                        Log.d("Calling notify", "onComplete: Failure");
+                    }
+                }
+            });
+
             lottieAnimationView.setSpeed(2);
             lottieAnimationView.playAnimation();//play like animation
             lottieAnimationView.setTag("Liked");
@@ -223,7 +241,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
             int i = Integer.parseInt(likesTxt.getText().toString());
             i++;
             likesTxt.setText(Integer.toString(i));
-
 
             postRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -262,7 +279,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
             lottieAnimationView.setSpeed(-2);
             lottieAnimationView.playAnimation();//play like animation
             lottieAnimationView.setTag("Like");
-
 
             int i = Integer.parseInt(likesTxt.getText().toString());
             i--;
@@ -308,11 +324,28 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         }
     }
 
-    private void PerformLikeAction(LottieAnimationView lottieAnimationView, TextView likesTxt, PostModel p, int position)
-    {
+    private void PerformLikeAction(LottieAnimationView lottieAnimationView, TextView likesTxt, PostModel p, int position) {
         postRef = fstore.collection("Posts").document(p.getPostid());
         if (lottieAnimationView.getTag().equals("Like"))
         {
+            //sending like notification to the publisher ********************************************************************************************************************
+            Task<DocumentSnapshot> s = fstore.collection("Users").document(user.getUid()).get();
+            fstore.collection("Users").document(p.getPublisher()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()&& s.isSuccessful()){
+                        NotifyPost(task.getResult().getString("Token"),
+                                s.getResult().getString("Name"),
+                                QuestionBlocActivity.this,
+                                0);
+                    }
+                    else{
+                        //Toast.maketext
+                        Log.d("Calling notify", "onComplete: Failure");
+                    }
+                }
+            });
+
             lottieAnimationView.setSpeed(2);
             lottieAnimationView.playAnimation();//play like animation
             lottieAnimationView.setTag("Liked");
@@ -320,7 +353,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
             int i = Integer.parseInt(likesTxt.getText().toString());
             i++;
             likesTxt.setText(Integer.toString(i));
-
 
             postRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -365,8 +397,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                     else LikeFailure(lottieAnimationView, likesTxt, position);
                 }
             });
-        } else
-        {
+        } else {
             lottieAnimationView.setSpeed(-2);
             lottieAnimationView.playAnimation();//play like animation
             lottieAnimationView.setTag("Like");
@@ -417,17 +448,13 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         }
     }
 
-
     public void buildRecyclerView(){
-
         setRecyclerView(findViewById(R.id.recviewa));
         getRecyclerView().setLayoutManager(new LinearLayoutManager(this));
-
         adapter = new QuestionBlocAdapter(postsDataHolder,this);
         recyclerView.setAdapter(adapter);
     }
 
-    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
     Date date = new Date();
 
     public void showAnswerDialog(){
@@ -447,7 +474,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
             }
         });
 
-
         postAnswerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -456,31 +482,44 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                 {
                     PerformValidation(addAnswer.getText().toString());
                 }else {
+                    //sending like answer notification to the publisher ********************************************************************************************************************
+                    Task<DocumentSnapshot> s = fstore.collection("Users").document(user.getUid()).get(); //current user data
+                    fstore.collection("Users").document(post.getPublisher()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if(task.isSuccessful()&& s.isSuccessful()){
+                                NotifyAnswer(task.getResult().getString("Token"),
+                                        s.getResult().getString("Name"), //current user name
+                                        QuestionBlocActivity.this,
+                                        postAnswerBtn.getVerticalScrollbarPosition());
+                            }
+                            else{
+                                //Toast.maketext
+                                Log.d("Calling notify", "onComplete: Failure");
+                            }
+                        }
+                    });
                     getDialog().dismiss();
                     startActivity(new Intent(getApplicationContext(), BottomNavigationActivity.class));
                     finish();
                 }
             }
         });
-
         getDialog().setContentView(view);
     }
 
-    private void DislikeFailure(LottieAnimationView lottieAnimationView, TextView likesTxt, int position)
-    {
+    private void DislikeFailure(LottieAnimationView lottieAnimationView, TextView likesTxt, int position) {
         lottieAnimationView.setSpeed(2);
         lottieAnimationView.playAnimation();//play like animation
         lottieAnimationView.setTag("Liked");
         int i = Integer.parseInt(likesTxt.getText().toString());
         i++;
         likesTxt.setText(Integer.toString(i));
-
     }
 
-    private void LikeFailure(LottieAnimationView lottieAnimationView,TextView likesTxt, int position)
-    {
+    private void LikeFailure(LottieAnimationView lottieAnimationView,TextView likesTxt, int position) {
         lottieAnimationView.setSpeed(-2);
-        lottieAnimationView.playAnimation();//play like animation
+        lottieAnimationView.playAnimation();
         lottieAnimationView.setTag("Like");
         int i = Integer.parseInt(likesTxt.getText().toString());
         i--;
@@ -488,8 +527,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
 
     }
 
-    private void PerformValidation(String answer)
-    {
+    private void PerformValidation(String answer) {
         String answerId = post.getPostid() +"#"+Integer.toString(post.getAnswersCount());
         Toast.makeText(QuestionBlocActivity.this, "Posting...", Toast.LENGTH_SHORT).show();
         HashMap<String, Object> data = new HashMap<>();
@@ -575,5 +613,67 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
     }
 
 
+    public void NotifyPost(String publisherToken, String title, Activity activity, int position){
 
+        fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    if(!task.getResult().getString("Token").equals(publisherToken) || true) {           //****************** check  this condition ***true
+                        FcmNotificationsSender send = new FcmNotificationsSender(
+                                publisherToken,
+                                title+" Liked your Post",
+                                "Click To See All Notifications",
+                                activity);
+                        send.SendNotifications();
+                    }
+                }
+            }
+        });
+        //add notifier data to notified user (name )  ******* this is for the recyclerView **********
+        PostModel postModel = new PostModel(postsDataHolder.get(position).getPostid());
+        CollectionReference DocRef = fstore.collection("Users").document(postsDataHolder.get(position).getPublisher()).collection("Notifications");
+        //add the notification data to the notification collection of the notified user
+        Map<String, Object> notif = new HashMap<>();
+        notif.put("Type", 1);
+        notif.put("PostId", postModel.getPostid());
+        notif.put("Username", title);
+        notif.put("Date", Timestamp.now());
+        notif.put("Image",downloadUrl);
+        notif.put("UserId",user.getUid() );
+        //add the document to the notification collection
+        DocRef.add(notif);
+    }
+
+    public void NotifyAnswer(String publisherToken, String title,  Activity activity, int position){
+
+        fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    if(!task.getResult().getString("Token").equals(publisherToken) || true) {           //****************** check  this condition ***true
+                        FcmNotificationsSender send = new FcmNotificationsSender(
+                                publisherToken,
+                                title+" Liked your Answer !",
+                                "Click To See All Notifications",
+                                activity);
+                        send.SendNotifications();
+                    }
+                }
+            }
+        });
+        //add notifier data to notified user (name )  ******* this is for the recyclerView **********
+        PostModel postModel = new PostModel(postsDataHolder.get(0).getPostid());
+        CollectionReference DocRef = fstore.collection("Users").document(postsDataHolder.get(0).getPublisher()).collection("Notifications");
+        //add the notification data to the notification collection of the notified user
+        Map<String, Object> notif = new HashMap<>();
+        notif.put("Type", 2);
+        notif.put("PostId", postModel.getPostid());
+        notif.put("Username", title);
+        notif.put("Date", Timestamp.now());
+        notif.put("Image",downloadUrl);
+        notif.put("UserId",user.getUid() );
+        //add the document to the notification collection
+        DocRef.add(notif);
+    }
 }

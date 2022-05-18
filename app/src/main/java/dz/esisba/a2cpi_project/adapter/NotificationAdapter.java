@@ -1,5 +1,6 @@
 package dz.esisba.a2cpi_project.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 import dz.esisba.a2cpi_project.R;
@@ -17,6 +20,7 @@ import dz.esisba.a2cpi_project.models.NotificationModel;
 public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     ArrayList<NotificationModel> NotificationsHolder;
+    Context context;
 
     public NotificationAdapter(ArrayList<NotificationModel> notificationsHolder) {
         NotificationsHolder = notificationsHolder;
@@ -36,6 +40,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         if (viewType==1){
+            context = parent.getContext();
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_notifications,parent,false);
             return new Myviewholder(view);
         }else{
@@ -48,10 +53,20 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder.getItemViewType()==1){
             Myviewholder myviewholder = (Myviewholder) holder;
-            myviewholder.img.setImageResource(NotificationsHolder.get(position).getImage());
+            Glide.with(context).load(NotificationsHolder.get(position).getImage()).into(myviewholder.Img);
             myviewholder.Username.setText(NotificationsHolder.get(position).getUsername());
-            myviewholder.Date.setText(NotificationsHolder.get(position).getDate());
-            myviewholder.NotificationText.setText(NotificationsHolder.get(position).getNotificationText());
+            myviewholder.Date.setText(NotificationsHolder.get(position).ConvertDate());
+            switch (NotificationsHolder.get(position).getType()) {
+                case 0:
+                    myviewholder.NotificationText.setText("followed you");
+                    break;
+                case 1:
+                    myviewholder.NotificationText.setText("liked your question");
+                    break;
+                case 2:
+                    myviewholder.NotificationText.setText("liked your answer");
+                    break;
+            }
         }else{
             Myviewholder2 myviewholder2 = (Myviewholder2) holder;
             myviewholder2.New.setText("New");
@@ -67,12 +82,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     class Myviewholder extends RecyclerView.ViewHolder {
 
-        ImageView img;
+        ImageView Img;
         TextView Username,Date,NotificationText;
 
         public Myviewholder (@NonNull View itemView){
             super(itemView);
-            img = itemView.findViewById(R.id.notifImg);
+            Img = itemView.findViewById(R.id.notifImg);
             Username = itemView.findViewById(R.id.notifUsername);
             Date = itemView.findViewById(R.id.notifDate);
             NotificationText = itemView.findViewById(R.id.notifText);

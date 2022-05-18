@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -30,7 +31,6 @@ import java.util.HashMap;
 import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
-import dz.esisba.a2cpi_project.interfaces.QuestionsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
 
 public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.myviewholder>{

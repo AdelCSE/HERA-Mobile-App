@@ -34,6 +34,10 @@ public class UserModel implements Serializable {
         this.uid = uid;
     }
 
+    public UserModel(String uid) {
+        this.uid = uid;
+    }
+
     public String getBio() {
         return bio;
     }

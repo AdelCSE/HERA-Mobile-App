@@ -19,6 +19,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager2.widget.ViewPager2;
+
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -28,6 +33,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -50,30 +56,26 @@ import dz.esisba.a2cpi_project.interfaces.GetUserInterface;
 import dz.esisba.a2cpi_project.models.UserModel;
 
 public class UserProfileActivity extends AppCompatActivity implements GetUserInterface {
+
     private TextView usernameTxt,name, bio, followersCount, followingCount;
-    private Button followBtn,askQuestion;
-    private static  String date = DateFormat.getInstance().format(new Date());
-    private static Boolean following = false;
-    private CollapsingToolbarLayout toolbarLayout;
-    private CircleImageView profilePic;
     private ImageView banner;
+    private CircleImageView profilePic;
+    private Button followBtn,askQuestion;
+    private CollapsingToolbarLayout toolbarLayout;
     private BottomSheetDialog dialog;
     private String askedByName,askedByUsername = "";
     private DocumentReference askedByRef;
-
     private UserModel userModel, currentUserModel;
 
-    FirebaseAuth auth;
-    FirebaseUser user;
-    FirebaseFirestore fstore;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+    private FirebaseFirestore fstore;
     private String downloadUrl;
 
-    ViewPager2 viewPager;
-    TabLayout tabLayout;
-    UserProfileAdapter adapter;
-    Toolbar toolbar;
-
-
+    private ViewPager2 viewPager;
+    private TabLayout tabLayout;
+    private UserProfileAdapter adapter;
+    private Toolbar toolbar;
 
     private String[] titles = {"Questions" , "Answers"};
     private ArrayList<String> currUserFollowers, followings;
@@ -139,7 +141,6 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
             }
         });
 
-
         userModel = (UserModel) getIntent().getSerializableExtra("Tag");
         DocumentReference userRef = fstore.collection("Users").document(userModel.getUid());
         DocumentReference currentUserRef = fstore.collection("Users").document(user.getUid());
@@ -154,11 +155,10 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
                 {
                     //sending follow notification to the publisher
                     Task<DocumentSnapshot> s = currentUserRef.get(); //this is the current user
-                    userRef.get().addOnCompleteListener(task -> {
+                    userRef.get().addOnCompleteListener(task -> {   //userRef is the publisher
                         if(task.isSuccessful()&& s.isSuccessful())
-                            Notify(task.getResult().getString("Token"),
-                                    s.getResult().getString("Name")+"Followed You",
-                                    "Click To See His Profile",
+                            Notify(task,
+                                    s.getResult().getString("Name"),
                                     UserProfileActivity.this);
                             Log.d("notify likeOnclik", "onComplete: SSSucccuess");
                     });
@@ -342,11 +342,7 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
         dialog.setContentView(view);
     }
 
-
-
-    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
     Date requestDate = new Date();
-
 
     //*** Set Request data in Firebase ***//
     private void PerformValidation(String question){
@@ -380,30 +376,61 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
         });
     }
 
-
-
     @Override
     public UserModel getUserModel() {
         return userModel;
     }
 
 
-    public void Notify(String publisherToken, String title, String message, Activity activity){
+    public void Notify(Task<DocumentSnapshot> publisherTask, String title, Activity activity){
+        DocumentReference userRef = fstore.collection("Users").document(userModel.getUid());
+
         fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
-                    if(!task.getResult().getString("Token").equals(publisherToken)) {
+                    if(!task.getResult().getString("Token").equals(publisherTask.getResult().getString("Token"))) {
                         FcmNotificationsSender send = new FcmNotificationsSender(
-                                publisherToken,
-                                title,
-                                message,
-                                getApplicationContext(),
-                                activity);
+                                publisherTask.getResult().getString("Token"),
+                                title+" Followed You !",
+                                "Click To See All Notifications",
+                                UserProfileActivity.this);
                         send.SendNotifications();
+
+
                     }
+                }
+            }
+        });
+
+        //add notifier data to notified user (name )  ******* this is for the recyclerView **********
+        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {//userRef is the notified
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    Map<String, Object> notif = new HashMap<>();
+                    notif.put("Type", 0);
+                    notif.put("UserId",user.getUid());
+                    notif.put("Username", title);
+                    notif.put("Date", Timestamp.now());
+                    notif.put("PostId", null);
+                    notif.put("Image", downloadUrl);
+                    userRef.collection("Notifications")
+                            .add(notif); //add the notification data to the notification collection of the notified user
                 }
             }
         });
     }
 }
+
+//*************Important*******firebase notification*********
+//Notification Types :
+/*   0 => Follow
+*    1 => Like post
+*    2 => Like answer
+* */
+
+/*
+notifid = li tawsslah notification
+notifier = li yersel notification
+ */

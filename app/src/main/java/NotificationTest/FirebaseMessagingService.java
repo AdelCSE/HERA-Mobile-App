@@ -8,33 +8,30 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-import dz.esisba.a2cpi_project.MainActivity;
+import dz.esisba.a2cpi_project.BottomNavigationActivity;
+import dz.esisba.a2cpi_project.ChangePasswordActivity;
+import dz.esisba.a2cpi_project.LoginActivity;
 import dz.esisba.a2cpi_project.R;
+import dz.esisba.a2cpi_project.RegisterActivity;
+import dz.esisba.a2cpi_project.SettingsActivity;
+import dz.esisba.a2cpi_project.SplashScreenActivity;
+import dz.esisba.a2cpi_project.UserProfileActivity;
+import dz.esisba.a2cpi_project.navigation_fragments.NotificationsFragment;
+
 
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
-    NotificationManager mNotificationManager;
 
-    public void broadcastIntent() {
-        Intent intent = new Intent();
-        intent.setAction("com.myApp.CUSTOM_EVENT");
-        // We should use LocalBroadcastManager when we want INTRA app
-        // communication
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-    }
 
     @Override
     public void onNewToken(@NonNull String token) {
@@ -45,31 +42,29 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
+//        int resourceImage = getResources().getIdentifier(Objects.requireNonNull(remoteMessage.getNotification()).getIcon(), "drawable", getPackageName());
+
+        Intent resultIntent = new Intent(this, SettingsActivity.class);
+        resultIntent.putExtra("menuFragment", NotificationsFragment.class);
+        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent = PendingIntent.getActivity(this, 10, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
-        int resourceImage = getResources().getIdentifier(Objects.requireNonNull(remoteMessage.getNotification()).getIcon(), "drawable", getPackageName());
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL_ID000");
 
-
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "CHANNEL_ID");
-        builder.setSmallIcon(R.drawable.google);
-        builder.setSmallIcon(resourceImage);
-
-
-        Intent resultIntent = new Intent(this, MainActivity.class);
-        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-        builder.setContentTitle(remoteMessage.getNotification().getTitle());
+        builder.setContentTitle(Objects.requireNonNull(remoteMessage.getNotification()).getTitle());
         builder.setContentText(remoteMessage.getNotification().getBody());
         builder.setContentIntent(pendingIntent);
         builder.setStyle(new NotificationCompat.BigTextStyle().bigText(remoteMessage.getNotification().getBody()));
         builder.setAutoCancel(true);
         builder.setPriority(Notification.PRIORITY_MAX);
+        builder.setSmallIcon(R.drawable.google);
 
-        mNotificationManager =
-                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+//        Intent builder1 = new Intent(getApplicationContext(), UserProfileActivity.class);
+//        builder1.putExtra("builder", (Serializable) builder);
 
+
+
+        NotificationManager Manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
 
 
@@ -78,16 +73,16 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             String channelId = "Your_channel_id";
             NotificationChannel channel = new NotificationChannel(
                     channelId,
-                    "Channel human readable title",
+                    "Chak dir Hna !",
                     NotificationManager.IMPORTANCE_HIGH);
-            mNotificationManager.createNotificationChannel(channel);
+            Manager.createNotificationChannel(channel);
             builder.setChannelId(channelId);
         }
 
 
 
 // notificationId is a unique int for each notification that you must define
-        mNotificationManager.notify(100, builder.build());
+        Manager.notify(100, builder.build());
     }
 
 }
