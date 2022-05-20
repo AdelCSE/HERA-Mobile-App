@@ -25,14 +25,7 @@ public class UserModel implements Serializable {
         this.posts = posts;
         this.answers = answers;
     }
-
-    public UserModel(String name, String username, String profilePictureUrl, String bannerUrl, String uid, String bio) {
-        Name = name;
-        Username = username;
-        this.profilePictureUrl = profilePictureUrl;
-        this.bannerUrl = bannerUrl;
-        this.uid = uid;
-    }
+    
 
     public UserModel(String uid) {
         this.uid = uid;

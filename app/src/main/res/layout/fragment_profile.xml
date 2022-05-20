@@ -177,7 +177,8 @@
                     android:layout_marginRight="20dp"
                     android:background="@drawable/mainbtn"
                     android:src="@drawable/ic_pencil"
-                    tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck,TouchTargetSizeCheck,TouchTargetSizeCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
+                    tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck,TouchTargetSizeCheck,TouchTargetSizeCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck"
+                    android:visibility="invisible"/>
 
             </LinearLayout>
 

@@ -72,6 +72,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
     private int count;
     private ArrayList<String> likes;
     private DocumentReference postRef;
+    private int absolutePosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +114,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
             }
         });
 
+        absolutePosition = getIntent().getIntExtra("position", -1);
         post = (PostModel) getIntent().getSerializableExtra("Tag");
         postRef = fstore.collection("Posts").document(post.getPostid());
         count = post.getAnswersCount();
@@ -502,7 +504,8 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
     }
 
     private void PerformValidation(String answer) {
-        String answerId = post.getPostid() +"#"+Integer.toString(post.getAnswersCount());
+        DocumentReference id = fstore.collection("Posts").document();
+        String answerId = post.getPostid() +"#"+id.getId();
         Toast.makeText(QuestionBlocActivity.this, "Posting...", Toast.LENGTH_SHORT).show();
         HashMap<String, Object> data = new HashMap<>();
         data.put("postid", answerId);
@@ -650,4 +653,15 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         //add the document to the notification collection
         DocRef.add(notif);
     }
+
+    @Override
+    public void onBackPressed() {
+        ArrayList<String> likes = postsDataHolder.get(0).getLikes();
+        Intent intent = new Intent();
+        intent.putExtra("likes", likes);
+        intent.putExtra("position", absolutePosition);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
 }

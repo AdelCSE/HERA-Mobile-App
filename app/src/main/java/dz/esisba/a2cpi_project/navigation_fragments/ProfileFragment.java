@@ -1,6 +1,7 @@
 package dz.esisba.a2cpi_project.navigation_fragments;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -68,6 +69,7 @@ public class ProfileFragment extends Fragment {
     private CollapsingToolbarLayout toolbarLayout;
     private CircleImageView profileImg;
     private ImageView banner;
+    private ProgressDialog loader;
 
     View Holder;
     ViewPager2 viewPager;
@@ -76,7 +78,7 @@ public class ProfileFragment extends Fragment {
 
 
     private String[] titles = {"Questions" , "Answers" , "Requests", "Replies"};
-    private boolean loadbanner = false;
+    private boolean loadbanner = true;
 
 
 
@@ -104,6 +106,7 @@ public class ProfileFragment extends Fragment {
         confirmBanner = Holder.findViewById(R.id.bannerConfirm);
         toolbarLayout = Holder.findViewById(R.id.CollapsingToolBarLayout);
         profileImg = Holder.findViewById(R.id.profileImg);
+        loader = new ProgressDialog(getActivity());
 
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,7 +130,6 @@ public class ProfileFragment extends Fragment {
         bannerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadbanner = false;
                pickMedia();
             }
         });
@@ -136,7 +138,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 confirmBanner.setVisibility(View.GONE);
-
+                startLoader();
                 StorageReference fileReference = bannerReference.child(user.getUid());
                 if(resultUri!=null) {
                     fileReference.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -152,7 +154,7 @@ public class ProfileFragment extends Fragment {
                                     df.update(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
-
+                                            loader.dismiss();
                                             Toast.makeText(getActivity(), "Banner updated", Toast.LENGTH_SHORT).show();
                                         }
                                     });
@@ -161,6 +163,7 @@ public class ProfileFragment extends Fragment {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     Toast.makeText(getActivity(), "Unknow error occured please try again later", Toast.LENGTH_SHORT).show();
+                                    loader.dismiss();
                                     return;
                                 }
                             });
@@ -199,36 +202,36 @@ public class ProfileFragment extends Fragment {
     {
         GetUserInterface id = (GetUserInterface) getActivity();
         userModel = id.getUserModel();
+        if (userModel!=null) {
+            followers = userModel.getFollowers();
+            followings = userModel.getFollowing();
 
-        followers = userModel.getFollowers();
-        followings = userModel.getFollowing();
+            if (followers != null) {
+                String i = Integer.toString(followers.size());
+                followersCount.setText(i);
+            }
+            if (followings != null) {
+                String j = Integer.toString(followings.size());
+                followingCount.setText(j);
+            }
 
-        if (followers!=null) {
-            String i = Integer.toString(followers.size());
-            followersCount.setText(i);
-        }
-        if (followings!=null) {
-            String j = Integer.toString(followings.size());
-            followingCount.setText(j);
-        }
+            //set username
+            toolbarLayout.setTitle(userModel.getUsername());
 
-        //set username
-        toolbarLayout.setTitle(userModel.getUsername());
-
-        if (userModel.getProfilePictureUrl()!= null) { //set profile pic
-            String downloadUrl = userModel.getProfilePictureUrl();
-            Glide.with(ProfileFragment.this).load(downloadUrl).into(profileImg);
-        }
-        if (userModel.getBannerUrl()!= null && loadbanner) { //set banner
-            String downloadUrl = userModel.getBannerUrl();
-            Glide.with(ProfileFragment.this).load(downloadUrl).into(banner);
-        }
-        if (userModel.getName()!= null) { //set name
-            name.setText(userModel.getName());
-        }
-        if(userModel.getBio()!=null)
-        { //set bio
-            bio.setText(userModel.getBio());
+            if (userModel.getProfilePictureUrl() != null) { //set profile pic
+                String downloadUrl = userModel.getProfilePictureUrl();
+                Glide.with(ProfileFragment.this).load(downloadUrl).into(profileImg);
+            }
+            if (userModel.getBannerUrl() != null && loadbanner) { //set banner
+                String downloadUrl = userModel.getBannerUrl();
+                Glide.with(ProfileFragment.this).load(downloadUrl).into(banner);
+            }
+            if (userModel.getName() != null) { //set name
+                name.setText(userModel.getName());
+            }
+            if (userModel.getBio() != null) { //set bio
+                bio.setText(userModel.getBio());
+            }
         }
     }
 
@@ -240,13 +243,24 @@ public class ProfileFragment extends Fragment {
                 if (data != null && result.getResultCode() == Activity.RESULT_OK) {
                     confirmBanner.setVisibility(View.VISIBLE);
                     resultUri = data.getData();
-                    if (resultUri != null)banner.setImageURI(resultUri);
+                    if (resultUri != null)
+                    {
+                        banner.setImageURI(resultUri);
+                        loadbanner = false;
+                    }
 
                 }
                 else {
                     Toast.makeText(requireActivity(), ImagePicker.getError(data), Toast.LENGTH_SHORT).show();
                 }
             });
+
+    private void startLoader()
+    {
+        loader.setMessage("Updating banner...");
+        loader.setCanceledOnTouchOutside(false);
+        loader.show();
+    }
 
 //TODO: add cancel banner
 }

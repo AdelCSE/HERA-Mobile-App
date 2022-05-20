@@ -1,8 +1,13 @@
 package dz.esisba.a2cpi_project;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -55,8 +60,6 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText name1, name2, bio;
     private ImageButton confirmButton;
     private CircleImageView profilePic;
-    private ProgressBar progressBar;
-
     private String ppURL;
     private boolean infoUploaded = false;
     private boolean datachange = false;
@@ -65,6 +68,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private int i =0;
 
     private UserModel previousInfo;
+    private ProgressDialog loader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +80,7 @@ public class EditProfileActivity extends AppCompatActivity {
         bio = findViewById(R.id.bioEditText);
         confirmButton = findViewById(R.id.confirmButton);
         profilePic = findViewById(R.id.profilePic);
-        progressBar = findViewById(R.id.progressBar3);
+        loader = new ProgressDialog(this);
 
 
         auth = FirebaseAuth.getInstance();
@@ -136,51 +140,71 @@ public class EditProfileActivity extends AppCompatActivity {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                datachange = true;
-                DisableEverything();
-                progressBar.setVisibility(View.VISIBLE);
-                df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful())
-                        {
-                            DocumentSnapshot doc = task.getResult();
-                            if (doc.exists())
-                            {
-                                Map<String,Object> hashMap = new HashMap(); //represents key, value
-                                hashMap.put("Name", name1.getText().toString()+" "+name2.getText().toString());
-                                hashMap.put("Bio", bio.getText().toString());
-                                StorageReference fileReference = storageReference.child(user.getUid());
-                                if(resultUri!=null) {
-                                    UploadImage(fileReference, hashMap, df);
+                if (!isNetworkAvailable())
+                {
+                    View parentLayout = findViewById(android.R.id.content);
+                    final Snackbar snackbar = Snackbar.make(parentLayout, "Please check your internet connection", Snackbar.LENGTH_LONG)
+                            .setAction("TRY AGAIN", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    confirmButton.performClick();
                                 }
-                                else
-                                {
-                                    df.update(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            UpdateNameInPosts();
-                                            View parentLayout = findViewById(android.R.id.content);
-                                            final Snackbar snackbar = Snackbar.make(parentLayout, "Information updated", Snackbar.LENGTH_LONG)
-                                                    .setAction("RETURN", new View.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(View view) {
-                                                            onBackPressed();
-                                                        }
-                                                    });
-                                            snackbar.show();
-                                            progressBar.setVisibility(View.GONE);
-                                            infoUploaded= true;
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    }
-                });
+                            });
+                    snackbar.show();
+                    return;
+                }
+                else {
+                    UpdateInfo(df);
+                }
             }
         });
 
+    }
+
+    private void UpdateInfo(DocumentReference df) {
+        datachange = true;
+       // DisableEverything();
+        startLoader();
+        df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful())
+                {
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc.exists())
+                    {
+                        Map<String,Object> hashMap = new HashMap(); //represents key, value
+                        hashMap.put("Name", name1.getText().toString()+" "+name2.getText().toString());
+                        hashMap.put("Bio", bio.getText().toString());
+                        StorageReference fileReference = storageReference.child(user.getUid());
+                        if(resultUri!=null) {
+                            UploadImage(fileReference, hashMap, df);
+                        }
+                        else
+                        {
+                            df.update(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    UpdateNameInPosts();
+                                    View parentLayout = findViewById(android.R.id.content);
+                                    final Snackbar snackbar = Snackbar.make(parentLayout, "Information updated", Snackbar.LENGTH_INDEFINITE)
+                                            .setAction("RETURN", new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+                                                    onBackPressed();
+                                                }
+                                            });
+                                    snackbar.show();
+                                    infoUploaded= true;
+                                    loader.dismiss();
+                                }
+                            });
+                        }
+                    }
+                }
+                else loader.dismiss();
+            }
+        });
     }
 
     private void DisableEverything()
@@ -189,6 +213,12 @@ public class EditProfileActivity extends AppCompatActivity {
         name1.setEnabled(false);
         name2.setEnabled(false);
         bio.setEnabled(false);
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 
@@ -221,53 +251,86 @@ public class EditProfileActivity extends AppCompatActivity {
                     public void onSuccess(Uri uri) {
                         imageUrl = uri.toString();
                         hashMap.put("profilePictureUrl", imageUrl);
-                        fstore.collection("Posts").whereEqualTo("publisher", user.getUid())
-                                .get() //update picture in posts
-                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            i=0;
-                                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                                DocumentReference pr = document.getReference();
-                                                Map<String,Object> hm = new HashMap();
-                                                hm.put("publisherPic", imageUrl);
-                                                pr.update(hm).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void unused) {
-                                                        df.update(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void unused) {
-                                                                UpdateNameInPosts();
-                                                                View parentLayout = findViewById(android.R.id.content);
-                                                                final Snackbar snackbar = Snackbar.make(parentLayout, "Information updated", Snackbar.LENGTH_LONG)
-                                                                        .setAction("RETURN", new View.OnClickListener() {
-                                                                            @Override
-                                                                            public void onClick(View view) {
-                                                                                onBackPressed();
-                                                                            }
-                                                                        });
-                                                                snackbar.show();
-                                                                progressBar.setVisibility(View.GONE);
-                                                                infoUploaded= true;
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                            }
-                                        }
-                                    }
-                                });
+                        df.update(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+
+                                UpdateNameInPosts();
+                                UpdatePictureInPosts();
+
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Failure();
+                            }
+                        });
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(EditProfileActivity.this, "Unknow error occured please try again later", Toast.LENGTH_SHORT).show();
+                        Failure();
                         return;
                     }
                 });
             }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Failure();
+            }
         });
+    }
+
+    private void UpdatePictureInPosts()
+    {
+        fstore.collection("Posts").whereEqualTo("publisher", user.getUid())
+                .get() //update picture in posts
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            infoUploaded= true;
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                DocumentReference pr = document.getReference();
+                                Map<String,Object> hm = new HashMap();
+                                hm.put("publisherPic", imageUrl);
+                                pr.update(hm).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Failure();
+                                    }
+                                }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        loader.dismiss();
+                                        View parentLayout = findViewById(android.R.id.content);
+                                        final Snackbar snackbar = Snackbar.make(parentLayout, "Information updated", Snackbar.LENGTH_LONG)
+                                                .setAction("RETURN", new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View view) {
+                                                        onBackPressed();
+                                                    }
+                                                });
+                                        snackbar.show();
+                                    }
+                                });
+                            }
+                        }
+                        else loader.dismiss();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Failure();
+            }
+        });
+    }
+
+    private void Failure()
+    {
+        Toast.makeText(EditProfileActivity.this, "Unknow error occured please try again later", Toast.LENGTH_SHORT).show();
+        loader.dismiss();
     }
 
     private void pickMedia() {
@@ -287,11 +350,14 @@ public class EditProfileActivity extends AppCompatActivity {
     private final ActivityResultLauncher<Intent> startForMediaPickerResult = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                loadpp = false;
                 Intent data = result.getData();
                 if (data != null && result.getResultCode() == Activity.RESULT_OK) {
                     resultUri = data.getData();
-                    if (resultUri != null)profilePic.setImageURI(resultUri);
+                    if (resultUri != null)
+                    {
+                        loadpp = false;
+                        profilePic.setImageURI(resultUri);
+                    }
                 }
                 else {
                     Toast.makeText(EditProfileActivity.this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show();
@@ -324,7 +390,12 @@ public class EditProfileActivity extends AppCompatActivity {
             snackbar.show();
         }
     }
-
+    private void startLoader()
+    {
+        loader.setMessage("Updating your info...");
+        loader.setCanceledOnTouchOutside(false);
+        loader.show();
+    }
 
 }
 

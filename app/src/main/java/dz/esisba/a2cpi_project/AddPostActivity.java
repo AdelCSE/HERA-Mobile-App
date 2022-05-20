@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,6 +47,7 @@ public class AddPostActivity extends AppCompatActivity {
                  sleeping,healthcare,breastfeeding,needs,circumcision,routine,food,
                  fever, influenza,hepatitis,conjunctivitis,other,
                  experience,motherhood,tools,guidance;
+
 
     private String askedByName,askedByUsername = "";
     private DocumentReference askedByRef;
@@ -206,9 +208,22 @@ public class AddPostActivity extends AppCompatActivity {
 
     private void performValidation()
     {
-        if (getQuestionEditTxt().isEmpty()) questionEditTxt.setError("Enter your question");
-        else
+        if (selectedTags.size()<1)
         {
+            Toast.makeText(this, "Please select atleast one tag", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (getQuestionEditTxt().isEmpty())
+        {
+            questionEditTxt.setError("Enter your question");
+            return;
+        }
+        if (getBodyEditTxt().isEmpty())
+        {
+            bodyEditTxt.setError("Please enter some details");
+            return;
+        }
+
             startLoader();
             String postId = ref.getId();
             HashMap<String, Object> data = new HashMap<>();
@@ -237,16 +252,15 @@ public class AddPostActivity extends AppCompatActivity {
                        startActivity(new Intent(getApplicationContext(), BottomNavigationActivity.class));
                        finish();
                    }
-                   else
-                   {
-                       Toast.makeText(AddPostActivity.this, "Could not post question " + task.getException().toString(),
-                               Toast.LENGTH_SHORT).show();
-                       loader.dismiss();
-                   }
+               }
+           }).addOnFailureListener(new OnFailureListener() {
+               @Override
+               public void onFailure(@NonNull Exception e) {
+                   Toast.makeText(AddPostActivity.this, "Could not post question " + e.getMessage(),
+                           Toast.LENGTH_SHORT).show();
+                   loader.dismiss();
                }
            });
-        }
-
     }
     private void startLoader()
     {

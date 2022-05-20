@@ -11,6 +11,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -187,7 +191,35 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 PostsDataHolder.get(position).getLikesCount(),PostsDataHolder.get(position).getAnswersCount(), PostsDataHolder.get(position).getTags());
         Intent intent = new Intent(getActivity(), QuestionBlocActivity.class);
         intent.putExtra("Tag", (Serializable) Post1);
-        getActivity().startActivity(intent);
+        intent.putExtra("position", position);
+        questionBlocActivityResultLauncher.launch(intent);
+    }
+
+    ActivityResultLauncher<Intent> questionBlocActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // There are no request codes
+                        Intent data = result.getData();
+                        ArrayList<String> likes = (ArrayList<String>)data.getExtras().getSerializable("likes");
+                        int position = data.getIntExtra("position", 0);
+                        Refresh(likes,position);
+                    }
+                }
+            });
+
+    private void Refresh(ArrayList<String> likes, int position)
+    {
+         if (likes != null && position>=0)
+         {
+             PostsDataHolder.get(position).setLikes(likes);
+             PostsDataHolder.get(position).setLikesCount(likes.size());
+             adapter.notifyItemChanged(position);
+             adapter.notifyDataSetChanged();
+             buildRecyclerView();
+         }
     }
 
     //Start User Profile Activity
@@ -410,14 +442,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         notif.put("UserId",auth.getCurrentUser().getUid() );
         //add the document to the notification collection
         DocRef.add(notif);
-    }
-
-    @Override
-    public void onResume() {
-        Main();
-        super.onResume();
-        PostsDataHolder = new ArrayList<>();
-        FetchPosts();
     }
 }
 
