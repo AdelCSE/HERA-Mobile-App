@@ -263,7 +263,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if(task.isSuccessful()&& s.isSuccessful()){
                         Notify(task.getResult().getString("Token"),
-                                s.getResult().getString("Name"),
+                                s.getResult().getString("Username"),
                                 getActivity(),
                                 position);
                     }

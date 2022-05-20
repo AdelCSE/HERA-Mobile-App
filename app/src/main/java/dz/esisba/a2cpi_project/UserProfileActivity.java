@@ -158,7 +158,7 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
                     userRef.get().addOnCompleteListener(task -> {   //userRef is the publisher
                         if(task.isSuccessful()&& s.isSuccessful())
                             Notify(task,
-                                    s.getResult().getString("Name"),
+                                    s.getResult().getString("Username"),
                                     UserProfileActivity.this);
                             Log.d("notify likeOnclik", "onComplete: SSSucccuess");
                     });
