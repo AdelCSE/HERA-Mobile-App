@@ -221,7 +221,6 @@ public class AddPostActivity extends AppCompatActivity {
             data.put("Username", askedByUsername);
             data.put("Date", date);
             data.put("tags",selectedTags);
-            data.put("likesCount", 0);
             data.put("answersCount", 0);
             data.put("reportsCount", 0);
             ArrayList likes = new ArrayList();

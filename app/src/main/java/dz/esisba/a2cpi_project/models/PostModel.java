@@ -44,7 +44,8 @@ public class PostModel implements Serializable, Parcelable {
         Date = date;
         this.publisherPic = publisherPic;
         this.answerBy = answerBy;
-        this.likesCount = likesCount;
+        if (likes!= null)this.likesCount = likes.size();
+        else this.likesCount = likesCount;
         this.answersCount = answersCount;
         this.reportsCount = reportsCount;
         this.tags = tags;

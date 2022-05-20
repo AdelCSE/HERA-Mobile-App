@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -74,6 +76,8 @@ public class ProfileFragment extends Fragment {
 
 
     private String[] titles = {"Questions" , "Answers" , "Requests", "Replies"};
+    private boolean loadbanner = false;
+
 
 
     @Nullable
@@ -109,6 +113,7 @@ public class ProfileFragment extends Fragment {
                 getActivity().startActivity(intent);
             }
         });
+        //Toast.makeText(getActivity(), Boolean.toString(loadbanner), Toast.LENGTH_SHORT).show();
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
@@ -117,61 +122,55 @@ public class ProfileFragment extends Fragment {
         bannerReference = FirebaseStorage.getInstance().getReference().child("profileBanners");
 
         DocumentReference df = fstore.collection("Users").document(user.getUid());
-        GetCurrentUserModelAndSetInfo();
 
         //change banner
         bannerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                loadbanner = false;
                pickMedia();
-               confirmBanner.setVisibility(View.VISIBLE);
             }
         });
 
         confirmBanner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful())
-                        {
-                            DocumentSnapshot doc = task.getResult();
-                            if (doc.exists())
-                            {
-                                StorageReference fileReference = bannerReference.child(user.getUid());
-                                if(resultUri!=null) {
-                                    fileReference.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                confirmBanner.setVisibility(View.GONE);
+
+                StorageReference fileReference = bannerReference.child(user.getUid());
+                if(resultUri!=null) {
+                    fileReference.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    String imageUrl = uri.toString();
+                                    userModel.setBannerUrl(imageUrl);
+                                    Map<String,Object> hashMap = new HashMap();
+                                    hashMap.put("bannerUrl", imageUrl);
+                                    df.update(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
-                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                            fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                                @Override
-                                                public void onSuccess(Uri uri) {
-                                                    String imageUrl = uri.toString();
-                                                    Map<String,Object> hashMap = new HashMap();
-                                                    hashMap.put("bannerUrl", imageUrl);
-                                                    df.update(hashMap);
-                                                    Toast.makeText(getActivity(), "Banner updated!", Toast.LENGTH_SHORT).show();
-                                                    confirmBanner.setVisibility(View.GONE);
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(getActivity(), "Unknow error occured please try again later", Toast.LENGTH_SHORT).show();
-                                                    return;
-                                                }
-                                            });
+                                        public void onSuccess(Void unused) {
+
+                                            Toast.makeText(getActivity(), "Banner updated", Toast.LENGTH_SHORT).show();
                                         }
                                     });
-
                                 }
-                                else Toast.makeText(getActivity(), "uri null", Toast.LENGTH_SHORT).show();
-                            }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getActivity(), "Unknow error occured please try again later", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            });
                         }
-                    }
-                });
+                    });
+                }
             }
         });
+
+        GetCurrentUserModelAndSetInfo();
 
         return Holder;
     }
@@ -220,7 +219,7 @@ public class ProfileFragment extends Fragment {
             String downloadUrl = userModel.getProfilePictureUrl();
             Glide.with(ProfileFragment.this).load(downloadUrl).into(profileImg);
         }
-        if (userModel.getBannerUrl()!= null) { //set banner
+        if (userModel.getBannerUrl()!= null && loadbanner) { //set banner
             String downloadUrl = userModel.getBannerUrl();
             Glide.with(ProfileFragment.this).load(downloadUrl).into(banner);
         }
@@ -236,14 +235,18 @@ public class ProfileFragment extends Fragment {
     private final ActivityResultLauncher<Intent> startForMediaPickerResult = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
+                loadbanner = false;
                 Intent data = result.getData();
                 if (data != null && result.getResultCode() == Activity.RESULT_OK) {
+                    confirmBanner.setVisibility(View.VISIBLE);
                     resultUri = data.getData();
                     if (resultUri != null)banner.setImageURI(resultUri);
+
                 }
                 else {
                     Toast.makeText(requireActivity(), ImagePicker.getError(data), Toast.LENGTH_SHORT).show();
                 }
             });
+
 //TODO: add cancel banner
 }

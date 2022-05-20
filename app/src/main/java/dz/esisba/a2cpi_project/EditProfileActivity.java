@@ -1,24 +1,32 @@
 package dz.esisba.a2cpi_project;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -34,6 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import dz.esisba.a2cpi_project.models.UserModel;
 
 public class EditProfileActivity extends AppCompatActivity {
 
@@ -44,14 +53,18 @@ public class EditProfileActivity extends AppCompatActivity {
     private Uri resultUri;
 
     private EditText name1, name2, bio;
-    private ImageButton confirmButton, returnButton;
+    private ImageButton confirmButton;
     private CircleImageView profilePic;
+    private ProgressBar progressBar;
 
     private String ppURL;
-    private boolean imageUploaded;
+    private boolean infoUploaded = false;
+    private boolean datachange = false;
     private String imageUrl;
-    private boolean ppUpdated = false;
+    private boolean loadpp = true;
     private int i =0;
+
+    private UserModel previousInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +75,9 @@ public class EditProfileActivity extends AppCompatActivity {
         name2 = findViewById(R.id.nameEditText2);
         bio = findViewById(R.id.bioEditText);
         confirmButton = findViewById(R.id.confirmButton);
-        returnButton = findViewById(R.id.returnButton);
         profilePic = findViewById(R.id.profilePic);
+        progressBar = findViewById(R.id.progressBar3);
+
 
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
@@ -80,10 +94,11 @@ public class EditProfileActivity extends AppCompatActivity {
                     DocumentSnapshot doc = task.getResult();
                     if (doc.exists())
                     {
-                        /*if (doc.get("profilePictureUrl")!= null) {
+                        previousInfo = doc.toObject(UserModel.class);
+                        if (doc.get("profilePictureUrl")!= null && loadpp) {
                             String downloadUrl = doc.get("profilePictureUrl").toString();
                             Glide.with(EditProfileActivity.this).load(downloadUrl).into(profilePic);
-                        }*/
+                        }
                         if (doc.get("Name")!= null) {
                             String n = doc.get("Name").toString();
                             String n1 = "";
@@ -110,23 +125,20 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
-        returnButton.setEnabled(false);
-        returnButton.setBackgroundResource(R.drawable.btndisabled);
 
         profilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ImagePicker.with(EditProfileActivity.this)
-                        .cropSquare()	    			//Crop image(Optional), Check Customization for more option
-                        .compress(1024)			//Final image size will be less than 1 MB(Optional)
-                        .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
-                        .start();
+                pickMedia();
             }
         });
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                datachange = true;
+                DisableEverything();
+                progressBar.setVisibility(View.VISIBLE);
                 df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -147,10 +159,18 @@ public class EditProfileActivity extends AppCompatActivity {
                                     df.update(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
-                                            returnButton.setEnabled(true);
-                                            returnButton.setBackgroundResource(R.drawable.mainbtn);
                                             UpdateNameInPosts();
-                                            Toast.makeText(EditProfileActivity.this, "Information updated!", Toast.LENGTH_SHORT).show();
+                                            View parentLayout = findViewById(android.R.id.content);
+                                            final Snackbar snackbar = Snackbar.make(parentLayout, "Information updated", Snackbar.LENGTH_LONG)
+                                                    .setAction("RETURN", new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View view) {
+                                                            onBackPressed();
+                                                        }
+                                                    });
+                                            snackbar.show();
+                                            progressBar.setVisibility(View.GONE);
+                                            infoUploaded= true;
                                         }
                                     });
                                 }
@@ -161,20 +181,16 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
-
-
-        returnButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), BottomNavigationActivity.class);
-                i.putExtra("Name", name1.getText().toString()+" "+name2.getText().toString());
-                i.putExtra("Bio", bio.getText().toString());
-                startActivity(i);
-                finish();
-            }
-        });
-
     }
+
+    private void DisableEverything()
+    {
+        profilePic.setEnabled(false);
+        name1.setEnabled(false);
+        name2.setEnabled(false);
+        bio.setEnabled(false);
+    }
+
 
     private void UpdateNameInPosts() {
         fstore.collection("Posts").whereEqualTo("publisher", user.getUid())
@@ -222,10 +238,18 @@ public class EditProfileActivity extends AppCompatActivity {
                                                         df.update(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override
                                                             public void onSuccess(Void unused) {
-                                                                returnButton.setEnabled(true);
-                                                                returnButton.setBackgroundResource(R.drawable.mainbtn);
                                                                 UpdateNameInPosts();
-                                                                Toast.makeText(EditProfileActivity.this, "Information updated", Toast.LENGTH_SHORT).show();
+                                                                View parentLayout = findViewById(android.R.id.content);
+                                                                final Snackbar snackbar = Snackbar.make(parentLayout, "Information updated", Snackbar.LENGTH_LONG)
+                                                                        .setAction("RETURN", new View.OnClickListener() {
+                                                                            @Override
+                                                                            public void onClick(View view) {
+                                                                                onBackPressed();
+                                                                            }
+                                                                        });
+                                                                snackbar.show();
+                                                                progressBar.setVisibility(View.GONE);
+                                                                infoUploaded= true;
                                                             }
                                                         });
                                                     }
@@ -246,44 +270,62 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        resultUri = data.getData();
-       if (resultUri != null)profilePic.setImageURI(resultUri);
+    private void pickMedia() {
+        datachange = true;
+        String[] mimeTypes = {"image/png", "image/jpg", "image/jpeg"};
+        ImagePicker.Companion.with(this)
+                .galleryMimeTypes(mimeTypes)
+                .cropSquare()	    			//Crop image(Optional), Check Customization for more option
+                .compress(1024)			//Final image size will be less than 1 MB(Optional)
+                .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
+                .createIntent(intent -> {
+                    startForMediaPickerResult.launch(intent);
+                    return null;
+                });
     }
 
-    private String getFileExtension(Uri uri)
-    {
-        ContentResolver cR = getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getExtensionFromMimeType(cR.getType(uri));
-    }
-
-    /*private void UploadFile()
-    {
-        if (resultUri!=null)
-        {
-            StorageReference fileReference = storageReference.child(user.getUid()+"."+getFileExtension(resultUri));
-            fileReference.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    if (taskSnapshot.getMetadata().getReference()!=null)
-                    {
-                        Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();
-                    }
+    private final ActivityResultLauncher<Intent> startForMediaPickerResult = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                loadpp = false;
+                Intent data = result.getData();
+                if (data != null && result.getResultCode() == Activity.RESULT_OK) {
+                    resultUri = data.getData();
+                    if (resultUri != null)profilePic.setImageURI(resultUri);
                 }
-            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) { //TODO: ADD ON PROGRESS LISTENER LATER
-                    //double progress = (100*snapshot.getBytesTransferred()/snapshot.getTotalByteCount());
-                    // progressbar.setprogress((int) progress);
+                else {
+                    Toast.makeText(EditProfileActivity.this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show();
                 }
             });
+
+    @Override
+    public void onBackPressed () {
+        if (infoUploaded)
+        super.onBackPressed ();
+        else if (!infoUploaded && !datachange){
+            View parentLayout = findViewById(android.R.id.content);
+            final Snackbar snackbar = Snackbar.make(parentLayout, "Please confirm you info", Snackbar.LENGTH_SHORT)
+                    .setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                        }
+                    });
+            snackbar.show();
         }
-    }*/
+        else if (!infoUploaded)
+        {
+            View parentLayout = findViewById(android.R.id.content);
+            final Snackbar snackbar = Snackbar.make(parentLayout, "Please wait while we finish uploading your info", Snackbar.LENGTH_SHORT)
+                    .setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                        }
+                    });
+            snackbar.show();
+        }
+    }
+
+
 }
 
 //TODO: change all profile pictures to circular image view

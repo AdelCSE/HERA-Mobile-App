@@ -91,6 +91,13 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         progressBar = parentHolder.findViewById(R.id.homeProgressBar);
         recyclerView = parentHolder.findViewById(R.id.recview);
 
+        Main();
+
+        return parentHolder;
+    }
+
+    private void Main()
+    {
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
@@ -147,8 +154,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         });
         progressBar.setVisibility(View.VISIBLE);
         FetchPosts();
-
-        return parentHolder;
     }
 
     //Fetch Posts and display them in home
@@ -247,11 +252,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
     @Override
     public void onLikeClick(int position, LottieAnimationView lottieAnimationView, TextView likesTxt, boolean isAnswer) {
-        PostModel post = new PostModel(PostsDataHolder.get(position).getAskedBy(), PostsDataHolder.get(position).getPublisher()
-                , PostsDataHolder.get(position).getUsername() , PostsDataHolder.get(position).getQuestion() ,
-                PostsDataHolder.get(position).getBody(),PostsDataHolder.get(position).getPostid(),
-                PostsDataHolder.get(position).getDate(),PostsDataHolder.get(position).getPublisherPic(),
-                PostsDataHolder.get(position).getLikesCount(),PostsDataHolder.get(position).getAnswersCount(), PostsDataHolder.get(position).getTags());
+        PostModel post = PostsDataHolder.get(position);
 
         if (lottieAnimationView.getTag().equals("Like")) {
 
@@ -289,33 +290,23 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                             likes = (ArrayList<String>) doc.get("likes");
                             likes.add(user.getUid());
                             PostsDataHolder.get(position).setLikes(likes);
+                            PostsDataHolder.get(position).setLikesCount(likes.size());
                             //likes are stored for user for faster query
-                            likesRef = fstore.collection("Users").document(user.getUid()).
-                                    collection("Likes").document(post.getPostid());
-                                Map<String,Object> hashMap = new HashMap<>(); //represents key, value
-                                hashMap.put("uid", user.getUid());
-                                hashMap.put("postid", post.getPostid());
-                                hashMap.put("tags", post.getTags()); //we might need tags later for recommendation system
-                                likesRef.set(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        Map<String,Object> hm = new HashMap<>();
-                                        hm.put("likes", likes);
-                                        hm.put("likesCount", likes.size());
-                                        //update likes count for the post
-                                        postRef.document(post.getPostid()).update(hm).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                LikeFailure(lottieAnimationView, likesTxt, position);
-                                            }
-                                        });
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        LikeFailure(lottieAnimationView, likesTxt, position);
-                                    }
-                                });
+                            Map<String,Object> hm = new HashMap<>();
+                            hm.put("likes", likes);
+                            hm.put("likesCount", likes.size());
+                            //update likes count for the post
+                            postRef.document(post.getPostid()).update(hm).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    LikeFailure(lottieAnimationView, likesTxt, position);
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    SetLikesForUser(post.getTags(), 1);
+                                }
+                            });
                         }
                     }
                     else LikeFailure(lottieAnimationView, likesTxt, position);
@@ -342,26 +333,22 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                             likes = (ArrayList<String>) doc.get("likes");
                             likes.remove(user.getUid());
                             PostsDataHolder.get(position).setLikes(likes);
+                            PostsDataHolder.get(position).setLikesCount(likes.size());
                             likesRef = fstore.collection("Users").document(user.getUid()).
                                     collection("Likes").document(post.getPostid());
-                            likesRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    Map<String,Object> hm = new HashMap<>();
-                                    hm.put("likes", likes);
-                                    hm.put("likesCount", likes.size());
-                                    //update likes count for the post
-                                    postRef.document(post.getPostid()).update(hm).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            DislikeFailure(lottieAnimationView, likesTxt, position);
-                                        }
-                                    });
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
+                            Map<String,Object> hm = new HashMap<>();
+                            hm.put("likes", likes);
+                            hm.put("likesCount", likes.size());
+                            //update likes count for the post
+                            postRef.document(post.getPostid()).update(hm).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     DislikeFailure(lottieAnimationView, likesTxt, position);
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    SetLikesForUser(post.getTags(), -1);
                                 }
                             });
                         }
@@ -372,6 +359,15 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         //updateToken();
     }
 
+    private void SetLikesForUser(ArrayList<String> tags, int i)
+    {
+        CollectionReference userRef = fstore.collection("Users").document(user.getUid())
+                .collection("LikedTags");
+        for (String tag: tags) {
+            DocumentReference tagRef = userRef.document(tag);
+            tagRef.update("occurrence", FieldValue.increment(i));
+        }
+    }
 
     private void DislikeFailure(LottieAnimationView lottieAnimationView, TextView likesTxt, int position) {
         lottieAnimationView.setSpeed(2);
@@ -426,6 +422,13 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         DocRef.add(notif);
     }
 
+    @Override
+    public void onResume() {
+        Main();
+        super.onResume();
+        PostsDataHolder = new ArrayList<>();
+        FetchPosts();
+    }
 }
 
 //TODO Add updateToken Function [Optional]
