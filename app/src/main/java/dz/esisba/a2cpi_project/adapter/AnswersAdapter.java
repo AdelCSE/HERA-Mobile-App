@@ -2,8 +2,10 @@ package dz.esisba.a2cpi_project.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -80,7 +82,17 @@ public class AnswersAdapter extends RecyclerView.Adapter<AnswersAdapter.myviewho
             itemView.findViewById(R.id.answerMenuBtnpa).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    int position = getAbsoluteAdapterPosition();
+                    PopupMenu popupMenu = new PopupMenu(view.getContext(),view);
+                    popupMenu.inflate(R.menu.my_post_menu);
 
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+
+                            return false;
+                        }
+                    });
                 }
             });
         }

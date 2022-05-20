@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/back"
+    tools:context=".HelpActivity">
+
+    <ImageButton
+        android:id="@+id/helpBackBtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/mainbtn"
+        android:src="@drawable/ic_arrow" />
+
+    <TextView
+        android:id="@+id/helpText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:text="Help"
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="15dp"
+        android:text="Submit"
+        android:textColor="@color/button"
+
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/reportProblemEditTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:minHeight="120dp"
+        android:maxLines="50"
+        android:inputType="textMultiLine"
+        android:layout_below="@+id/helpBackBtn"
+        android:background="@drawable/notifbox"
+        android:gravity="top"
+        android:hint="Briefly explain what happened or what's not working."
+        android:visibility="gone"/>
+
+    <EditText
+        android:id="@+id/sendFeedBackEditTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:minHeight="120dp"
+        android:maxLines="50"
+        android:inputType="textMultiLine"
+        android:layout_below="@+id/helpBackBtn"
+        android:background="@drawable/notifbox"
+        android:gravity="top"
+        android:hint="Leave your feedback and tell us what would you like us to improve?"
+        android:visibility="gone"/>
+
+
+
+
+
+
+</RelativeLayout>

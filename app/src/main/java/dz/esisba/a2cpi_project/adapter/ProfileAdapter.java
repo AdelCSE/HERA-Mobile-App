@@ -13,8 +13,6 @@ import dz.esisba.a2cpi_project.navigation_fragments.profile_fragments.RequestsFr
 
 public class ProfileAdapter extends FragmentStateAdapter {
 
-    private String[] titles = {"Questions" , "Answers" , "Requests", "Replies"};
-
     public ProfileAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
         super(fragmentManager, lifecycle);
     }
@@ -38,6 +36,6 @@ public class ProfileAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return titles.length;
+        return 4;
     }
 }

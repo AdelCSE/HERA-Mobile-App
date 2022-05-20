@@ -42,7 +42,7 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView settingsName,settingsUsername,settingsEmail;
     private ScrollView scrollView;
     private ProgressBar progressBar;
-    private LinearLayout logOut,changePassword;
+    private LinearLayout logOut,changePassword,sendFeedBack,reportProblem;
     private AppCompatButton editprofileBtn;
 
     @Override
@@ -63,6 +63,8 @@ public class SettingsActivity extends AppCompatActivity {
         backBtn = findViewById(R.id.settingsBackBtn);
         logOut = findViewById(R.id.logOutApp);
         changePassword = findViewById(R.id.ChangePasswordBtn);
+        sendFeedBack = findViewById(R.id.sendFeedBackBtn);
+        reportProblem = findViewById(R.id.reportProblemBtn);
         editprofileBtn=findViewById(R.id.settingsEditProfileBtn);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +106,23 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(SettingsActivity.this,ChangePasswordActivity.class));
+            }
+        });
+
+        reportProblem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SettingsActivity.this , HelpActivity.class);
+                intent.putExtra("helpTag","problem");
+                startActivity(intent);
+            }
+        });
+        sendFeedBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SettingsActivity.this , HelpActivity.class);
+                intent.putExtra("helpTag","feedback");
+                startActivity(intent);
             }
         });
 

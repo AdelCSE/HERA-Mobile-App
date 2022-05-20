@@ -36,7 +36,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_marginTop="65dp"
-      android:visibility="gone">
+      android:visibility="visible">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -275,7 +275,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="15dp"
-                android:src="@drawable/ic_change_password" />
+                android:src="@drawable/ic_help_angle" />
 
           </LinearLayout>
 
@@ -312,7 +312,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-          android:src="@drawable/ic_security_settings"/>
+          android:src="@drawable/ic_security"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -321,7 +321,7 @@
             android:layout_weight="1"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:text="We need to choose a security system"/>
+            android:text="Email verification"/>
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/securitySwitch"
@@ -350,38 +350,70 @@
           android:layout_height="wrap_content"
           android:layout_marginStart="15dp"
           android:layout_marginTop="10dp"
-          android:layout_marginBottom="10dp"
           android:layout_marginEnd="15dp"
+          android:layout_marginBottom="10dp"
           android:orientation="vertical">
 
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="Help"
-              android:textColor="@color/black"
-              android:textStyle="bold"
-              android:textSize="20sp"
-              />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Help"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <LinearLayout
+            android:id="@+id/reportProblemBtn"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            >
+            android:gravity="center_vertical">
+
           <ImageView
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-            android:src="@drawable/ic_help_settings"/>
+              android:src="@drawable/ic_help_settings" />
 
           <TextView
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_marginStart="10dp"
+              android:layout_weight="1"
+              android:text="Report a problem"
               android:textSize="16sp"
-              android:textStyle="bold"
-              android:text="Help/moderators"/>
+              android:textStyle="bold" />
 
+          <ImageView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:src="@drawable/ic_help_angle" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/sendFeedBackBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+          <ImageView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:src="@drawable/ic_feedback" />
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="10dp"
+              android:layout_weight="1"
+              android:text="Send feedback"
+              android:textSize="16sp"
+              android:textStyle="bold" />
+
+          <ImageView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:src="@drawable/ic_help_angle" />
         </LinearLayout>
 
       </LinearLayout>
