@@ -1,6 +1,9 @@
 package dz.esisba.a2cpi_project.navigation_fragments;
 
+import static android.view.View.VISIBLE;
+
 import android.app.Activity;
+import android.bluetooth.le.ScanRecord;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +69,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     private PostAdapter adapter;
     private ImageButton settingsBtn , searchBtn , notificationsBtn;
     private SwipeRefreshLayout refresh;
+    private ProgressBar progressBar;
 
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -82,6 +88,8 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         searchBtn = parentHolder.findViewById(R.id.search_btn);
         settingsBtn = parentHolder.findViewById(R.id.settingsBtn);
         notificationsBtn = parentHolder.findViewById(R.id.notification_btn);
+        progressBar = parentHolder.findViewById(R.id.homeProgressBar);
+        recyclerView = parentHolder.findViewById(R.id.recview);
 
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
@@ -137,7 +145,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 startActivity(new Intent(getActivity(), SearchActivity.class));
             }
         });
-
+        progressBar.setVisibility(View.VISIBLE);
         FetchPosts();
 
         return parentHolder;
@@ -156,6 +164,8 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                         PostsDataHolder.add(post);
                     }
                     buildRecyclerView();
+                    progressBar.setVisibility(View.GONE);
+                    recyclerView.setVisibility(VISIBLE);
                 } else {
                     Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
                 }

@@ -1,25 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:id="@+id/body_container"
-android:background="@drawable/back">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="#EEEEEE"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/body_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/back">
 
         <ImageButton
-            android:layout_width="40dp"
             android:id="@+id/settingsBtn"
+            android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
@@ -31,9 +21,9 @@ android:background="@drawable/back">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hera"
-            android:layout_marginTop="16dp"
             android:layout_marginLeft="15dp"
+            android:layout_marginTop="16dp"
+            android:text="Hera"
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/settingsBtn"
             app:layout_constraintTop_toTopOf="parent" />
@@ -44,7 +34,7 @@ android:background="@drawable/back">
             android:layout_height="40dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="15dp"
-            android:background="@drawable/mainbtn"
+            android:background="@android:color/transparent"
             android:src="@drawable/ic_searchmain"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -55,11 +45,10 @@ android:background="@drawable/back">
             android:layout_height="40dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="65dp"
-            android:background="@drawable/mainbtn"
+            android:background="@android:color/transparent"
             android:src="@drawable/ic_bell"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/homeRefreshLayout"
@@ -71,6 +60,7 @@ android:background="@drawable/back">
             android:id="@+id/recview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
             android:layout_marginBottom="30dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -78,6 +68,18 @@ android:background="@drawable/back">
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <ProgressBar
+        android:id="@+id/homeProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateDrawable="@drawable/custom_progress_bar"
+        android:theme="@style/Theme.MyTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

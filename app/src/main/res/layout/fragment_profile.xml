@@ -202,9 +202,9 @@
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabLayoutp"
-                    app:tabTextAppearance="@style/MineCustomTabText"
                     android:background="@android:color/transparent"
                     android:layout_width="match_parent"
+                    app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
                     android:layout_height="wrap_content"
                     android:minHeight="?attr/actionBarSize"
                     app:tabMode="scrollable"

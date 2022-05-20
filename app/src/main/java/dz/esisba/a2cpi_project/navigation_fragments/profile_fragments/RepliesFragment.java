@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,6 +41,8 @@ public class RepliesFragment extends Fragment {
     private RecyclerView recyclerView;
     private ArrayList<ReplyModel> RepliesDataHolder;
     private RepliesAdapter adapter;
+    private ProgressBar progressBar;
+    private LinearLayout emptyReplies;
 
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -51,12 +55,15 @@ public class RepliesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         parentHolder = inflater.inflate(R.layout.fragment_replies, container, false);
+        progressBar = parentHolder.findViewById(R.id.repliesProgressBar);
+        emptyReplies = parentHolder.findViewById(R.id.emptyReplies);
 
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
         replyRef = fstore.collection("Users").document(user.getUid()).collection("Replies");
 
+        progressBar.setVisibility(View.VISIBLE);
         FetchReplies();
 
         return parentHolder;
@@ -73,7 +80,14 @@ public class RepliesFragment extends Fragment {
                         ReplyModel reply = document.toObject(ReplyModel.class);
                         RepliesDataHolder.add(reply);
                     }
-                    buildRecyclerView();
+                    if(RepliesDataHolder.size() != 0){
+                        buildRecyclerView();
+                        progressBar.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }else{
+                        progressBar.setVisibility(View.GONE);
+                        emptyReplies.setVisibility(View.VISIBLE);
+                    }
                 } else {
                     Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
                 }

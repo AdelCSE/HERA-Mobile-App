@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +30,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import dz.esisba.a2cpi_project.AddPostActivity;
 import dz.esisba.a2cpi_project.QuestionBlocActivity;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.adapter.QuestionsAdapter;
@@ -42,6 +45,9 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
     RecyclerView recyclerView;
     ArrayList<PostModel> QuestionsDataHolder;
     QuestionsAdapter adapter;
+    private ProgressBar progressBar;
+    private LinearLayout myEmptyQuestions,emptyQuestions;
+    private TextView postQuestionBtn;
 
     private UserModel userModel;
 
@@ -56,6 +62,10 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
                              Bundle savedInstanceState) {
 
         parentHolder = inflater.inflate(R.layout.fragment_questions, container, false);
+        progressBar = parentHolder.findViewById(R.id.questionsProgressBar);
+        myEmptyQuestions = parentHolder.findViewById(R.id.myEmptyQuestions);
+        postQuestionBtn = parentHolder.findViewById(R.id.profilePostQuestionBtn);
+        emptyQuestions = parentHolder.findViewById(R.id.emptyQuestions);
 
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
@@ -65,7 +75,12 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
         recyclerView = parentHolder.findViewById(R.id.recviewQuestions);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        QuestionsDataHolder = new ArrayList<>();
+        postQuestionBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(), AddPostActivity.class));
+            }
+        });
 
 
         //recyclerView.setAdapter(new PostAdapter(QuestionsDataHolder));//
@@ -74,6 +89,7 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
         userModel = id.getUserModel();
        // if (userModel!=null) Toast.makeText(getActivity(), userModel.getUid(), Toast.LENGTH_SHORT).show();
 
+        progressBar.setVisibility(View.VISIBLE);
         FetchPosts();
 
         return parentHolder;
@@ -90,7 +106,19 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
                         PostModel post = document.toObject(PostModel.class);
                         QuestionsDataHolder.add(post);
                     }
-                    buildRecyclerView();
+                    if(QuestionsDataHolder.size() != 0){
+                        buildRecyclerView();
+                        progressBar.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }else {
+                        progressBar.setVisibility(View.GONE);
+                        if(userModel.getUid().equals(user.getUid())){
+                            myEmptyQuestions.setVisibility(View.VISIBLE);
+                        }else{
+                            emptyQuestions.setVisibility(View.VISIBLE);
+                        }
+                    }
+
                 } else {
                     Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
                 }

@@ -4,11 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +44,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,6 +65,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
     private ImageButton AnswerBtn;
     private QuestionBlocAdapter adapter;
     private BottomSheetDialog dialog;
+    private ProgressBar progressBar;
 
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -78,6 +84,8 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question_bloc);
 
+        progressBar = findViewById(R.id.questionBlocProgressBar);
+        recyclerView = findViewById(R.id.recviewa);
         setAnswerBtn(findViewById(R.id.answerBtn));
         setDialog(new BottomSheetDialog(this));
 
@@ -118,28 +126,50 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         count = post.getAnswersCount();
         postsDataHolder = new ArrayList<>();
 
+        progressBar.setVisibility(View.VISIBLE);
         FetchAnswers();
+    }
+
+    //***Sort questions according to the number of likes***//
+    private void SortDataByLikes(ArrayList<PostModel> answers){
+        Collections.sort(answers, new Comparator<PostModel>() {
+            @Override
+            public int compare(PostModel question1, PostModel question2) {
+                if(question1.getLikesCount() > question2.getLikesCount()) {
+                    return -1;
+                } else if (question1.getLikesCount() < question2.getLikesCount()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
     }
 
     //Display answers
     private void FetchAnswers() {
         postsDataHolder = new ArrayList<>();
-        postsDataHolder.add(post);
 
         PostModel text = new PostModel(null,null,null,null,null,null,null,null,-1,post.getAnswersCount(),null);
-        postsDataHolder.add(text);
 
         postRef.collection("Answers")
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
+                    int i=0;
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         PostModel answer = document.toObject(PostModel.class);
+                        i++;
                         answer.setAnswersCount(-1);
                         postsDataHolder.add(answer);
                     }
+                    SortDataByLikes(postsDataHolder);
+                    postsDataHolder.add(0,post);
+                    postsDataHolder.add(1,text);
                     buildRecyclerView();
+                    progressBar.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
                 } else {
                     Toast.makeText(QuestionBlocActivity.this, "Network error", Toast.LENGTH_SHORT).show();
                 }
@@ -474,6 +504,31 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
             }
         });
 
+        postAnswerBtn.setEnabled(false);
+        addAnswer.addTextChangedListener(new TextWatcher() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void beforeTextChanged(CharSequence s, int i, int i1, int i2) {
+
+            }
+
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onTextChanged(CharSequence s, int i, int i1, int i2) {
+                if(s.toString().trim().length()==0){
+                    postAnswerBtn.setEnabled(false);
+                } else {
+                    postAnswerBtn.setEnabled(true);
+                    postAnswerBtn.setTextColor(R.color.button);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
         postAnswerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -482,26 +537,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                 {
                     PerformValidation(addAnswer.getText().toString());
                 }else {
-                    //sending like answer notification to the publisher ********************************************************************************************************************
-                    Task<DocumentSnapshot> s = fstore.collection("Users").document(user.getUid()).get(); //current user data
-                    fstore.collection("Users").document(post.getPublisher()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if(task.isSuccessful()&& s.isSuccessful()){
-                                NotifyAnswer(task.getResult().getString("Token"),
-                                        s.getResult().getString("Name"), //current user name
-                                        QuestionBlocActivity.this,
-                                        postAnswerBtn.getVerticalScrollbarPosition());
-                            }
-                            else{
-                                //Toast.maketext
-                                Log.d("Calling notify", "onComplete: Failure");
-                            }
-                        }
-                    });
-                    getDialog().dismiss();
-                    startActivity(new Intent(getApplicationContext(), BottomNavigationActivity.class));
-                    finish();
+                    addAnswer.setError("You have to type your answer");
                 }
             }
         });

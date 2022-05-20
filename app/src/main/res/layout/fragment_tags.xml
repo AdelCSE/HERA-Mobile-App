@@ -270,11 +270,19 @@
         android:layout_below="@+id/searchTags">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchTagsRecview"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/searchTags"
-            android:id="@+id/searchTagsRecview"/>
+            android:layout_below="@id/searchTags" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <ProgressBar
+        android:id="@+id/tagsProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminateDrawable="@drawable/custom_progress_bar"
+        android:theme="@style/Theme.MyTheme"/>
 </RelativeLayout>

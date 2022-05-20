@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,6 +38,7 @@ import dz.esisba.a2cpi_project.models.PostModel;
 public class TagsFragment extends Fragment implements SearchOnItemClick {
 
     private View parentHolder;
+    private ProgressBar progressBar;
     private RecyclerView recyclerView;
     private ArrayList<PostModel> QuestionsDataHolder;
     private SearchRecommendationAdapter adapter;
@@ -60,6 +62,8 @@ public class TagsFragment extends Fragment implements SearchOnItemClick {
         QuestionsDataHolder = new ArrayList<>();
         refresh = parentHolder.findViewById(R.id.searchRefresh);
         backBtn = parentHolder.findViewById(R.id.tagsFilterBackBtn);
+        progressBar = parentHolder.findViewById(R.id.tagsProgressBar);
+        recyclerView = parentHolder.findViewById(R.id.searchTagsRecview);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,9 +72,8 @@ public class TagsFragment extends Fragment implements SearchOnItemClick {
             }
         });
 
-
-
         InitChips();
+        progressBar.setVisibility(View.VISIBLE);
         ShowTagFilterResults();
 
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -92,13 +95,13 @@ public class TagsFragment extends Fragment implements SearchOnItemClick {
     }
 
     //***Sort questions according to the number of likes***//
-    private void SortDataByLikes(ArrayList<PostModel> questions){
+    private void SortDataByAnswers(ArrayList<PostModel> questions){
         Collections.sort(questions, new Comparator<PostModel>() {
             @Override
             public int compare(PostModel question1, PostModel question2) {
-                if(question1.getLikesCount() > question2.getLikesCount()) {
+                if(question1.getAnswersCount() > question2.getAnswersCount()) {
                     return -1;
-                } else if (question1.getLikesCount() < question2.getLikesCount()) {
+                } else if (question1.getAnswersCount() < question2.getAnswersCount()) {
                     return 1;
                 } else {
                     return 0;
@@ -140,8 +143,11 @@ public class TagsFragment extends Fragment implements SearchOnItemClick {
                         PostModel post = document.toObject(PostModel.class);
                         QuestionsDataHolder.add(post);
                     }
-                    SortDataByLikes(QuestionsDataHolder);
+                    SortDataByAnswers(QuestionsDataHolder);
                     BuildRecyclerView();
+                    progressBar.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+
                 }else{
                     Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
                 }
@@ -175,8 +181,10 @@ public class TagsFragment extends Fragment implements SearchOnItemClick {
                                             }
                                         }
                                     }
-                                    SortDataByLikes(QuestionsDataHolder);
+                                    SortDataByAnswers(QuestionsDataHolder);
                                     BuildRecyclerView();
+                                    progressBar.setVisibility(View.GONE);
+                                    recyclerView.setVisibility(View.VISIBLE);
                                 } else {
                                     Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
                                 }
