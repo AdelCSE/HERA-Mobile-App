@@ -198,11 +198,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
     @Override
     public void onLikeClick(int position, LottieAnimationView lottieAnimationView, TextView likesTxt, boolean isAnswer) {
 
-        PostModel post = new PostModel(postsDataHolder.get(position).getAskedBy(), postsDataHolder.get(position).getPublisher()
-                , postsDataHolder.get(position).getUsername() , postsDataHolder.get(position).getQuestion() ,
-                postsDataHolder.get(position).getBody(),postsDataHolder.get(position).getPostid(),
-                postsDataHolder.get(position).getDate(),postsDataHolder.get(position).getPublisherPic(),
-                postsDataHolder.get(position).getLikesCount(),postsDataHolder.get(position).getAnswersCount(), postsDataHolder.get(position).getTags());
+        PostModel post = postsDataHolder.get(position);
         if (!isAnswer) {
             PerformLikeAction(lottieAnimationView, likesTxt,  post, position);
         }
@@ -253,13 +249,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                             likes = (ArrayList<String>) doc.get("likes");
                             likes.add(user.getUid());
                             postsDataHolder.get(position).setLikes(likes);
-                            //likes are stored for user for faster query
-                            likesRef = fstore.collection("Users").document(user.getUid()).
-                                    collection("AnswerLikes").document(p.getPostid());
-                            Map<String,Object> hashMap = new HashMap<>(); //represents key, value
-                            hashMap.put("uid", user.getUid());
-                            hashMap.put("postid", post.getPostid());
-                            hashMap.put("answerid", p.getPostid()); //we might need tags later for recommendation system
+                            postsDataHolder.get(position).setLikesCount(likes.size());
                             Map<String,Object> hm = new HashMap<>();
                             hm.put("likes", likes);
                             hm.put("likesCount", likes.size());
@@ -296,22 +286,11 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                             likes = (ArrayList<String>) doc.get("likes");
                             likes.remove(user.getUid());
                             postsDataHolder.get(position).setLikes(likes);
-                            likesRef = fstore.collection("Users").document(user.getUid()).
-                                    collection("AnswerLikes").document(p.getPostid());
-                            likesRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    Map<String,Object> hm = new HashMap<>();
-                                    hm.put("likes", likes);
-                                    hm.put("likesCount", likes.size());
-                                    postRef.update(hm).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            DislikeFailure(lottieAnimationView, likesTxt, position);
-                                        }
-                                    });
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
+                            postsDataHolder.get(position).setLikesCount(likes.size());
+                            Map<String,Object> hm = new HashMap<>();
+                            hm.put("likes", likes);
+                            hm.put("likesCount", likes.size());
+                            postRef.update(hm).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     DislikeFailure(lottieAnimationView, likesTxt, position);
@@ -346,6 +325,8 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                 }
             });
 
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
             lottieAnimationView.setSpeed(2);
             lottieAnimationView.playAnimation();//play like animation
             lottieAnimationView.setTag("Liked");
@@ -365,31 +346,20 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                             likes = (ArrayList<String>) doc.get("likes");
                             likes.add(user.getUid());
                             postsDataHolder.get(0).setLikes(likes);
-                            //likes are stored for user for faster query
-                            likesRef = fstore.collection("Users").document(user.getUid()).
-                                    collection("Likes").document(post.getPostid());
-                            Map<String,Object> hashMap = new HashMap<>(); //represents key, value
-                            hashMap.put("uid", user.getUid());
-                            hashMap.put("postid", post.getPostid());
-                            hashMap.put("tags", post.getTags()); //we might need tags later for recommendation system
-                            likesRef.set(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    Map<String,Object> hm = new HashMap<>();
-                                    hm.put("likes", likes);
-                                    hm.put("likesCount", likes.size());
-                                    //update likes count for the post
-                                    postRef.update(hm).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            LikeFailure(lottieAnimationView, likesTxt, position);
-                                        }
-                                    });
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
+                            postsDataHolder.get(0).setLikesCount(likes.size());
+                            Map<String,Object> hm = new HashMap<>();
+                            hm.put("likes", likes);
+                            hm.put("likesCount", likes.size());
+                            //update likes count for the post
+                            postRef.update(hm).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     LikeFailure(lottieAnimationView, likesTxt, position);
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    SetLikesForUser(post.getTags(), 1);
                                 }
                             });
                         }
@@ -418,33 +388,37 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                             likes = (ArrayList<String>) doc.get("likes");
                             likes.remove(user.getUid());
                             postsDataHolder.get(0).setLikes(likes);
-                            likesRef = fstore.collection("Users").document(user.getUid()).
-                                    collection("Likes").document(post.getPostid());
-                            likesRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    post.setLikes(likes);
-                                    Map<String,Object> hm = new HashMap<>();
-                                    hm.put("likes", likes);
-                                    hm.put("likesCount", likes.size());
-                                    //update likes count for the post
-                                    postRef.update(hm).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            DislikeFailure(lottieAnimationView, likesTxt, position);
-                                        }
-                                    });
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
+                            post.setLikes(likes);
+                            postsDataHolder.get(0).setLikesCount(likes.size());
+                            post.setLikesCount(likes.size());
+                            Map<String,Object> hm = new HashMap<>();
+                            hm.put("likes", likes);
+                            hm.put("likesCount", likes.size());
+                            //update likes count for the post
+                            postRef.update(hm).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     DislikeFailure(lottieAnimationView, likesTxt, position);
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    SetLikesForUser(p.getTags(), -1);
                                 }
                             });
                         }
                     } else DislikeFailure(lottieAnimationView, likesTxt, position);
                 }
             });
+        }
+    }
+    private void SetLikesForUser(ArrayList<String> tags, int i)
+    {
+        CollectionReference userRef = fstore.collection("Users").document(user.getUid())
+                .collection("LikedTags");
+        for (String tag: tags) {
+            DocumentReference tagRef = userRef.document(tag);
+            tagRef.update("occurrence", FieldValue.increment(i));
         }
     }
 

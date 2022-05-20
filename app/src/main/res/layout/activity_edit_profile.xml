@@ -18,25 +18,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/returnButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/mainbtn"
-        android:src="@drawable/ic_cross2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
         android:id="@+id/confirmButton"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="15dp"
         android:background="@drawable/mainbtn"
         android:src="@drawable/ic_check"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -46,9 +35,8 @@
         android:layout_marginTop="16dp"
         android:text="Edit Profile"
         android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/confirmButton"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toEndOf="@+id/returnButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -84,6 +72,7 @@
         app:layout_constraintGuide_percent="0.36" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -104,32 +93,32 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:layout_marginStart="35dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="35dp">
 
             <EditText
                 android:id="@+id/nameEditText"
-                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
-                android:inputType="text"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_weight="1"
                 android:background="@drawable/text_field"
+                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
                 android:ems="7"
+                android:inputType="text"
                 android:paddingLeft="10dp"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black" />
 
             <EditText
                 android:id="@+id/nameEditText2"
-                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-                android:inputType="text"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_marginLeft="20dp"
                 android:layout_weight="1"
                 android:background="@drawable/text_field"
+                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
                 android:ems="7"
+                android:inputType="text"
                 android:paddingLeft="10dp"
                 android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -141,11 +130,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
             android:layout_marginTop="5dp"
-            android:textSize="14sp"
+            android:layout_marginEnd="20dp"
             android:text="Help people discover your account by using the name
-you're known by: either your full name or nickname."/>
+you're known by: either your full name or nickname."
+            android:textSize="14sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -159,29 +148,42 @@ you're known by: either your full name or nickname."/>
             android:id="@+id/bioEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="155dp"
-            android:layout_marginTop="5dp"
             android:layout_marginLeft="35dp"
+            android:layout_marginTop="5dp"
             android:layout_marginRight="35dp"
             android:background="@drawable/text_field"
             android:ems="15"
             android:gravity="top"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
+            android:minHeight="155dp"
             android:paddingLeft="10dp"
+            android:paddingTop="5dp"
             android:paddingRight="10dp"
-            android:textColor="@color/black"/>
+            android:paddingBottom="5dp"
+            android:textColor="@color/black" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
             android:layout_marginTop="5dp"
-            android:textSize="14sp"
-            android:text="Add a short bio to tell people more about yourself."/>
+            android:layout_marginEnd="20dp"
+            android:text="Add a short bio to tell people more about yourself."
+            android:textSize="14sp" />
 
 
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar3"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="33dp"
+        android:layout_height="31dp"
+        android:progressTint="#9C27B0"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.19999999" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
