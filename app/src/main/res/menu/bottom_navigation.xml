@@ -14,8 +14,8 @@
         android:title=""/>
     <item
         android:id="@+id/nav_notif"
-        android:title="notifications"
-        android:icon="@drawable/ic_bell"/>
+        android:title="charity"
+        android:icon="@drawable/ic_gift"/>
     <item
         android:id="@+id/nav_profile"
         android:title="•"

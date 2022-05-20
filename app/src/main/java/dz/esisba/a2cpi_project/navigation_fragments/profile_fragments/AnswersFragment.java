@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +43,9 @@ public class AnswersFragment extends Fragment implements AnswersOnItemClickListn
     RecyclerView recyclerView;
     ArrayList<PostModel> AnswersDataHolder;
     AnswersAdapter adapter;
-
+    private ProgressBar progressBar;
+    private LinearLayout myEmptyAnswers,emptyAnswers;
+    static int i=0;
     Context context;
 
     private UserModel userModel;
@@ -56,6 +60,9 @@ public class AnswersFragment extends Fragment implements AnswersOnItemClickListn
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         parentHolder = inflater.inflate(R.layout.fragment_answers, container, false);
+        progressBar = parentHolder.findViewById(R.id.answersProgressBar);
+        myEmptyAnswers = parentHolder.findViewById(R.id.myEmptyAnswers);
+        emptyAnswers = parentHolder.findViewById(R.id.emptyAnswers);
 
 
         auth = FirebaseAuth.getInstance();
@@ -70,6 +77,9 @@ public class AnswersFragment extends Fragment implements AnswersOnItemClickListn
         GetUserInterface id = (GetUserInterface) getActivity();
         userModel = id.getUserModel();
  //       if (userModel!=null) Toast.makeText(context, userModel.getUid(), Toast.LENGTH_SHORT).show();
+
+        emptyAnswers.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
         FetchAnswers();
 
         return parentHolder;
@@ -107,11 +117,22 @@ public class AnswersFragment extends Fragment implements AnswersOnItemClickListn
                                 AnswersDataHolder.add(answer);
                             }
                             buildRecyclerView();
+                            progressBar.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
+
                         } else {
                             Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
+            }
+        }
+        if (userModel.getAnswers().size()==0){
+            progressBar.setVisibility(View.GONE);
+            if(userModel.getUid().equals(user.getUid())){
+                myEmptyAnswers.setVisibility(View.VISIBLE);
+            }else{
+                emptyAnswers.setVisibility(View.VISIBLE);
             }
         }
     }

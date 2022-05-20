@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +57,8 @@ public class RequestsFragment extends Fragment implements SearchOnItemClick {
     private ArrayList<RequestModel> RequestsDataHolder;
     private RequestAdapter adapter;
     private BottomSheetDialog dialog;
+    private ProgressBar progressBar;
+    private LinearLayout emptyRequests;
 
     private String downloadUrl;
     private FirebaseAuth auth;
@@ -68,6 +72,8 @@ public class RequestsFragment extends Fragment implements SearchOnItemClick {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         parentHolder = inflater.inflate(R.layout.fragment_requests, container, false);
+        progressBar = parentHolder.findViewById(R.id.requestsProgressBar);
+        emptyRequests = parentHolder.findViewById(R.id.emptyRequests);
 
         RequestsDataHolder = new ArrayList<>();
         dialog = new BottomSheetDialog(getActivity());
@@ -103,6 +109,7 @@ public class RequestsFragment extends Fragment implements SearchOnItemClick {
             }
         });
 
+        progressBar.setVisibility(View.VISIBLE);
         fetchRequests();
 
         return parentHolder;
@@ -119,7 +126,15 @@ public class RequestsFragment extends Fragment implements SearchOnItemClick {
                         RequestModel request = document.toObject(RequestModel.class);
                         RequestsDataHolder.add(request);
                     }
-                    buildRecyclerView();
+                    if(RequestsDataHolder.size() != 0){
+                        buildRecyclerView();
+                        progressBar.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }else{
+                        progressBar.setVisibility(View.GONE);
+                        emptyRequests.setVisibility(View.VISIBLE);
+                    }
+
                 } else {
                     Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
                 }

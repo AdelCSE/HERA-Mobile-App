@@ -1,5 +1,7 @@
 package dz.esisba.a2cpi_project;
 
+import static android.view.View.GONE;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -32,6 +35,8 @@ public class NotificationsActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ArrayList<NotificationModel> NotificationsDataHolder;
     private NotificationAdapter mAdapter;
+    private ProgressBar progressBar;
+    private RecyclerView recview;
 
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -43,9 +48,14 @@ public class NotificationsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications);
 
+        progressBar = findViewById(R.id.notificationsProgressBar);
+        recview = findViewById(R.id.notifrecview);
+
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
+
+        progressBar.setVisibility(View.VISIBLE);
         FetchNotifications();
 
     }
@@ -64,6 +74,8 @@ public class NotificationsActivity extends AppCompatActivity {
                         NotificationsDataHolder.add(notification);
                     }
                     buildRecyclerView();
+                    progressBar.setVisibility(GONE);
+                    recview.setVisibility(View.VISIBLE);
                 }else{
                     Toast.makeText(NotificationsActivity.this, "Network error", Toast.LENGTH_SHORT).show();
                 }

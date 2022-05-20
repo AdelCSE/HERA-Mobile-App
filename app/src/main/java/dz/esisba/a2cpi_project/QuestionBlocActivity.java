@@ -4,11 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +44,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,6 +65,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
     private ImageButton AnswerBtn;
     private QuestionBlocAdapter adapter;
     private BottomSheetDialog dialog;
+    private ProgressBar progressBar;
 
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -79,6 +85,8 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question_bloc);
 
+        progressBar = findViewById(R.id.questionBlocProgressBar);
+        recyclerView = findViewById(R.id.recviewa);
         setAnswerBtn(findViewById(R.id.answerBtn));
         setDialog(new BottomSheetDialog(this));
 
@@ -120,7 +128,24 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         count = post.getAnswersCount();
         postsDataHolder = new ArrayList<>();
 
+        progressBar.setVisibility(View.VISIBLE);
         FetchAnswers();
+    }
+
+    //***Sort questions according to the number of likes***//
+    private void SortDataByLikes(ArrayList<PostModel> answers){
+        Collections.sort(answers, new Comparator<PostModel>() {
+            @Override
+            public int compare(PostModel question1, PostModel question2) {
+                if(question1.getLikesCount() > question2.getLikesCount()) {
+                    return -1;
+                } else if (question1.getLikesCount() < question2.getLikesCount()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
     }
 
     //Display answers
@@ -136,12 +161,19 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
+                    int i=0;
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         PostModel answer = document.toObject(PostModel.class);
+                        i++;
                         answer.setAnswersCount(-1);
                         postsDataHolder.add(answer);
                     }
+                    SortDataByLikes(postsDataHolder);
+                    postsDataHolder.add(0,post);
+                    postsDataHolder.add(1,text);
                     buildRecyclerView();
+                    progressBar.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
                 } else {
                     Toast.makeText(QuestionBlocActivity.this, "Network error", Toast.LENGTH_SHORT).show();
                 }
@@ -220,8 +252,8 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if(task.isSuccessful()&& s.isSuccessful()){
-                        NotifyAnswer(task.getResult().getString("Token"),
-                                s.getResult().getString("Name"), //current user name
+                        NotifylikedAnswer(task.getResult().getString("Token"),
+                                s.getResult().getString("Username"), //current user name
                                 QuestionBlocActivity.this,
                                 position);
                     }
@@ -316,7 +348,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if(task.isSuccessful()&& s.isSuccessful()){
                         NotifyPost(task.getResult().getString("Token"),
-                                s.getResult().getString("Name"),
+                                s.getResult().getString("Username"),
                                 QuestionBlocActivity.this,
                                 0);
                     }
@@ -450,24 +482,45 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
             }
         });
 
+        postAnswerBtn.setEnabled(false);
+        addAnswer.addTextChangedListener(new TextWatcher() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void beforeTextChanged(CharSequence s, int i, int i1, int i2) {
+
+            }
+
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onTextChanged(CharSequence s, int i, int i1, int i2) {
+                if(s.toString().trim().length()==0){
+                    postAnswerBtn.setEnabled(false);
+                } else {
+                    postAnswerBtn.setEnabled(true);
+                    postAnswerBtn.setTextColor(R.color.button);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
         postAnswerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 if(!addAnswer.getText().toString().isEmpty())
                 {
-                    PerformValidation(addAnswer.getText().toString());
-                }else {
-                    //sending like answer notification to the publisher ********************************************************************************************************************
-                    Task<DocumentSnapshot> s = fstore.collection("Users").document(user.getUid()).get(); //current user data
+                    Task<DocumentSnapshot> s = fstore.collection("Users").document(user.getUid()).get();
                     fstore.collection("Users").document(post.getPublisher()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if(task.isSuccessful()&& s.isSuccessful()){
                                 NotifyAnswer(task.getResult().getString("Token"),
-                                        s.getResult().getString("Name"), //current user name
-                                        QuestionBlocActivity.this,
-                                        postAnswerBtn.getVerticalScrollbarPosition());
+                                        s.getResult().getString("Username"),
+                                        QuestionBlocActivity.this);
                             }
                             else{
                                 //Toast.maketext
@@ -475,9 +528,9 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                             }
                         }
                     });
-                    getDialog().dismiss();
-                    startActivity(new Intent(getApplicationContext(), BottomNavigationActivity.class));
-                    finish();
+                    PerformValidation(addAnswer.getText().toString());
+                }else {
+                    addAnswer.setError("You have to type your answer");
                 }
             }
         });
@@ -622,7 +675,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         DocRef.add(notif);
     }
 
-    public void NotifyAnswer(String publisherToken, String title,  Activity activity, int position){
+    public void NotifylikedAnswer(String publisherToken, String title,  Activity activity, int position){
 
         fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -653,6 +706,39 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         //add the document to the notification collection
         DocRef.add(notif);
     }
+
+    public void NotifyAnswer(String publisherToken, String title,  Activity activity){
+
+        fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    if(!task.getResult().getString("Token").equals(publisherToken) || true) {           //****************** check  this condition ***true
+                        FcmNotificationsSender send = new FcmNotificationsSender(
+                                publisherToken,
+                                title+" Answered Your Question !",
+                                "Click To See All Notifications",
+                                activity);
+                        send.SendNotifications();
+                    }
+                }
+            }
+        });
+        //add notifier data to notified user (name )  ******* this is for the recyclerView **********
+        PostModel postModel = new PostModel(postsDataHolder.get(0).getPostid());
+        CollectionReference DocRef = fstore.collection("Users").document(postsDataHolder.get(0).getPublisher()).collection("Notifications");
+        //add the notification data to the notification collection of the notified user
+        Map<String, Object> notif = new HashMap<>();
+        notif.put("Type", 2);
+        notif.put("PostId", postModel.getPostid());
+        notif.put("Username", title);
+        notif.put("Date", Timestamp.now());
+        notif.put("Image",downloadUrl);
+        notif.put("UserId",user.getUid() );
+        //add the document to the notification collection
+        DocRef.add(notif);
+    }
+
 
     @Override
     public void onBackPressed() {
