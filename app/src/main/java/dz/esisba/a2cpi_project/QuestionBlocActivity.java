@@ -38,6 +38,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -132,21 +133,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         FetchAnswers();
     }
 
-    //***Sort questions according to the number of likes***//
-    private void SortDataByLikes(ArrayList<PostModel> answers){
-        Collections.sort(answers, new Comparator<PostModel>() {
-            @Override
-            public int compare(PostModel question1, PostModel question2) {
-                if(question1.getLikesCount() > question2.getLikesCount()) {
-                    return -1;
-                } else if (question1.getLikesCount() < question2.getLikesCount()) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-        });
-    }
 
     //Display answers
     private void FetchAnswers() {
@@ -156,7 +142,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         PostModel text = new PostModel(null,null,null,null,null,null,null,null,-1,post.getAnswersCount(),null);
         postsDataHolder.add(text);
 
-        postRef.collection("Answers")
+        postRef.collection("Answers").orderBy("likesCount", Query.Direction.DESCENDING)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -164,13 +150,10 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                     int i=0;
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         PostModel answer = document.toObject(PostModel.class);
-                        i++;
                         answer.setAnswersCount(-1);
                         postsDataHolder.add(answer);
                     }
-                    SortDataByLikes(postsDataHolder);
-                    postsDataHolder.add(0,post);
-                    postsDataHolder.add(1,text);
+
                     buildRecyclerView();
                     progressBar.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
