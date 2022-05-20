@@ -2,7 +2,10 @@ package dz.esisba.a2cpi_project;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,6 +31,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -493,31 +497,44 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         postAnswerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if(!addAnswer.getText().toString().isEmpty())
+                if (!isNetworkAvailable())
                 {
-                    Task<DocumentSnapshot> s = fstore.collection("Users").document(user.getUid()).get();
-                    fstore.collection("Users").document(post.getPublisher()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if(task.isSuccessful()&& s.isSuccessful()){
-                                NotifyAnswer(task.getResult().getString("Token"),
-                                        s.getResult().getString("Username"),
-                                        QuestionBlocActivity.this);
+                    Toast.makeText(QuestionBlocActivity.this, "Network error please try again later", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else {
+                    if(!addAnswer.getText().toString().isEmpty())
+                    {
+                        Task<DocumentSnapshot> s = fstore.collection("Users").document(user.getUid()).get();
+                        fstore.collection("Users").document(post.getPublisher()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if(task.isSuccessful()&& s.isSuccessful()){
+                                    NotifyAnswer(task.getResult().getString("Token"),
+                                            s.getResult().getString("Username"),
+                                            QuestionBlocActivity.this);
+                                }
+                                else{
+                                    //Toast.maketext
+                                    Log.d("Calling notify", "onComplete: Failure");
+                                }
                             }
-                            else{
-                                //Toast.maketext
-                                Log.d("Calling notify", "onComplete: Failure");
-                            }
-                        }
-                    });
-                    PerformValidation(addAnswer.getText().toString());
-                }else {
-                    addAnswer.setError("You have to type your answer");
+                        });
+                        PerformValidation(addAnswer.getText().toString());
+                    }else {
+                        addAnswer.setError("You have to type your answer");
+                    }
                 }
             }
         });
         getDialog().setContentView(view);
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     private void DislikeFailure(LottieAnimationView lottieAnimationView, TextView likesTxt, int position) {
