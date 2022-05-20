@@ -96,7 +96,7 @@ public class AddPostActivity extends AppCompatActivity {
                     askedByUsername = snapshot.get("Username").toString();
                     if (snapshot.get("profilePictureUrl") != null) {
                          downloadUrl = snapshot.get("profilePictureUrl").toString();
-                        Glide.with(AddPostActivity.this).load(downloadUrl).into(profileImg);
+                        Glide.with(getApplicationContext()).load(downloadUrl).into(profileImg);
                     }
                     if (snapshot.get("Name")!= null)
                     {
