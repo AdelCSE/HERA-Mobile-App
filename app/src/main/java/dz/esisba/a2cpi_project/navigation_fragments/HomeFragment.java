@@ -3,7 +3,6 @@ package dz.esisba.a2cpi_project.navigation_fragments;
 import static android.view.View.VISIBLE;
 
 import android.app.Activity;
-import android.bluetooth.le.ScanRecord;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,7 +80,10 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     private DocumentReference likesRef,userInfos;
     private CollectionReference postRef;
     private String downloadUrl;
-    private NotificationBadge notificationBadge;
+
+    NotificationBadge notificationBadge;
+    public static HomeFragment homeFragment;
+
 
 
     @Nullable
@@ -98,6 +99,9 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         progressBar = parentHolder.findViewById(R.id.homeProgressBar);
         recyclerView = parentHolder.findViewById(R.id.recview);
         notificationBadge = parentHolder.findViewById(R.id.badge);
+
+        NotificationsActivity.homeFragment=this;
+        QuestionBlocActivity.homeFragment=this;
 
 
 
@@ -121,17 +125,26 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
 
 
-        userInfos.collection("Notifications").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        userInfos.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                int a=0;
-                for(DocumentSnapshot dc : value.getDocuments()){
-                    a++;
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    if (task.getResult().getLong("unseenNotifications")!= null) {
+                    if(task.getResult().getLong("unseenNotifications").intValue() >99) {
+                        notificationBadge.setText("99+");
+                    }
+                    else{
+                        notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
+                    }
+                        notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
+                    }else{
+                       Toast.makeText(getContext(), "You Don't Have Notifications ! ", Toast.LENGTH_SHORT).show();
+                    }
                 }
-                notificationBadge.setText(Integer.toString(a));
             }
         });
 
+/////////////////////////////////////////////////////////////////////////
 
 
         userInfos.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -478,6 +491,30 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         notif.put("UserId",auth.getCurrentUser().getUid() );
         //add the document to the notification collection
         DocRef.add(notif);
+
+        fstore.collection("Users").document(PostsDataHolder.get(position).getPublisher()).update("unseenNotifications",FieldValue.increment(1));
+
+        userInfos.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    if (task.getResult().getLong("unseenNotifications")!= null) {
+//                    if(task.getResult().getLong("unseenNotifications").intValue() >99) {
+//                        notificationBadge.setText("99+");
+//                    }
+//                    else{
+//                        notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
+//                    }
+                        notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
+                    }else{
+                        Log.d("____________", "onComplete: null value");
+                    }
+                }
+            }
+        });
+
+
+
     }
 }
 

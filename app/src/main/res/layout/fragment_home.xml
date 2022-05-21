@@ -58,7 +58,7 @@
         app:layout_constraintLeft_toRightOf="@+id/notification_btn"
         android:layout_marginBottom="-16dp"
         android:layout_marginLeft="-20dp"
-        app:nbMaxTextLength="2"/>
+        app:nbMaxTextLength="2" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/homeRefreshLayout"

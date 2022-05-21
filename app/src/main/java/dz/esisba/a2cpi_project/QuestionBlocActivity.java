@@ -2,6 +2,7 @@ package dz.esisba.a2cpi_project;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -18,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,6 +47,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.nex3z.notificationbadge.NotificationBadge;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -85,6 +88,9 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
     private DocumentReference postRef;
     private int absolutePosition;
 
+    NotificationBadge notificationBadge;
+    public static HomeFragment homeFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +106,9 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
         userRef = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
+
+
+        notificationBadge = homeFragment.getActivity().findViewById(R.id.badge);
 
         //get username of poster
         userRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -135,6 +144,25 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
 
         progressBar.setVisibility(View.VISIBLE);
         FetchAnswers();
+
+        fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (task.getResult().getLong("unseenNotifications") != null) {
+//                    if(task.getResult().getLong("unseenNotifications").intValue() >99) {
+//                        notificationBadge.setText("99+");
+//                    }
+//                    else{
+//                        notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
+//                    }
+                            notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
+                    } else {
+                        Log.d("____________", "onComplete: null value");
+                    }
+                }
+            }
+        });
     }
 
 
@@ -433,8 +461,8 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
             });
         }
     }
-    private void SetLikesForUser(ArrayList<String> tags, int i)
-    {
+
+    private void SetLikesForUser(ArrayList<String> tags, int i){
         CollectionReference userRef = fstore.collection("Users").document(user.getUid())
                 .collection("LikedTags");
         for (String tag: tags) {
@@ -634,7 +662,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         this.adapter = adapter;
     }
 
-    public BottomSheetDialog getDialog() {
+     public BottomSheetDialog getDialog() {
         return dialog;
     }
 
@@ -642,7 +670,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         this.dialog = dialog;
     }
 
-
+    //Notifications
     public void NotifyLikedPost(String publisherToken, String title, Activity activity, int position){
 
         fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -673,6 +701,8 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         notif.put("UserId",user.getUid() );
         //add the document to the notification collection
         DocRef.add(notif);
+
+        fstore.collection("Users").document(postsDataHolder.get(position).getPublisher()).update("unseenNotifications", FieldValue.increment(1));
 
     }
 
@@ -706,6 +736,8 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         notif.put("UserId",user.getUid() );
         //add the document to the notification collection
         DocRef.add(notif);
+
+        fstore.collection("Users").document(postsDataHolder.get(position).getPublisher()).update("unseenNotifications", FieldValue.increment(1));
 
     }
 
@@ -741,11 +773,32 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         //add the document to the notification collection
         DocRef.add(notif);
 
-    }
+        fstore.collection("Users").document(postsDataHolder.get(0).getPublisher()).update("unseenNotifications", FieldValue.increment(1));
 
+    }
+    //end Notifications
 
     @Override
     public void onBackPressed() {
+
+        fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (task.getResult().getLong("unseenNotifications") != null) {
+                        if(task.getResult().getLong("unseenNotifications").intValue() >99) {
+                            notificationBadge.setText("99+");
+                        }else{
+                            notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
+                    }
+//                        notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
+                    } else {
+                        Log.d("____________", "onComplete: null value");
+                    }
+                }
+            }
+        });
+
         ArrayList<String> likes = postsDataHolder.get(0).getLikes();
         Intent intent = new Intent();
         intent.putExtra("likes", likes);

@@ -418,6 +418,8 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
                     notif.put("Image", downloadUrl);
                     userRef.collection("Notifications")
                             .add(notif); //add the notification data to the notification collection of the notified user
+
+                    userRef.update("unseenNotifications",FieldValue.increment(1));
                 }
             }
         });

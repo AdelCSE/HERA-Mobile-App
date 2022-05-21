@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -23,6 +24,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     ArrayList<NotificationModel> NotificationsHolder;
     Context context;
     private NotificationOnItemListener listener;
+    CardView unseenIcon;
 
     public NotificationAdapter(ArrayList<NotificationModel> notificationsHolder , NotificationOnItemListener l) {
         NotificationsHolder = notificationsHolder;
@@ -92,6 +94,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         ImageView Img ,removeNotif;
         TextView Username,Date,NotificationText;
+
 
         public Myviewholder (@NonNull View itemView){
             super(itemView);
