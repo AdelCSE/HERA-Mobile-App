@@ -117,7 +117,7 @@ public class AnswersAdapter extends RecyclerView.Adapter<AnswersAdapter.myviewho
                                 //       DeleteLikes(answerModel, "AnswerLikes");
 
                                 DocumentReference dr = fstore.collection("Posts").document(id);
-                                dr.update("answersCount", FieldValue.increment(-1));
+                                dr.update("reportsCount", FieldValue.increment(-1));
                                 DocumentReference answerRef = dr.collection("Answers").document(answerModel.getPostid());
                                 answerRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override

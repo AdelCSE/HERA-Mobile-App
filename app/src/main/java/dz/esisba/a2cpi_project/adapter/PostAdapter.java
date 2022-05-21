@@ -253,7 +253,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
                             }
                             else {
                                 DocumentReference postRef = FirebaseFirestore.getInstance().collection("Posts").document(postModel.getPostid());
-                                postRef.update("answersCount", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                postRef.update("reportsCount", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
                                         Toast.makeText(view.getContext(), "Your report has been sent", Toast.LENGTH_SHORT).show();

@@ -292,7 +292,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             }
                             else {
                                 DocumentReference postRef = FirebaseFirestore.getInstance().collection("Posts").document(postModel.getPostid());
-                                postRef.update("answersCount", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                postRef.update("reportsCount", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
                                         Toast.makeText(view.getContext(), "Your report has been sent", Toast.LENGTH_SHORT).show();
@@ -429,7 +429,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             else {
                                 DocumentReference answerRef = FirebaseFirestore.getInstance().collection("Posts").
                                         document(parentPost.getPostid()).collection("Answers").document(postModel.getPostid());
-                                answerRef.update("answersCount", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                answerRef.update("reportsCount", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
                                         Toast.makeText(view.getContext(), "Your report has been sent", Toast.LENGTH_SHORT).show();

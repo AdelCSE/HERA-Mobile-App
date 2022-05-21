@@ -57,6 +57,8 @@ public class AddPostActivity extends AppCompatActivity {
     private DocumentReference askedByRef;
     private ProgressDialog loader;
 
+    private Date postBlockDate;
+
     private ArrayList<String> selectedTags = new ArrayList<>();
 
     private FirebaseAuth auth;
@@ -106,6 +108,11 @@ public class AddPostActivity extends AppCompatActivity {
                     {
                         askedByName = snapshot.get("Name").toString();
                     }
+                    if (snapshot.get("postBlockedUntil")!=null)
+                    {
+                        postBlockDate = snapshot.getDate("postBlockedUntil");
+                    }
+
                 }
                 else {
                     Log.d(this.toString(), "Current data: null");
@@ -138,6 +145,12 @@ public class AddPostActivity extends AppCompatActivity {
                     snackbar.show();
                     return;
                 }
+                else if (isPostBlocked())
+                {
+                    SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy • HH:mm");
+                    Toast.makeText(AddPostActivity.this, "You cannot perform this operation you are post blocked until "+sfd.format(postBlockDate)
+                            , Toast.LENGTH_SHORT).show();
+                }
                 else {
                     performValidation();
                 }
@@ -145,6 +158,14 @@ public class AddPostActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private boolean isPostBlocked() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        if (postBlockDate ==null) return false;
+        else if (date.after(postBlockDate)) return false;
+        else return true;
     }
 
     private void SetCheckedChips()
