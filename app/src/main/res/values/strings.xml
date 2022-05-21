@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">2CPI_PROJECT</string>
+    <string name="app_name">Hera</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
@@ -17,4 +17,5 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
 </resources>

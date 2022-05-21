@@ -19,6 +19,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -29,13 +30,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -62,6 +66,8 @@ public class ProfileFragment extends Fragment {
     private FirebaseFirestore fstore;
     private StorageReference storageReference,bannerReference;
     private Uri resultUri;
+    private CollectionReference requestRef,repliesRef;
+
 
     private TextView username, name, bio, followersCount, followingCount;
     private ImageButton editProfile;
@@ -76,8 +82,6 @@ public class ProfileFragment extends Fragment {
     TabLayout tabLayout;
     ProfileAdapter adapter;
 
-
-    private String[] titles = {"Questions" , "Answers" , "Requests", "Replies"};
     private boolean loadbanner = true;
 
 
@@ -93,7 +97,67 @@ public class ProfileFragment extends Fragment {
         adapter = new ProfileAdapter(getChildFragmentManager(),getLifecycle());
         viewPager.setAdapter(adapter);
 
-        new TabLayoutMediator(tabLayout,viewPager,((tab, position) -> tab.setText(titles[position]))).attach();
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        fstore = FirebaseFirestore.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference().child("profileImages");
+        bannerReference = FirebaseStorage.getInstance().getReference().child("profileBanners");
+
+        requestRef = fstore.collection("Users").document(user.getUid()).collection("Requests");
+        repliesRef = fstore.collection("Users").document(user.getUid()).collection("Replies");
+
+        TabLayoutMediator  tabLayoutMediator =
+                new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
+            @Override
+            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+                switch(position){
+                    case 0:
+                        tab.setText("Questions");
+                        break;
+                    case 1:
+                        tab.setText("Answers");
+                        break;
+                    case 2:
+                        tab.setText("Requests");
+                        BadgeDrawable badge = tab.getOrCreateBadge();
+                        badge.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.button));
+                        badge.setVisible(false);
+                        requestRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()){
+                                    if (task.getResult().size() != 0){
+                                        badge.setVisible(true);
+                                    }else{
+                                        badge.setVisible(false);
+                                    }
+                                }
+                            }
+                        });
+
+                        break;
+                    case 3:
+                        tab.setText("Replies");
+                        BadgeDrawable badge1 = tab.getOrCreateBadge();
+                        badge1.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.button));
+                        badge1.setVisible(false);
+                        repliesRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()){
+                                    if (task.getResult().size() != 0){
+                                        badge1.setVisible(true);
+                                    }else{
+                                        badge1.setVisible(false);
+                                    }
+                                }
+                            }
+                        });
+                        break;
+                }
+            }
+        });
+        tabLayoutMediator.attach();
 
         username = Holder.findViewById(R.id.usernameTxt);
         name = Holder.findViewById(R.id.nameText);
@@ -118,11 +182,7 @@ public class ProfileFragment extends Fragment {
         });
         //Toast.makeText(getActivity(), Boolean.toString(loadbanner), Toast.LENGTH_SHORT).show();
 
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-        fstore = FirebaseFirestore.getInstance();
-        storageReference = FirebaseStorage.getInstance().getReference().child("profileImages");
-        bannerReference = FirebaseStorage.getInstance().getReference().child("profileBanners");
+
 
         DocumentReference df = fstore.collection("Users").document(user.getUid());
 
