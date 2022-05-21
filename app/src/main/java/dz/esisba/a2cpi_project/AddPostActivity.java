@@ -1,7 +1,10 @@
 package dz.esisba.a2cpi_project;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -52,6 +56,8 @@ public class AddPostActivity extends AppCompatActivity {
     private String askedByName,askedByUsername = "";
     private DocumentReference askedByRef;
     private ProgressDialog loader;
+
+    private Date postBlockDate;
 
     private ArrayList<String> selectedTags = new ArrayList<>();
 
@@ -96,12 +102,17 @@ public class AddPostActivity extends AppCompatActivity {
                     askedByUsername = snapshot.get("Username").toString();
                     if (snapshot.get("profilePictureUrl") != null) {
                          downloadUrl = snapshot.get("profilePictureUrl").toString();
-                        Glide.with(AddPostActivity.this).load(downloadUrl).into(profileImg);
+                        Glide.with(getApplicationContext()).load(downloadUrl).into(profileImg);
                     }
                     if (snapshot.get("Name")!= null)
                     {
                         askedByName = snapshot.get("Name").toString();
                     }
+                    if (snapshot.get("postBlockedUntil")!=null)
+                    {
+                        postBlockDate = snapshot.getDate("postBlockedUntil");
+                    }
+
                 }
                 else {
                     Log.d(this.toString(), "Current data: null");
@@ -121,11 +132,40 @@ public class AddPostActivity extends AppCompatActivity {
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                performValidation();
+                if (!isNetworkAvailable())
+                {
+                    View parentLayout = findViewById(android.R.id.content);
+                    final Snackbar snackbar = Snackbar.make(parentLayout, "Please check your internet connection", Snackbar.LENGTH_LONG)
+                            .setAction("TRY AGAIN", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    postButton.performClick();
+                                }
+                            });
+                    snackbar.show();
+                    return;
+                }
+                else if (isPostBlocked())
+                {
+                    SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy • HH:mm");
+                    Toast.makeText(AddPostActivity.this, "You cannot perform this operation you are post blocked until "+sfd.format(postBlockDate)
+                            , Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    performValidation();
+                }
             }
         });
 
 
+    }
+
+    private boolean isPostBlocked() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        if (postBlockDate ==null) return false;
+        else if (date.after(postBlockDate)) return false;
+        else return true;
     }
 
     private void SetCheckedChips()
@@ -262,6 +302,14 @@ public class AddPostActivity extends AppCompatActivity {
                }
            });
     }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     private void startLoader()
     {
         loader.setMessage("Publishing...");

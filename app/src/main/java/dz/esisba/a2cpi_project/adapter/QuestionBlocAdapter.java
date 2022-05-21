@@ -1,6 +1,7 @@
 package dz.esisba.a2cpi_project.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,15 +22,20 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import dz.esisba.a2cpi_project.BottomNavigationActivity;
+import dz.esisba.a2cpi_project.QuestionBlocActivity;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.interfaces.QuestionsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
@@ -163,7 +169,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         private FirebaseUser user;
         private FirebaseFirestore fstore;
 
-        public ViewHolder1(@NonNull View itemView , QuestionsOnItemClickListner listner, ArrayList<PostModel> postModel) {
+        public ViewHolder1(@NonNull View itemView , QuestionsOnItemClickListner listner, ArrayList<PostModel> postHolder) {
             super(itemView);
             img = itemView.findViewById(R.id.img);
             Question = itemView.findViewById(R.id.question);
@@ -243,21 +249,58 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 public void onClick(View view) {
                     int position = getAbsoluteAdapterPosition();
                     PopupMenu popupMenu = new PopupMenu(view.getContext(),view);
-                    if (user.getUid().equals(postModel.get(position).getPublisher()))
+                    if (user.getUid().equals(postHolder.get(position).getPublisher()))
                         popupMenu.inflate(R.menu.my_post_menu);
                     else popupMenu.inflate(R.menu.post_menu);
 
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem menuItem) {
+                            boolean b = false;
+                            PostModel postModel = postHolder.get(position);
                             if (menuItem.getTitle().equals("Delete")) {
-                                Toast.makeText(view.getContext(), "Delete", Toast.LENGTH_SHORT).show();
-                                return true;
+                                postHolder.remove(position);
+                                Toast.makeText(view.getContext(), "Removing....", Toast.LENGTH_SHORT).show();
+                                //DeleteLikes(postHolder, "Likes");
+                                DocumentReference postRef = FirebaseFirestore.getInstance().collection("Posts").document(postModel.getPostid());
+                                CollectionReference answers =FirebaseFirestore.getInstance().collection("Posts").
+                                        document(postModel.getPostid()).collection("Answers");
+                                answers.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                document.getReference().delete();
+                                            }
+                                            postRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    DocumentReference userRef = FirebaseFirestore.getInstance().collection("Users")
+                                                            .document(user.getUid());
+                                                    userRef.update("posts", FieldValue.arrayRemove(postModel.getPostid()));
+                                                    Intent i = new Intent(context.getApplicationContext(), BottomNavigationActivity.class);
+                                                    Toast.makeText(view.getContext(), "Post deleted", Toast.LENGTH_SHORT).show();
+                                                    ((QuestionBlocActivity)context).startActivity(i);
+                                                }
+                                            });
+                                        } else {
+                                            Toast.makeText(view.getContext(), "Some error occurred try again later", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                                b = true;
                             }
                             else {
-                                Toast.makeText(view.getContext(), "Report", Toast.LENGTH_SHORT).show();
-                                return true;
+                                DocumentReference postRef = FirebaseFirestore.getInstance().collection("Posts").document(postModel.getPostid());
+                                postRef.update("reportsCount", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(view.getContext(), "Your report has been sent", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                b = true;
                             }
+                            return b;
                         }
                     });
                     popupMenu.show();
@@ -384,13 +427,9 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                 b = true;
                             }
                             else {
-                                int reportCount = postModel.getReportsCount();
-                                reportCount++;
                                 DocumentReference answerRef = FirebaseFirestore.getInstance().collection("Posts").
                                         document(parentPost.getPostid()).collection("Answers").document(postModel.getPostid());
-                                HashMap<String, Object> hm = new HashMap<>();
-                                hm.put("reportsCount", reportCount);
-                                answerRef.update(hm).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                answerRef.update("reportsCount", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
                                         Toast.makeText(view.getContext(), "Your report has been sent", Toast.LENGTH_SHORT).show();
@@ -405,68 +444,6 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 }
             });
         }
-        /*private void DeleteLikes(PostModel postModel, String collection)
-        {
-            if (collection.equals("Likes"))
-            {
-                CollectionReference userRef = fstore.collection("Users");
-                DocumentReference postRef = fstore.collection("Posts")
-                        .document(postModel.getPostid());
-                postRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot doc) {
-                        ArrayList<String> likes = (ArrayList<String>) doc.get("likes");
-                        for (String id: likes) {
-                            Task<QuerySnapshot> cr = userRef.document(id).collection(collection).
-                                    get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            document.getReference().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-                                                }
-                                            });
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-            else
-            {
-                CollectionReference userRef = fstore.collection("Users");
-                DocumentReference postRef = fstore.collection("Posts")
-                        .document(AllPostsDataHolder.get(0).getPostid()).
-                                collection("Answers").document(postModel.getPostid());
-                postRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot doc) {
-                        ArrayList<String> likes = (ArrayList<String>) doc.get("likes");
-                        for (String id: likes) {
-                            Task<QuerySnapshot> cr = userRef.document(id).collection(collection).
-                                    get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            document.getReference().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-                                                }
-                                            });
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-        }*/
     }
 
     public class ViewHolder3 extends RecyclerView.ViewHolder {

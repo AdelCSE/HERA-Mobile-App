@@ -19,10 +19,12 @@
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_profile.xml" value="0.5" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_register.xml" value="0.22" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_user_profile.xml" value="0.33" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activty_add_answer.xml" value="0.1" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/fragment_home.xml" value="0.33" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/fragment_profile.xml" value="0.44243792325056436" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/item_container_onboarding.xml" value="0.264" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/post_retrieved_layout.xml" value="0.25" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/request_bottom_sheet_dialog.xml" value="0.20416666666666666" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/reset_pop.xml" value="0.22" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2115" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/drawable/actionbar.xml" value="0.2105" />
@@ -125,7 +127,7 @@
         <entry key="app/src/main/res/layout/cardview_post.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/cardview_search_user.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/essaie.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="2.0" />
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/fragment_questions.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/fragment_smart_room_notifications.xml" value="0.35625" />

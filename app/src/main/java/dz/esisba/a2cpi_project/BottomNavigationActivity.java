@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.app.LauncherActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -89,6 +90,14 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
+
+        user.reload().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                if (user == null) startActivity(new Intent(BottomNavigationActivity.this, LauncherActivity.class));
+            }
+        });
+
         DocumentReference df = fstore.collection("Users").document(user.getUid());
         df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
