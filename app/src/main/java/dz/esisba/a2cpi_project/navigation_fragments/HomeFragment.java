@@ -45,6 +45,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.nex3z.notificationbadge.NotificationBadge;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -81,11 +82,13 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     private DocumentReference likesRef,userInfos;
     private CollectionReference postRef;
     private String downloadUrl;
+    private NotificationBadge notificationBadge;
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         parentHolder = inflater.inflate(R.layout.fragment_home,container,false);
 
         refresh = parentHolder.findViewById(R.id.homeRefreshLayout);
@@ -94,11 +97,19 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         notificationsBtn = parentHolder.findViewById(R.id.notification_btn);
         progressBar = parentHolder.findViewById(R.id.homeProgressBar);
         recyclerView = parentHolder.findViewById(R.id.recview);
+        notificationBadge = parentHolder.findViewById(R.id.badge);
+
+
 
         Main();
 
+
+
         return parentHolder;
+
     }
+
+
 
     private void Main()
     {
@@ -107,6 +118,21 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         user = auth.getCurrentUser();
         postRef = fstore.collection("Posts");
         userInfos = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
+
+
+
+        userInfos.collection("Notifications").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                int a=0;
+                for(DocumentSnapshot dc : value.getDocuments()){
+                    a++;
+                }
+                notificationBadge.setText(Integer.toString(a));
+            }
+        });
+
+
 
         userInfos.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -429,7 +455,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                     if(!task.getResult().getString("Token").equals(publisherToken) || true) {
                         FcmNotificationsSender send = new FcmNotificationsSender(
                                 publisherToken,
-                                title+" Liked your Post !",
+                                title+" Liked your Question !",
                                 "Click To See All Notifications",
                                 activity);
                         send.SendNotifications();
@@ -458,7 +484,8 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 //TODO Add updateToken Function [Optional]
 //*************Important*******firebase notification*********
 //Notification Types :
-/*    0 => Follow                UserId
- *    1 => Like post            postId
- *    2 => Like answer          postd + position of the answer
+/*    0 => Follow
+ *    1 => Like post
+ *    2 => Like answer
+ *    3 => answered question
  * */

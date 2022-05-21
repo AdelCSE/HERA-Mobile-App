@@ -127,7 +127,7 @@
         <entry key="app/src/main/res/layout/cardview_post.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/cardview_search_user.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/essaie.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="2.0" />
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/fragment_questions.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/fragment_smart_room_notifications.xml" value="0.35625" />

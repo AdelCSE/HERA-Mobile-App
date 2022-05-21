@@ -334,7 +334,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if(task.isSuccessful()&& s.isSuccessful()){
-                        NotifyPost(task.getResult().getString("Token"),
+                        NotifyLikedPost(task.getResult().getString("Token"),
                                 s.getResult().getString("Username"),
                                 QuestionBlocActivity.this,
                                 0);
@@ -643,7 +643,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
     }
 
 
-    public void NotifyPost(String publisherToken, String title, Activity activity, int position){
+    public void NotifyLikedPost(String publisherToken, String title, Activity activity, int position){
 
         fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -660,7 +660,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                 }
             }
         });
-        //add notifier data to notified user (name )  ******* this is for the recyclerView **********
+        //add notifier data to notified user (name )
         PostModel postModel = new PostModel(postsDataHolder.get(position).getPostid());
         CollectionReference DocRef = fstore.collection("Users").document(postsDataHolder.get(position).getPublisher()).collection("Notifications");
         //add the notification data to the notification collection of the notified user
@@ -673,6 +673,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         notif.put("UserId",user.getUid() );
         //add the document to the notification collection
         DocRef.add(notif);
+
     }
 
     public void NotifylikedAnswer(String publisherToken, String title,  Activity activity, int position){
@@ -705,6 +706,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         notif.put("UserId",user.getUid() );
         //add the document to the notification collection
         DocRef.add(notif);
+
     }
 
     public void NotifyAnswer(String publisherToken, String title,  Activity activity){
@@ -729,14 +731,16 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         CollectionReference DocRef = fstore.collection("Users").document(postsDataHolder.get(0).getPublisher()).collection("Notifications");
         //add the notification data to the notification collection of the notified user
         Map<String, Object> notif = new HashMap<>();
-        notif.put("Type", 2);
+        notif.put("Type", 3);
         notif.put("PostId", postModel.getPostid());
         notif.put("Username", title);
         notif.put("Date", Timestamp.now());
         notif.put("Image",downloadUrl);
         notif.put("UserId",user.getUid() );
+        notif.put("id",DocRef.getId());
         //add the document to the notification collection
         DocRef.add(notif);
+
     }
 
 
