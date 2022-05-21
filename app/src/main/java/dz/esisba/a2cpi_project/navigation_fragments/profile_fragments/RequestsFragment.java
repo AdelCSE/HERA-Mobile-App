@@ -166,6 +166,11 @@ public class RequestsFragment extends Fragment implements SearchOnItemClick {
                 {
                     PerformValidation(replyQuestion.getText().toString(),position);
                     dialog.dismiss();
+                    DocumentReference requestRef = FirebaseFirestore.getInstance().collection("Users").document(user.getUid())
+                            .collection("Requests").document(RequestsDataHolder.get(position).getRequestId());
+                    requestRef.delete();
+                    RequestsDataHolder.remove(position);
+                    adapter.notifyItemRemoved(position);
                 }else {
                     replyQuestion.setError("Enter your question");
                 }
@@ -181,7 +186,6 @@ public class RequestsFragment extends Fragment implements SearchOnItemClick {
                 .collection("Replies").document();
 
         String replyId = replyRef.getId();
-        Toast.makeText(getContext(), "Sending...", Toast.LENGTH_SHORT).show();
         HashMap<String, Object> data = new HashMap<>();
 
         data.put("RequestId",replyId);
@@ -201,7 +205,7 @@ public class RequestsFragment extends Fragment implements SearchOnItemClick {
                 if(task.isSuccessful()){
                     Toast.makeText(getContext(), "Reply has been sent successfully", Toast.LENGTH_SHORT).show();
                 }else {
-                    Toast.makeText(getContext(), "Could not send reply " + task.getException().toString(),
+                    Toast.makeText(getContext(), "Could not send reply, try again! " + task.getException().toString(),
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -228,7 +232,6 @@ public class RequestsFragment extends Fragment implements SearchOnItemClick {
 
     @Override
     public void onAnswerClick(int position) {
-        Toast.makeText(getContext(), "btn is clicked", Toast.LENGTH_SHORT).show();
         showReplyDialog(position);
         dialog.show();
         dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);

@@ -215,7 +215,7 @@ public class ProfileFragment extends Fragment {
                                         @Override
                                         public void onSuccess(Void unused) {
                                             loader.dismiss();
-                                            Toast.makeText(getActivity(), "Banner updated", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getActivity(), "Banner has been updated", Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                 }
