@@ -50,6 +50,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+    <com.nex3z.notificationbadge.NotificationBadge
+        android:id="@+id/badge"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        app:layout_constraintBottom_toTopOf="@+id/notification_btn"
+        app:layout_constraintLeft_toRightOf="@+id/notification_btn"
+        android:layout_marginBottom="-16dp"
+        android:layout_marginLeft="-20dp"
+        app:nbMaxTextLength="2"/>
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/homeRefreshLayout"
         android:layout_width="match_parent"

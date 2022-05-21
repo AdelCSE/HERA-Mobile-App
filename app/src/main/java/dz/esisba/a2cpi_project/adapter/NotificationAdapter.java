@@ -15,15 +15,18 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 import dz.esisba.a2cpi_project.R;
+import dz.esisba.a2cpi_project.interfaces.NotificationOnItemListener;
 import dz.esisba.a2cpi_project.models.NotificationModel;
 
 public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     ArrayList<NotificationModel> NotificationsHolder;
     Context context;
+    private NotificationOnItemListener listener;
 
-    public NotificationAdapter(ArrayList<NotificationModel> notificationsHolder) {
+    public NotificationAdapter(ArrayList<NotificationModel> notificationsHolder , NotificationOnItemListener l) {
         NotificationsHolder = notificationsHolder;
+        listener=l;
     }
 
     @Override
@@ -56,6 +59,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             Glide.with(context).load(NotificationsHolder.get(position).getImage()).into(myviewholder.Img);
             myviewholder.Username.setText(NotificationsHolder.get(position).getUsername());
             myviewholder.Date.setText(NotificationsHolder.get(position).ConvertDate());
+
             switch (NotificationsHolder.get(position).getType()) {
                 case 0:
                     myviewholder.NotificationText.setText("followed you");
@@ -65,6 +69,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     break;
                 case 2:
                     myviewholder.NotificationText.setText("liked your answer");
+                    break;
+
+                case 3:
+                    myviewholder.NotificationText.setText("Answered Your Question!");
                     break;
             }
         }else{
@@ -80,9 +88,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return NotificationsHolder.size();
     }
 
-    class Myviewholder extends RecyclerView.ViewHolder {
+    class Myviewholder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        ImageView Img;
+        ImageView Img ,removeNotif;
         TextView Username,Date,NotificationText;
 
         public Myviewholder (@NonNull View itemView){
@@ -91,6 +99,25 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             Username = itemView.findViewById(R.id.notifUsername);
             Date = itemView.findViewById(R.id.notifDate);
             NotificationText = itemView.findViewById(R.id.notifText);
+            removeNotif = itemView.findViewById(R.id.removeNotif);
+
+            removeNotif.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onRemoveClick(view ,getAdapterPosition());
+                }
+            });
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onItemClick(view , getAdapterPosition());
+                }
+            });
+        }
+
+        @Override
+        public void onClick(View view) {
+
         }
     }
 

@@ -6,34 +6,40 @@ import com.google.firebase.firestore.Exclude;
 import java.text.SimpleDateFormat;
 
 public class NotificationModel {
-    String Username, postId , userId , Image;
+    String Username, postId , UserId , Image ,notifId;
     Timestamp Date;
     int Type;
+    boolean seen=false ;//true if notification is seen before
 
-    @Exclude
-    private String key;
 
-    public NotificationModel(String username, int type, Timestamp date, String postId, String userId, String image) {
+//    @Exclude
+//    private String key;
+
+    public NotificationModel(String username, int type, Timestamp date, String postId, String userId, String image,String notifId) {
         Username = username;
         Type = type;
         Date = date;
         this.postId = postId;
-        this.userId = userId;
+        UserId = userId;
         Image = image;
+        this.notifId = notifId;
     }
+
+
 
     public NotificationModel() {
     }
+
 
     public String ConvertDate() {
         SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy • HH:mm");
         return  sfd.format(getDate().toDate());
     }
 
-    public <T extends NotificationModel> T withId(final String id) {
-        this.key = id;
-        return (T) this;
-    }
+//    public <T extends NotificationModel> T withId(final String id) {
+//        this.key = id;
+//        return (T) this;
+//    }
 
     public String getUsername() {
         return Username;
@@ -68,11 +74,11 @@ public class NotificationModel {
     }
 
     public String getUserId() {
-        return userId;
+        return UserId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserId(String UserId) {
+        this.UserId = UserId;
     }
 
     public String getImage() {
@@ -81,5 +87,21 @@ public class NotificationModel {
 
     public void setImage(String image) {
         Image = image;
+    }
+
+    public String getNotifId() {
+        return notifId;
+    }
+
+    public void setNotifId(String notifId) {
+        this.notifId = notifId;
+    }
+
+    public boolean isSeen() {
+        return seen;
+    }
+
+    public void setSeen(boolean seen) {
+        this.seen = seen;
     }
 }
