@@ -2,10 +2,6 @@ package dz.esisba.a2cpi_project;
 
 import static android.view.View.GONE;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -17,6 +13,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -55,6 +53,8 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
     private FirebaseUser user;
     private FirebaseFirestore fstore;
     private CollectionReference notifRef;
+    private Button clearAll;
+    private ImageButton returnBtn;
 //    CardView notification_icon;
 
     private NotificationBadge notificationBadge;
@@ -70,6 +70,8 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         notificationBadge = homeFragment.getActivity().findViewById(R.id.badge);
         progressBar = findViewById(R.id.notificationsProgressBar);
         recview = findViewById(R.id.notifrecview);
+        clearAll = findViewById(R.id.clearAll);
+        returnBtn = findViewById(R.id.btnReturn);
 
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
@@ -79,7 +81,31 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         FetchNotifications();
 
 
+        clearAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //this will delete Notifications (documents) from firestore
+                fstore.collection("Users").document(user.getUid()).collection("Notifications").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                       for(QueryDocumentSnapshot snapshot:task.getResult()){
+                           fstore.collection("Users").document(user.getUid()).collection("Notifications").document(snapshot.getId()).delete();
+                       }
+                    }
+                });
+                //set the notification badge to 0
+                fstore.collection("Users").document(user.getUid()).update("unseenNotifications", 0);
+                //rebuild the recycler View
+                FetchNotifications();
+            }
+        });
 
+        returnBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
 
@@ -115,6 +141,26 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         recyclerView.setAdapter(mAdapter);
     }
 
+    private void updateBadge(){
+        fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (task.getResult().getLong("unseenNotifications") != null) {
+                        if(task.getResult().getLong("unseenNotifications").intValue() >99) {
+                            notificationBadge.setText("99+");
+                        }
+                        else{
+                            notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
+                        }
+                    } else {
+                        Toast.makeText(HomeFragment.homeFragment.getContext() , "You Don't Have Notifications ! ", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+    }
+
     @Override
     public void onRemoveClick(View view ,int position) {
         //get the id of clicked notification
@@ -124,26 +170,6 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         FetchNotifications();
         fstore.collection("Users").document(user.getUid()).update("unseenNotifications", FieldValue.increment(-1));
         Toast.makeText(this,"Notification Deleted Successfully", Toast.LENGTH_SHORT).show();
-
-
-            fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        if (task.getResult().getLong("unseenNotifications") != null) {
-                    if(task.getResult().getLong("unseenNotifications").intValue() >99) {
-                        notificationBadge.setText("99+");
-                    }
-                    else{
-                        notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
-                    }
-//                    notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
-                    } else {
-                            Toast.makeText(HomeFragment.homeFragment.getContext() , "You Don't Have Notifications ! ", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-            });
 
     }
 
@@ -194,5 +220,11 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         }
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        updateBadge();
+        super.onBackPressed();
     }
 }
