@@ -416,6 +416,7 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
                     notif.put("Date", Timestamp.now());
                     notif.put("PostId", null);
                     notif.put("Image", downloadUrl);
+                    notif.put("Seen", false);
                     userRef.collection("Notifications")
                             .add(notif); //add the notification data to the notification collection of the notified user
 
@@ -423,6 +424,7 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
                 }
             }
         });
+
     }
 }
 

@@ -489,6 +489,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         notif.put("Date", Timestamp.now());
         notif.put("Image",downloadUrl);
         notif.put("UserId",auth.getCurrentUser().getUid() );
+        notif.put("Seen", false);
         //add the document to the notification collection
         DocRef.add(notif);
 
