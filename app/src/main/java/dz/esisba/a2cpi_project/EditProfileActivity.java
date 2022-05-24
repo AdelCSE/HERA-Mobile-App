@@ -9,9 +9,11 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
@@ -23,6 +25,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -39,12 +42,17 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.AbstractCollection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.models.UserModel;
@@ -252,12 +260,11 @@ public class EditProfileActivity extends AppCompatActivity {
                         imageUrl = uri.toString();
                         hashMap.put("profilePictureUrl", imageUrl);
                         df.update(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @RequiresApi(api = Build.VERSION_CODES.N)
                             @Override
                             public void onSuccess(Void unused) {
-
-                                UpdateNameInPosts();
-                                UpdatePictureInPosts();
-
+                                updateDataAnswers(previousInfo.getAnswers(), imageUrl, previousInfo.getAnswers());
+                               updateData(previousInfo.getPosts(), imageUrl, previousInfo.getAnswers());
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -281,6 +288,7 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void UpdatePictureInPosts()
     {
@@ -397,6 +405,78 @@ public class EditProfileActivity extends AppCompatActivity {
         loader.show();
     }
 
-}
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    void updateData(ArrayList<String> list, String imageUrl, ArrayList<String> answers) {
+        if (list!=null)
+        {
+            if (answers!=null) {
+
+                ArrayList<String> newArray = new ArrayList<>();
+                for (String s : answers) {
+                    String id = s.split("#")[0];
+                    newArray.add(id);
+                }
+                Map<String, Long> postIDs = newArray.stream().collect(Collectors.
+                        groupingBy(Function.identity(), Collectors.counting()));
+
+
+                for (String id : postIDs.keySet()) {
+                    for (int i = 0; i < postIDs.get(id); i++) {
+                        HashMap<String, Object> hm = new HashMap<>();
+                        hm.put("askedBy", name1.getText().toString() + " " + name2.getText().toString());
+                        hm.put("publisherPic", imageUrl);
+                        fstore.collection("Posts").document(id)
+                                .collection("Answers").document(answers.get(i)).update(hm);
+                    }
+                }
+            }
+
+            // Get a new write batch
+            WriteBatch batch = fstore.batch();
+
+            // Iterate through the list
+            for (int k = 0; k < list.size(); k++) {
+
+                // Update each list item
+                DocumentReference ref = fstore.collection("Posts").document(list.get(k));
+                batch.update(ref, "publisherPic", imageUrl);
+                batch.update(ref, "askedBy", name1.getText().toString()+" "+name2.getText().toString());
+                infoUploaded = true;
+
+            }
+
+            // Commit the batch
+            batch.commit().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    loader.dismiss();
+                    View parentLayout = findViewById(android.R.id.content);
+                    final Snackbar snackbar = Snackbar.make(parentLayout, "Information updated", Snackbar.LENGTH_LONG)
+                            .setAction("RETURN", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    startActivity(new Intent(EditProfileActivity.this, QuestionBlocActivity.class));
+                                }
+                            });
+                    snackbar.show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Failure();
+                }
+            });
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void updateDataAnswers(ArrayList<String> answers, String imageUrl, ArrayList<String> previousInfoAnswers)
+    {
+
+            }
+
+    }
+
+
 
 //TODO: change all profile pictures to circular image view
