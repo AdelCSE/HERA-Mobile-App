@@ -699,6 +699,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         notif.put("Date", Timestamp.now());
         notif.put("Image",downloadUrl);
         notif.put("UserId",user.getUid() );
+        notif.put("Seen", false);
         //add the document to the notification collection
         DocRef.add(notif);
 
@@ -734,6 +735,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         notif.put("Date", Timestamp.now());
         notif.put("Image",downloadUrl);
         notif.put("UserId",user.getUid() );
+        notif.put("Seen", false);
         //add the document to the notification collection
         DocRef.add(notif);
 
@@ -770,6 +772,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         notif.put("Image",downloadUrl);
         notif.put("UserId",user.getUid() );
         notif.put("id",DocRef.getId());
+        notif.put("Seen", false);
         //add the document to the notification collection
         DocRef.add(notif);
 

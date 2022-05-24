@@ -9,7 +9,7 @@ public class NotificationModel {
     String Username, postId , UserId , Image ,notifId;
     Timestamp Date;
     int Type;
-    boolean seen=false ;//true if notification is seen before
+    boolean Seen;//true if notification is seen before
 
 
 //    @Exclude
@@ -36,10 +36,7 @@ public class NotificationModel {
         return  sfd.format(getDate().toDate());
     }
 
-//    public <T extends NotificationModel> T withId(final String id) {
-//        this.key = id;
-//        return (T) this;
-//    }
+
 
     public String getUsername() {
         return Username;
@@ -98,10 +95,10 @@ public class NotificationModel {
     }
 
     public boolean isSeen() {
-        return seen;
+        return Seen;
     }
 
     public void setSeen(boolean seen) {
-        this.seen = seen;
+        this.Seen = seen;
     }
 }

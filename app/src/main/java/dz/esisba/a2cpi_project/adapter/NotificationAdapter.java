@@ -1,6 +1,7 @@
 package dz.esisba.a2cpi_project.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +24,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     ArrayList<NotificationModel> NotificationsHolder;
     Context context;
-    private NotificationOnItemListener listener;
-    CardView unseenIcon;
+    private final NotificationOnItemListener listener;
+
 
     public NotificationAdapter(ArrayList<NotificationModel> notificationsHolder , NotificationOnItemListener l) {
         NotificationsHolder = notificationsHolder;
@@ -61,7 +62,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             Glide.with(context).load(NotificationsHolder.get(position).getImage()).into(myviewholder.Img);
             myviewholder.Username.setText(NotificationsHolder.get(position).getUsername());
             myviewholder.Date.setText(NotificationsHolder.get(position).ConvertDate());
-
+            if(NotificationsHolder.get(position).isSeen()){
+            myviewholder.unseenIcon.setVisibility(View.GONE);
+            }
             switch (NotificationsHolder.get(position).getType()) {
                 case 0:
                     myviewholder.NotificationText.setText("followed you");
@@ -94,6 +97,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         ImageView Img ,removeNotif;
         TextView Username,Date,NotificationText;
+        CardView unseenIcon;
 
 
         public Myviewholder (@NonNull View itemView){
@@ -103,6 +107,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             Date = itemView.findViewById(R.id.notifDate);
             NotificationText = itemView.findViewById(R.id.notifText);
             removeNotif = itemView.findViewById(R.id.removeNotif);
+            unseenIcon= itemView.findViewById(R.id.notification_icon);
 
             removeNotif.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -110,12 +115,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     listener.onRemoveClick(view ,getAdapterPosition());
                 }
             });
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    listener.onItemClick(view , getAdapterPosition());
-                }
-            });
+            itemView.setOnClickListener(view -> listener.onItemClick(view , getAdapterPosition()));
         }
 
         @Override
@@ -124,7 +124,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    class Myviewholder2 extends RecyclerView.ViewHolder {
+    static class Myviewholder2 extends RecyclerView.ViewHolder {
         TextView New;
 
         public Myviewholder2(@NonNull View itemView) {

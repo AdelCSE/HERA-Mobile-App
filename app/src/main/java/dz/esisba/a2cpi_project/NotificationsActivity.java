@@ -2,22 +2,21 @@ package dz.esisba.a2cpi_project;
 
 import static android.view.View.GONE;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -51,12 +50,13 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
     private NotificationAdapter mAdapter;
     private ProgressBar progressBar;
     private RecyclerView recview;
-    private LinearLayout emptyNotifications;
 
     private FirebaseAuth auth;
     private FirebaseUser user;
     private FirebaseFirestore fstore;
     private CollectionReference notifRef;
+    private Button clearAll;
+    private ImageButton returnBtn;
 //    CardView notification_icon;
 
     private NotificationBadge notificationBadge;
@@ -69,10 +69,11 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
 
 //        notification_icon = (CardView) findViewById(R.id.notification_icon);
 
-        emptyNotifications = findViewById(R.id.emptyNotifications);
         notificationBadge = homeFragment.getActivity().findViewById(R.id.badge);
         progressBar = findViewById(R.id.notificationsProgressBar);
         recview = findViewById(R.id.notifrecview);
+        clearAll = findViewById(R.id.clearAll);
+        returnBtn = findViewById(R.id.btnReturn);
 
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
@@ -82,7 +83,49 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         FetchNotifications();
 
 
+        clearAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (NotificationsDataHolder.size()==1) {
+                    Toast.makeText(NotificationsActivity.this, "Notifications Already Cleared", Toast.LENGTH_SHORT).show();
+                } else {
+                    new AlertDialog.Builder(NotificationsActivity.this)
+                            .setMessage("Are you sure you want to Delete all Notifications ?")
+                            .setPositiveButton("Delete All", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
 
+
+                                    //this will delete Notifications (documents) from firestore
+                                    fstore.collection("Users").document(user.getUid()).collection("Notifications").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                                fstore.collection("Users").document(user.getUid()).collection("Notifications").document(snapshot.getId()).delete();
+                                            }
+                                        }
+                                    });
+                                    //set the notification badge to 0
+                                    fstore.collection("Users").document(user.getUid()).update("unseenNotifications", 0);
+                                    //rebuild the recycler View
+                                    FetchNotifications();
+
+                                    Log.d("___________________", "onClick: "+NotificationsDataHolder.size());
+
+                                }
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                }
+            }
+        });
+
+        returnBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
 
@@ -100,13 +143,12 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
                         notification.setNotifId(document.getId());
                         NotificationsDataHolder.add(notification);
                     }
-                    if(NotificationsDataHolder.size() != 1){
-                        buildRecyclerView();
-                        progressBar.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
+                    if(NotificationsDataHolder.size() <= 1){
+                        recview.setVisibility(GONE);
                     }else {
-                        progressBar.setVisibility(View.GONE);
-                        emptyNotifications.setVisibility(View.VISIBLE);
+                        buildRecyclerView();
+                        progressBar.setVisibility(GONE);
+                        recview.setVisibility(View.VISIBLE);
                     }
                 }else{
                     Toast.makeText(NotificationsActivity.this, "Network error", Toast.LENGTH_SHORT).show();
@@ -123,48 +165,50 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         recyclerView.setAdapter(mAdapter);
     }
 
+    private void updateBadge(){
+        fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (task.getResult().getLong("unseenNotifications") != null) {
+                        if(task.getResult().getLong("unseenNotifications").intValue() >99) {
+                            notificationBadge.setText("99+");
+                        }
+                        else{
+                            notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
+                        }
+                    } else {
+                        Toast.makeText(HomeFragment.homeFragment.getContext() , "You Don't Have Notifications ! ", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+    }
+
     @Override
     public void onRemoveClick(View view ,int position) {
         //get the id of clicked notification
         String id = NotificationsDataHolder.get(position).getNotifId();
         //delete the notification from firebase and rebuild the recycler view
-        NotificationsDataHolder.remove(position);
-        mAdapter.notifyItemRemoved(position);
-        if(NotificationsDataHolder.size() == 1){
-            emptyNotifications.setVisibility(View.VISIBLE);
-        }
         fstore.collection("Users").document(auth.getUid()).collection("Notifications").document(id).delete();
+        FetchNotifications();
         fstore.collection("Users").document(user.getUid()).update("unseenNotifications", FieldValue.increment(-1));
-        Toast.makeText(this,"Notification has been deleted", Toast.LENGTH_SHORT).show();
-
-
-            fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        if (task.getResult().getLong("unseenNotifications") != null) {
-                    if(task.getResult().getLong("unseenNotifications").intValue() >99) {
-                        notificationBadge.setText("99+");
-                    }
-                    else{
-                        notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
-                    }
-//                    notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
-                    } else {
-                            Toast.makeText(HomeFragment.homeFragment.getContext() , "You Don't Have Notifications ! ", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-            });
+        Toast.makeText(this,"Notification Deleted Successfully", Toast.LENGTH_SHORT).show();
 
     }
 
     @Override
     public void onItemClick(View view , int position) {
-        PostModel postModel = new PostModel(NotificationsDataHolder.get(position).getPostId());
-        fstore.collection("Users").document(user.getUid()).update("unseenNotifications", FieldValue.increment(-1));
 
-//        notification_icon.setVisibility(GONE);
+//        PostModel postModel = new PostModel(NotificationsDataHolder.get(position).getPostId());
+        String id = NotificationsDataHolder.get(position).getNotifId();
+
+        fstore.collection("Users").document(user.getUid()).update("unseenNotifications", FieldValue.increment(-1));
+        fstore.collection("Users").document(user.getUid()).collection("Notifications").document(id).update("seen",true);
+//        FetchNotifications(); // we need to update only the selected item ,Because there's no need to Fetch and update the whole recyclerView...
+//        Optimization purposes.
+
+
 
         switch (NotificationsDataHolder.get(position).getType()){
 
@@ -206,5 +250,11 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         }
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        updateBadge();
+        super.onBackPressed();
     }
 }
