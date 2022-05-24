@@ -3,12 +3,14 @@ package dz.esisba.a2cpi_project;
 import static android.view.View.GONE;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -84,19 +86,37 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         clearAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //this will delete Notifications (documents) from firestore
-                fstore.collection("Users").document(user.getUid()).collection("Notifications").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                       for(QueryDocumentSnapshot snapshot:task.getResult()){
-                           fstore.collection("Users").document(user.getUid()).collection("Notifications").document(snapshot.getId()).delete();
-                       }
-                    }
-                });
-                //set the notification badge to 0
-                fstore.collection("Users").document(user.getUid()).update("unseenNotifications", 0);
-                //rebuild the recycler View
-                FetchNotifications();
+                if (NotificationsDataHolder.size()==1) {
+                    Toast.makeText(NotificationsActivity.this, "Notifications Already Cleared", Toast.LENGTH_SHORT).show();
+                } else {
+                    new AlertDialog.Builder(NotificationsActivity.this)
+                            .setMessage("Are you sure you want to Delete all Notifications ?")
+                            .setPositiveButton("Delete All", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+
+
+                                    //this will delete Notifications (documents) from firestore
+                                    fstore.collection("Users").document(user.getUid()).collection("Notifications").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                                fstore.collection("Users").document(user.getUid()).collection("Notifications").document(snapshot.getId()).delete();
+                                            }
+                                        }
+                                    });
+                                    //set the notification badge to 0
+                                    fstore.collection("Users").document(user.getUid()).update("unseenNotifications", 0);
+                                    //rebuild the recycler View
+                                    FetchNotifications();
+
+                                    Log.d("___________________", "onClick: "+NotificationsDataHolder.size());
+
+                                }
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                }
             }
         });
 
@@ -123,9 +143,13 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
                         notification.setNotifId(document.getId());
                         NotificationsDataHolder.add(notification);
                     }
-                    buildRecyclerView();
-                    progressBar.setVisibility(GONE);
-                    recview.setVisibility(View.VISIBLE);
+                    if(NotificationsDataHolder.size() <= 1){
+                        recview.setVisibility(GONE);
+                    }else {
+                        buildRecyclerView();
+                        progressBar.setVisibility(GONE);
+                        recview.setVisibility(View.VISIBLE);
+                    }
                 }else{
                     Toast.makeText(NotificationsActivity.this, "Network error", Toast.LENGTH_SHORT).show();
                 }
@@ -175,10 +199,16 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
 
     @Override
     public void onItemClick(View view , int position) {
-        PostModel postModel = new PostModel(NotificationsDataHolder.get(position).getPostId());
-        fstore.collection("Users").document(user.getUid()).update("unseenNotifications", FieldValue.increment(-1));
 
-//        notification_icon.setVisibility(GONE);
+//        PostModel postModel = new PostModel(NotificationsDataHolder.get(position).getPostId());
+        String id = NotificationsDataHolder.get(position).getNotifId();
+
+        fstore.collection("Users").document(user.getUid()).update("unseenNotifications", FieldValue.increment(-1));
+        fstore.collection("Users").document(user.getUid()).collection("Notifications").document(id).update("seen",true);
+//        FetchNotifications(); // we need to update only the selected item ,Because there's no need to Fetch and update the whole recyclerView...
+//        Optimization purposes.
+
+
 
         switch (NotificationsDataHolder.get(position).getType()){
 

@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.Gallery;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -50,6 +52,7 @@ public class TagsFragment extends Fragment implements SearchOnItemClick {
                  fever, influenza,hepatitis,conjunctivitis,
                  experience,motherhood,tools,guidance,other;
     private SwipeRefreshLayout refresh;
+    private LinearLayout emptyTagSearch;
 
 
     @Override
@@ -64,6 +67,7 @@ public class TagsFragment extends Fragment implements SearchOnItemClick {
         backBtn = parentHolder.findViewById(R.id.tagsFilterBackBtn);
         progressBar = parentHolder.findViewById(R.id.tagsProgressBar);
         recyclerView = parentHolder.findViewById(R.id.searchTagsRecview);
+        emptyTagSearch = parentHolder.findViewById(R.id.emptyTagSearch);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,12 +78,13 @@ public class TagsFragment extends Fragment implements SearchOnItemClick {
 
         InitChips();
         progressBar.setVisibility(View.VISIBLE);
+        FetchAllQuestions();
         ShowTagFilterResults();
 
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                adapter.notifyDataSetChanged();
+                ShowTagFilterResults();
                 refresh.setRefreshing(false);
             }
         });
@@ -157,7 +162,6 @@ public class TagsFragment extends Fragment implements SearchOnItemClick {
 
     //***Filter the questions according to the tag selected and the number of likes***//
     private void ShowTagFilterResults() {
-        FetchAllQuestions();
         CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -181,10 +185,18 @@ public class TagsFragment extends Fragment implements SearchOnItemClick {
                                             }
                                         }
                                     }
-                                    SortDataByAnswers(QuestionsDataHolder);
-                                    BuildRecyclerView();
-                                    progressBar.setVisibility(View.GONE);
-                                    recyclerView.setVisibility(View.VISIBLE);
+                                    if (QuestionsDataHolder.size() != 0){
+                                        emptyTagSearch.setVisibility(View.GONE);
+                                        SortDataByAnswers(QuestionsDataHolder);
+                                        BuildRecyclerView();
+                                        progressBar.setVisibility(View.GONE);
+                                        recyclerView.setVisibility(View.VISIBLE);
+                                    }else {
+                                        BuildRecyclerView();
+                                        progressBar.setVisibility(View.GONE);
+                                        emptyTagSearch.setVisibility(View.VISIBLE);
+                                    }
+
                                 } else {
                                     Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
                                 }

@@ -263,6 +263,53 @@
         </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
 
+    <ProgressBar
+        android:id="@+id/tagsProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminateDrawable="@drawable/custom_progress_bar"
+        android:theme="@style/Theme.MyTheme"/>
+
+    <LinearLayout
+        android:id="@+id/emptyTagSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_below="@+id/searchTags">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/no_search" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="No search results"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="It seems that there is no internet connection,"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="or this tag may not contain any questions."
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/searchRefresh"
         android:layout_width="match_parent"
@@ -277,12 +324,4 @@
             android:layout_below="@id/searchTags" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <ProgressBar
-        android:id="@+id/tagsProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:indeterminateDrawable="@drawable/custom_progress_bar"
-        android:theme="@style/Theme.MyTheme"/>
 </RelativeLayout>
