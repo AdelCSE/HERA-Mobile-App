@@ -169,6 +169,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                FetchPosts();
                 refresh.setRefreshing(false);
             }
         });

@@ -15,7 +15,7 @@
         android:layout_marginRight="15dp"
         android:layout_gravity="right"
         android:background="@drawable/mainbtn"
-        android:src="@drawable/ic_searchmain" />
+        android:src="@drawable/ic_search" />
 
     <FrameLayout
         android:layout_width="match_parent"

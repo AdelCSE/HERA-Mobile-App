@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,7 +58,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.myvi
         Glide.with(context).load(QuestionsHolder.get(position).getPublisherPic()).into(holder.img);
         holder.Question.setText(QuestionsHolder.get(position).getQuestion());
         holder.Name.setText(QuestionsHolder.get(position).getAskedBy());
-        holder.Username.setText(QuestionsHolder.get(position).getUsername());
+        holder.Username.setText("@"+QuestionsHolder.get(position).getUsername());
         holder.Details.setText(QuestionsHolder.get(position).getBody());
         holder.Likes.setText(Integer.toString(QuestionsHolder.get(position).getLikesCount())+" Likes");
         holder.Answers.setText(Integer.toString(QuestionsHolder.get(position).getAnswersCount()));
@@ -77,6 +78,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.myvi
         private FirebaseAuth auth;
         private FirebaseUser user;
         private FirebaseFirestore fstore;
+        private LinearLayout emptyPosts;
 
         public myviewholder(@NonNull View itemView  , PostsOnItemClickListner listner , QuestionsAdapter adapter) {
             super(itemView);
@@ -89,9 +91,11 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.myvi
             Answers = itemView.findViewById(R.id.answersp);
             Date = itemView.findViewById(R.id.postDatep);
 
+            emptyPosts = itemView.findViewById(R.id.emptyQuestions);
             auth = FirebaseAuth.getInstance();
             fstore = FirebaseFirestore.getInstance();
             user = auth.getCurrentUser();
+
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -50,6 +51,7 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
     private NotificationAdapter mAdapter;
     private ProgressBar progressBar;
     private RecyclerView recview;
+    private LinearLayout emptyNotifications;
 
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -67,6 +69,7 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
 
 //        notification_icon = (CardView) findViewById(R.id.notification_icon);
 
+        emptyNotifications = findViewById(R.id.emptyNotifications);
         notificationBadge = homeFragment.getActivity().findViewById(R.id.badge);
         progressBar = findViewById(R.id.notificationsProgressBar);
         recview = findViewById(R.id.notifrecview);
@@ -97,9 +100,14 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
                         notification.setNotifId(document.getId());
                         NotificationsDataHolder.add(notification);
                     }
-                    buildRecyclerView();
-                    progressBar.setVisibility(GONE);
-                    recview.setVisibility(View.VISIBLE);
+                    if(NotificationsDataHolder.size() != 1){
+                        buildRecyclerView();
+                        progressBar.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }else {
+                        progressBar.setVisibility(View.GONE);
+                        emptyNotifications.setVisibility(View.VISIBLE);
+                    }
                 }else{
                     Toast.makeText(NotificationsActivity.this, "Network error", Toast.LENGTH_SHORT).show();
                 }
@@ -120,10 +128,14 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         //get the id of clicked notification
         String id = NotificationsDataHolder.get(position).getNotifId();
         //delete the notification from firebase and rebuild the recycler view
+        NotificationsDataHolder.remove(position);
+        mAdapter.notifyItemRemoved(position);
+        if(NotificationsDataHolder.size() == 1){
+            emptyNotifications.setVisibility(View.VISIBLE);
+        }
         fstore.collection("Users").document(auth.getUid()).collection("Notifications").document(id).delete();
-        FetchNotifications();
         fstore.collection("Users").document(user.getUid()).update("unseenNotifications", FieldValue.increment(-1));
-        Toast.makeText(this,"Notification Deleted Successfully", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"Notification has been deleted", Toast.LENGTH_SHORT).show();
 
 
             fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
