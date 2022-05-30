@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,6 +36,9 @@ import com.nex3z.notificationbadge.NotificationBadge;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import dz.esisba.a2cpi_project.adapter.NotificationAdapter;
 import dz.esisba.a2cpi_project.interfaces.NotificationOnItemListener;
@@ -57,6 +61,7 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
     private CollectionReference notifRef;
     private Button clearAll;
     private ImageButton returnBtn;
+    private TextView noNotifications;
 //    CardView notification_icon;
 
     private NotificationBadge notificationBadge;
@@ -74,12 +79,14 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         recview = findViewById(R.id.notifrecview);
         clearAll = findViewById(R.id.clearAll);
         returnBtn = findViewById(R.id.btnReturn);
+        noNotifications= findViewById(R.id.noNotificarions);
 
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
 
         progressBar.setVisibility(View.VISIBLE);
+//        noNotifications.setVisibility(View.VISIBLE);
         FetchNotifications();
 
 
@@ -94,9 +101,12 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
                             .setPositiveButton("Delete All", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
+                                    //clear recView from items
+                                    NotificationsDataHolder.clear();
+                                    mAdapter.notifyDataSetChanged();
 
-
-                                    //this will delete Notifications (documents) from firestore
+                                    noNotifications.setVisibility(View.VISIBLE);
+                                    //delete Notifications (documents) from firestore
                                     fstore.collection("Users").document(user.getUid()).collection("Notifications").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -107,11 +117,6 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
                                     });
                                     //set the notification badge to 0
                                     fstore.collection("Users").document(user.getUid()).update("unseenNotifications", 0);
-                                    //rebuild the recycler View
-                                    FetchNotifications();
-
-                                    Log.d("___________________", "onClick: "+NotificationsDataHolder.size());
-
                                 }
                             })
                             .setNegativeButton("Cancel", null)
@@ -144,9 +149,12 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
                         NotificationsDataHolder.add(notification);
                     }
                     if(NotificationsDataHolder.size() <= 1){
+                        noNotifications.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(GONE);
                         recview.setVisibility(GONE);
                     }else {
                         buildRecyclerView();
+                        noNotifications.setVisibility(GONE);
                         progressBar.setVisibility(GONE);
                         recview.setVisibility(View.VISIBLE);
                     }
@@ -187,11 +195,14 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
 
     @Override
     public void onRemoveClick(View view ,int position) {
+
         //get the id of clicked notification
         String id = NotificationsDataHolder.get(position).getNotifId();
-        //delete the notification from firebase and rebuild the recycler view
+        //remove the item from recView
+            NotificationsDataHolder.remove(position);
+            mAdapter.notifyItemRemoved(position);
+        //delete the notification from firebase
         fstore.collection("Users").document(auth.getUid()).collection("Notifications").document(id).delete();
-        FetchNotifications();
         fstore.collection("Users").document(user.getUid()).update("unseenNotifications", FieldValue.increment(-1));
         Toast.makeText(this,"Notification Deleted Successfully", Toast.LENGTH_SHORT).show();
 
@@ -258,3 +269,5 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         super.onBackPressed();
     }
 }
+
+//TODO OnRemoveClick crashing when pressing twice too fast [not very important]

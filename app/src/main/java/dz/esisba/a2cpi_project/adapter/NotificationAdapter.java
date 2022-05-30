@@ -65,6 +65,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             if(NotificationsHolder.get(position).isSeen()){
             myviewholder.unseenIcon.setVisibility(View.GONE);
             }
+
             switch (NotificationsHolder.get(position).getType()) {
                 case 0:
                     myviewholder.NotificationText.setText("followed you");
