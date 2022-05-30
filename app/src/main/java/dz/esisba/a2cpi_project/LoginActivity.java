@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -63,9 +64,11 @@ public class LoginActivity extends AppCompatActivity {
         inflater = this.getLayoutInflater();
 
         //if there's a user logged in go directly home
-        if (auth.getCurrentUser()!= null) { //if already logged in go directly to home
-            startActivity(new Intent(getApplicationContext(), BottomNavigationActivity.class));
-            finish();
+        if (auth.getCurrentUser()!= null ) {
+            if (auth.getCurrentUser().isEmailVerified()) {//if already logged in go directly to home
+                startActivity(new Intent(getApplicationContext(), BottomNavigationActivity.class));
+                finish();
+            }
         }
 
         lloginBtn.setOnClickListener(new View.OnClickListener() {
@@ -101,13 +104,40 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, "LOGGED IN!", Toast.LENGTH_SHORT).show(); // for debug purposes, can be deleted later
+                            //verify if user is signed in 
+                            if (auth.getCurrentUser().isEmailVerified()) {
+                                retrieveRestoreToken();
+                                startActivity(new Intent(LoginActivity.this, BottomNavigationActivity.class));
+                                finish();
+                            }
+                            else 
+                            {
+                                progressBar.setVisibility(View.GONE);
+                                View parentLayout = findViewById(android.R.id.content);
+                                final Snackbar snackbar = Snackbar.make(parentLayout, "You email is not verified, please verify and try again", Snackbar.LENGTH_LONG)
+                                        .setAction("RESEND", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                auth.getCurrentUser().sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        Toast.makeText(LoginActivity.this, "Email verification has been re-sent", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                            }
+                                        });
+                                snackbar.show();
+                            }
+                            
+                            //to use if you want to create users without verification
+                            /*Toast.makeText(LoginActivity.this, "LOGGED IN!", Toast.LENGTH_SHORT).show(); // for debug purposes, can be deleted later
                             retrieveRestoreToken();
                             startActivity(new Intent(LoginActivity.this, BottomNavigationActivity.class));
-                            finish();
+                            finish();*/
+                            
                         } else {
                             //if loggin in wasn't successful get the error (debugging purpose can be removed later)
-                            Toast.makeText(LoginActivity.this, "Some error has occured!" + task.getException().
+                            Toast.makeText(LoginActivity.this, "Some error has occured " + task.getException().
                                     getMessage(), Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.GONE);
                         }

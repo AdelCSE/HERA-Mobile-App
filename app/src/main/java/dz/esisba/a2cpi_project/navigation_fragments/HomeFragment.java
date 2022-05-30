@@ -209,6 +209,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     //Fetch Posts and display them in home
     private void FetchPosts() {
         PostsDataHolder = new ArrayList<>();
+        isLastItemPaged = false;
 
         Query postRef = fstore.collection("Posts").orderBy("Date", Query.Direction.DESCENDING).limit(5);
 
@@ -223,8 +224,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                     buildRecyclerView();
                     progressBar.setVisibility(View.GONE);
                     recyclerView.setVisibility(VISIBLE);
-                    lastVisible = task.getResult().getDocuments().get(task.getResult().size()-1);
-                    Toast.makeText(getActivity(), "first page loaded", Toast.LENGTH_SHORT).show();
+                    lastVisible = task.getResult().getDocuments().get(task.getResult().size()-1);;
 
                     RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
                         @Override
@@ -260,9 +260,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                                         adapter.notifyDataSetChanged();
 
                                         if (task.getResult().size()<3) isLastItemPaged = true;
-                                   if (task.getResult().size()>0)    lastVisible = task.getResult().getDocuments().get(task.getResult().size()-1);
-                                        Toast.makeText(getActivity(), "next page loaded", Toast.LENGTH_SHORT).show();
-                                    }
+                                   if (task.getResult().size()>0)    lastVisible = task.getResult().getDocuments().get(task.getResult().size()-1);                                    }
                                 });
                             }
                         }

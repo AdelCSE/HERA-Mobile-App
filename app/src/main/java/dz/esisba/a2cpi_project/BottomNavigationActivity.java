@@ -106,7 +106,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
         user.reload().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                if (user == null) startActivity(new Intent(BottomNavigationActivity.this, LauncherActivity.class));
+                if (user == null && !user.isEmailVerified()) startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
             }
         });
 

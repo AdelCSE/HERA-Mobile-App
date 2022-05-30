@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -118,7 +119,6 @@ public class RegisterActivity extends AppCompatActivity {
                                 //get the current user
                                 FirebaseUser user = auth.getCurrentUser();
                                 //display feedback
-                                Toast.makeText(RegisterActivity.this, "User Created!", Toast.LENGTH_SHORT).show(); // for debug purposes, can be deleted later
 
                                 retrieveRestoreToken();
                                 //store user id into firebase
@@ -140,20 +140,31 @@ public class RegisterActivity extends AppCompatActivity {
                                 userInfor.put("followers", followers);
                                 userInfor.put("posts", posts);
                                 userInfor.put("answers", answers);
+                                userInfor.put("profilePictureUrl", "https://firebasestorage.googleapis.com/v0/b/cpi-project-b42b5.appspot.com/o/profileImages%2Fdefualty.png?alt=media&token=388b0aef-35f1-418a-b165-89f1e8b7e8b0");
 
                                 //specify access level (if user is admin)
                                 userInfor.put("isAdmin",false);
 
                                 df.set(userInfor); //pass our map to the fb document
 
-                                //move into home page
-                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                                finish();
+                                user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(RegisterActivity.this, "Please verifiy your email and sign in", Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                                        finish();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                             }
                             else
                             {
                                 //if registration wasn't successful get the error (debugging purpose can be removed later)
-                                Toast.makeText(RegisterActivity.this, "Some error has occured!" + task.getException().getMessage(), Toast.LENGTH_SHORT)
+                                Toast.makeText(RegisterActivity.this, "Some error has occured " + task.getException().getMessage(), Toast.LENGTH_SHORT)
                                         .show();
                                 progressBar.setVisibility(View.GONE);
                             }
