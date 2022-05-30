@@ -296,7 +296,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                         if (doc.exists())
                         {
                             likes = (ArrayList<String>) doc.get("likes");
-                            likes.add(user.getUid());
+                            if(!likes.contains(user.getUid())) likes.add(user.getUid());
                             postsDataHolder.get(position).setLikes(likes);
                             postsDataHolder.get(position).setLikesCount(likes.size());
                             Map<String,Object> hm = new HashMap<>();
@@ -393,7 +393,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                         if (doc.exists())
                         {
                             likes = (ArrayList<String>) doc.get("likes");
-                            likes.add(user.getUid());
+                            if(!likes.contains(user.getUid()))likes.add(user.getUid());
                             postsDataHolder.get(0).setLikes(likes);
                             postsDataHolder.get(0).setLikesCount(likes.size());
                             Map<String,Object> hm = new HashMap<>();

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -83,7 +84,10 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
     NotificationBadge notificationBadge;
     public static HomeFragment homeFragment;
-
+    private DocumentSnapshot lastVisible;
+    private boolean isScrolling;
+    private boolean isLastItemPaged;
+    private LinearLayoutManager linearLayoutManager;
 
 
     @Nullable
@@ -99,6 +103,8 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         progressBar = parentHolder.findViewById(R.id.homeProgressBar);
         recyclerView = parentHolder.findViewById(R.id.recview);
         notificationBadge = parentHolder.findViewById(R.id.badge);
+
+        linearLayoutManager = new LinearLayoutManager(getContext());
 
         NotificationsActivity.homeFragment=this;
         QuestionBlocActivity.homeFragment=this;
@@ -204,7 +210,9 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     private void FetchPosts() {
         PostsDataHolder = new ArrayList<>();
 
-        postRef.orderBy("Date", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        Query postRef = fstore.collection("Posts").orderBy("Date", Query.Direction.DESCENDING).limit(5);
+
+        postRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -215,8 +223,53 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                     buildRecyclerView();
                     progressBar.setVisibility(View.GONE);
                     recyclerView.setVisibility(VISIBLE);
+                    lastVisible = task.getResult().getDocuments().get(task.getResult().size()-1);
+                    Toast.makeText(getActivity(), "first page loaded", Toast.LENGTH_SHORT).show();
+
+                    RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+                        @Override
+                        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                            super.onScrollStateChanged(recyclerView, newState);
+
+                            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
+                            {
+                                isScrolling = true;
+                            }
+                        }
+
+                        @Override
+                        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                            super.onScrolled(recyclerView, dx, dy);
+
+                            int firstVisibileItem = linearLayoutManager.findFirstVisibleItemPosition();
+                            int visibleItemCount = linearLayoutManager.getChildCount();
+                            int totalItemCount = linearLayoutManager.getItemCount();
+
+                            if (isScrolling &&(firstVisibileItem+visibleItemCount == totalItemCount) && !isLastItemPaged)
+                            {
+                                isScrolling = false;
+                                Query nextQuery  = fstore.collection("Posts").orderBy("Date", Query.Direction.DESCENDING)
+                                        .startAfter(lastVisible).limit(3);
+                                nextQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            PostModel post = document.toObject(PostModel.class);
+                                            PostsDataHolder.add(post);
+                                        }
+                                        adapter.notifyDataSetChanged();
+
+                                        if (task.getResult().size()<3) isLastItemPaged = true;
+                                   if (task.getResult().size()>0)    lastVisible = task.getResult().getDocuments().get(task.getResult().size()-1);
+                                        Toast.makeText(getActivity(), "next page loaded", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        }
+                    };
+                    recyclerView.addOnScrollListener(onScrollListener);
                 } else {
-                    Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -226,7 +279,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     //Build the recyclerView
     public void buildRecyclerView() {
         recyclerView = parentHolder.findViewById(R.id.recview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new PostAdapter(PostsDataHolder,this);
         recyclerView.setAdapter(adapter);
 
@@ -360,7 +413,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                         if (doc.exists())
                         {
                             likes = (ArrayList<String>) doc.get("likes");
-                            likes.add(user.getUid());
+                            if(!likes.contains(user.getUid())) likes.add(user.getUid());
                             PostsDataHolder.get(position).setLikes(likes);
                             PostsDataHolder.get(position).setLikesCount(likes.size());
                             //likes are stored for user for faster query
