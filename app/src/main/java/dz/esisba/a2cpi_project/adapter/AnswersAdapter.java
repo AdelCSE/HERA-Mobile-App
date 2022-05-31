@@ -117,7 +117,7 @@ public class AnswersAdapter extends RecyclerView.Adapter<AnswersAdapter.myviewho
                                 //       DeleteLikes(answerModel, "AnswerLikes");
 
                                 DocumentReference dr = fstore.collection("Posts").document(id);
-                                dr.update("reportsCount", FieldValue.increment(-1));
+                                dr.update("answersCount", FieldValue.increment(-1));
                                 DocumentReference answerRef = dr.collection("Answers").document(answerModel.getPostid());
                                 answerRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -139,7 +139,7 @@ public class AnswersAdapter extends RecyclerView.Adapter<AnswersAdapter.myviewho
                             else {
                                 DocumentReference answerRef = FirebaseFirestore.getInstance().collection("Posts").
                                         document(id).collection("Answers").document(answerModel.getPostid());
-                                answerRef.update("answersCount", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                answerRef.update("reportsCount", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
                                         Toast.makeText(view.getContext(), "Your report has been sent", Toast.LENGTH_SHORT).show();

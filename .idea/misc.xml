@@ -4,12 +4,24 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/actionbar.xml" value="0.178" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/bn_ic_gift.xml" value="0.1965" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/bn_ic_gift_notclicked.xml" value="0.1965" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/bn_ic_home_notclicked.xml" value="0.1965" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/bn_ic_play.xml" value="0.1965" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/bn_ic_play_notclicked.xml" value="0.1965" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/charity_button_selector.xml" value="0.1965" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/editProfileBg.xml" value="0.2045" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/home_button_selector.xml" value="0.1965" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/ic_arrow.xml" value="0.178" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/ic_home.xml" value="0.1965" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/ic_picture.xml" value="0.1965" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/play_button_selector.xml" value="0.1965" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/profileimg.xml" value="0.1965" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/textField.xml" value="0.2045" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/toolbar.xml" value="0.178" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_add_post.xml" value="0.25" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_answer_bloc.xml" value="0.20416666666666666" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_bottom_navigation.xml" value="0.20416666666666666" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_edit_profile.xml" value="0.33" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_home.xml" value="0.3048211508553655" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_login.xml" value="0.25" />

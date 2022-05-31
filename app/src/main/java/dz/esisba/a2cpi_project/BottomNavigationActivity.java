@@ -5,13 +5,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.annotation.SuppressLint;
 import android.app.LauncherActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableStringBuilder;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,6 +33,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.snackbar.SnackbarContentLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -91,10 +100,13 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
 
+        CheckNetwork();
+
+
         user.reload().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                if (user == null) startActivity(new Intent(BottomNavigationActivity.this, LauncherActivity.class));
+                if (user == null && !user.isEmailVerified()) startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
             }
         });
 
@@ -112,9 +124,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
                 }
             }
         });
-
-       /* DocumentReference df = fstore.collection("Users").document(user.getUid());
-        //grab the existing info
+        //TODO: FIX https://stackoverflow.com/questions/57861254/how-to-change-a-specific-icon-image-from-bottom-navigation-view
         df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -125,7 +135,10 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
                     {
                         if (doc.get("profilePictureUrl")!= null) {
                             downloadUrl = doc.get("profilePictureUrl").toString();
-                            Glide.with(getApplicationContext()).asBitmap().circleCrop().load(downloadUrl)
+                            RequestOptions myOptions = new RequestOptions()
+                                    .centerCrop()
+                                    .override(50, 50);
+                            Glide.with(getApplicationContext()).asBitmap().apply(myOptions).circleCrop().load(downloadUrl)
                                     .into(new CustomTarget<Bitmap>() {
 
                                         @Override
@@ -148,14 +161,21 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
                 }
             }
         });
-        bottomNav.getMenu().getItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                bottomNav.getMenu().getItem(2).setIcon(R.drawable.ic_arrow);
-                return false;
-            }
-        });*/
+    }
 
+    private void CheckNetwork()
+    {
+        if (!isNetworkAvailable())
+        {
+            View parentLayout = findViewById(android.R.id.content);
+            Snackbar snackbar =  Snackbar.make(parentLayout,"⚠️ Please check you internet connection and try again.", Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction("REFRESH", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    CheckNetwork();
+                }
+            }).show();
+        }
     }
 
     //Switch between fragments
@@ -187,5 +207,12 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
     @Override
     public UserModel getUserModel() {
         return currUser;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
