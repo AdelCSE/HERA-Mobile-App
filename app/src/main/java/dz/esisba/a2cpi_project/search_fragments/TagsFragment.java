@@ -167,6 +167,7 @@ public class TagsFragment extends Fragment implements SearchOnItemClick {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b){
                     if (compoundButton.getText().toString().equals("All")){
+                        emptyTagSearch.setVisibility(View.GONE);
                         FetchAllQuestions();
                     }else {
                         postRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

@@ -126,8 +126,7 @@ public class AnswersFragment extends Fragment implements AnswersOnItemClickListn
                     }
                 });
             }
-        }
-        if (userModel.getAnswers().size()==0){
+        }else{
             progressBar.setVisibility(View.GONE);
             if(userModel.getUid().equals(user.getUid())){
                 myEmptyAnswers.setVisibility(View.VISIBLE);

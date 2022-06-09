@@ -1,11 +1,13 @@
 package dz.esisba.a2cpi_project.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -55,6 +57,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder.getItemViewType()==1){
@@ -64,6 +67,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             myviewholder.Date.setText(NotificationsHolder.get(position).ConvertDate());
             if(NotificationsHolder.get(position).isSeen()){
             myviewholder.unseenIcon.setVisibility(View.GONE);
+            myviewholder.background.setBackgroundColor(android.R.color.transparent);
             }
 
             switch (NotificationsHolder.get(position).getType()) {
@@ -96,9 +100,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     class Myviewholder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
+
         ImageView Img ,removeNotif;
         TextView Username,Date,NotificationText;
         CardView unseenIcon;
+        RelativeLayout background;
 
 
         public Myviewholder (@NonNull View itemView){
@@ -109,6 +115,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             NotificationText = itemView.findViewById(R.id.notifText);
             removeNotif = itemView.findViewById(R.id.removeNotif);
             unseenIcon= itemView.findViewById(R.id.notification_icon);
+            background=itemView.findViewById(R.id.notifbackground);
 
             removeNotif.setOnClickListener(new View.OnClickListener() {
                 @Override

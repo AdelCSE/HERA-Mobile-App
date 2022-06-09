@@ -74,6 +74,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
     private QuestionBlocAdapter adapter;
     private BottomSheetDialog dialog;
     private ProgressBar progressBar;
+    private ImageButton backBtn;
 
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -96,6 +97,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question_bloc);
 
+        backBtn = findViewById(R.id.btnReturnQuestionBloc);
         progressBar = findViewById(R.id.questionBlocProgressBar);
         recyclerView = findViewById(R.id.recviewa);
         setAnswerBtn(findViewById(R.id.answerBtn));
@@ -106,7 +108,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
         userRef = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
-
 
         notificationBadge = homeFragment.getActivity().findViewById(R.id.badge);
 
@@ -161,6 +162,14 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                         Log.d("____________", "onComplete: null value");
                     }
                 }
+            }
+        });
+
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
             }
         });
     }
