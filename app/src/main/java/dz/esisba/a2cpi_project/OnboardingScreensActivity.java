@@ -28,7 +28,7 @@ public class OnboardingScreensActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_onboarding_screens);
 
         layoutOnboardingIndicators = findViewById(R.id.layoutOnboardingIndicators);
         buttonOnboardingAction = findViewById(R.id.buttonOnboardingAction);
@@ -54,7 +54,7 @@ public class OnboardingScreensActivity extends AppCompatActivity {
                 if(onboardingViewPager.getCurrentItem() + 1 < onboardingAdapter.getItemCount()){
                     onboardingViewPager.setCurrentItem(onboardingViewPager.getCurrentItem() + 1);
                 }else{
-                    startActivity(new Intent(getApplicationContext(),RegisterActivity.class));
+                    startActivity(new Intent(getApplicationContext(),BottomNavigationActivity.class));
                     finish();
                 }
             }

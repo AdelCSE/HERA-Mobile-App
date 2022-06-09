@@ -106,7 +106,13 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
         user.reload().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                if (user == null && !user.isEmailVerified()) startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
+                if (user == null) {
+                    startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
+                    finish();
+                } else if (!user.isEmailVerified()) {
+                    startActivity(new Intent(BottomNavigationActivity.this, VerificationActivity.class));
+                    finish();
+                }
             }
         });
 
@@ -114,11 +120,9 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
         df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful())
-                {
+                if (task.isSuccessful()) {
                     DocumentSnapshot doc = task.getResult();
-                    if (doc.exists())
-                    {
+                    if (doc.exists()) {
                         currUser = doc.toObject(UserModel.class);
                     }
                 }
@@ -128,12 +132,10 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
         df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful())
-                {
+                if (task.isSuccessful()) {
                     DocumentSnapshot doc = task.getResult();
-                    if (doc.exists())
-                    {
-                        if (doc.get("profilePictureUrl")!= null) {
+                    if (doc.exists()) {
+                        if (doc.get("profilePictureUrl") != null) {
                             downloadUrl = doc.get("profilePictureUrl").toString();
                             RequestOptions myOptions = new RequestOptions()
                                     .centerCrop()
@@ -163,12 +165,10 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
         });
     }
 
-    private void CheckNetwork()
-    {
-        if (!isNetworkAvailable())
-        {
+    private void CheckNetwork() {
+        if (!isNetworkAvailable()) {
             View parentLayout = findViewById(android.R.id.content);
-            Snackbar snackbar =  Snackbar.make(parentLayout,"⚠️ Please check you internet connection and try again.", Snackbar.LENGTH_INDEFINITE);
+            Snackbar snackbar = Snackbar.make(parentLayout, "⚠️ Please check you internet connection and try again.", Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction("REFRESH", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
