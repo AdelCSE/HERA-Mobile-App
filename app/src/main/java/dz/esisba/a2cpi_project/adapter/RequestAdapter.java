@@ -20,7 +20,7 @@ import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.interfaces.SearchOnItemClick;
 import dz.esisba.a2cpi_project.models.RequestModel;
 
-public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.myviewholder>{
+public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     ArrayList<RequestModel> RequestsHolder;
     Context context;
@@ -31,20 +31,47 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.myviewho
         rListner = rlistner;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (RequestsHolder.get(position).getUsername()!=null){
+            return 1;
+        }else{
+            return 2;
+        }
+    }
+
     @NonNull
     @Override
-    public myviewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_request,parent,false);
-        context = parent.getContext();
-        return new myviewholder(view,rListner);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
+        if (viewType==1){
+            context = parent.getContext();
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_request,parent,false);
+            return new myviewholder(view,rListner);
+
+        }else{
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.last_item_text,parent,false);
+            return new myviewholder2(view);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull myviewholder holder, int position) {
-        Glide.with(context).load(RequestsHolder.get(position).getProfilePictureUrl()).into(holder.Img);
-        holder.Username.setText("@"+RequestsHolder.get(position).getUsername());
-        holder.Date.setText(RequestsHolder.get(position).ConvertDate());
-        holder.Question.setText(RequestsHolder.get(position).getQuestion());
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (holder.getItemViewType()==1){
+            myviewholder myviewholder1 = (myviewholder) holder;
+
+            Glide.with(context).load(RequestsHolder.get(position).getProfilePictureUrl()).into(myviewholder1.Img);
+            myviewholder1.Username.setText("@"+RequestsHolder.get(position).getUsername());
+            myviewholder1.Date.setText(RequestsHolder.get(position).ConvertDate());
+            myviewholder1.Question.setText(RequestsHolder.get(position).getQuestion());
+        }
+
+        else{
+            myviewholder2 myviewholder = (myviewholder2) holder;
+            myviewholder.lastItem.setText("That's it");
+            myviewholder.txt1.setText("Try to answer these requests to increase");
+            myviewholder.txt2.setText("your reputation!");
+        }
     }
 
     @Override
@@ -88,6 +115,17 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.myviewho
                 }
             });
 
+        }
+    }
+
+    static class myviewholder2 extends RecyclerView.ViewHolder{
+        TextView lastItem,txt1,txt2;
+
+        public myviewholder2(@NonNull View itemView) {
+            super(itemView);
+            lastItem=itemView.findViewById(R.id.lastItem);
+            txt1=itemView.findViewById(R.id.txt);
+            txt2=itemView.findViewById(R.id.txt2);
         }
     }
 }

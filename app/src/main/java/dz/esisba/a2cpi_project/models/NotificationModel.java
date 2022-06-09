@@ -6,7 +6,7 @@ import com.google.firebase.firestore.Exclude;
 import java.text.SimpleDateFormat;
 
 public class NotificationModel {
-    String Username, postId , UserId , Image ,notifId;
+    String Username, PostId , UserId , Image ,notifId;
     Timestamp Date;
     int Type;
     boolean Seen;//true if notification is seen before
@@ -19,7 +19,7 @@ public class NotificationModel {
         Username = username;
         Type = type;
         Date = date;
-        this.postId = postId;
+        PostId = postId;
         UserId = userId;
         Image = image;
         this.notifId = notifId;
@@ -63,11 +63,11 @@ public class NotificationModel {
     }
 
     public String getPostId() {
-        return postId;
+        return PostId;
     }
 
     public void setPostId(String postId) {
-        this.postId = postId;
+        this.PostId = postId;
     }
 
     public String getUserId() {

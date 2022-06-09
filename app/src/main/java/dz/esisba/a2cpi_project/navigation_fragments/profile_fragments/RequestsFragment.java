@@ -126,7 +126,9 @@ public class RequestsFragment extends Fragment implements SearchOnItemClick {
                         RequestModel request = document.toObject(RequestModel.class);
                         RequestsDataHolder.add(request);
                     }
-                    if(RequestsDataHolder.size() != 0){
+                    RequestModel lastItem = new RequestModel(null,null,null,null,null,null,null);
+                    RequestsDataHolder.add(lastItem);
+                    if(RequestsDataHolder.size() > 1){
                         buildRecyclerView();
                         progressBar.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
@@ -171,6 +173,11 @@ public class RequestsFragment extends Fragment implements SearchOnItemClick {
                     requestRef.delete();
                     RequestsDataHolder.remove(position);
                     adapter.notifyItemRemoved(position);
+                    if(RequestsDataHolder.size()==1){
+                        recyclerView.setVisibility(View.GONE);
+                        emptyRequests.setVisibility(View.VISIBLE);
+                        RequestsDataHolder.remove(0);
+                    }
                 }else {
                     replyQuestion.setError("Enter your question");
                 }
@@ -228,6 +235,11 @@ public class RequestsFragment extends Fragment implements SearchOnItemClick {
             requestRef.delete();
         RequestsDataHolder.remove(position);
         adapter.notifyItemRemoved(position);
+        if(RequestsDataHolder.size()==1){
+            recyclerView.setVisibility(View.GONE);
+            emptyRequests.setVisibility(View.VISIBLE);
+            RequestsDataHolder.remove(0);
+        }
     }
 
     @Override

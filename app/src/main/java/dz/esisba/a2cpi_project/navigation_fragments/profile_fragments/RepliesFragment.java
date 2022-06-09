@@ -80,7 +80,10 @@ public class RepliesFragment extends Fragment {
                         ReplyModel reply = document.toObject(ReplyModel.class);
                         RepliesDataHolder.add(reply);
                     }
-                    if(RepliesDataHolder.size() != 0){
+                    ReplyModel lastItem = new ReplyModel(null,null,null,null,null,null,null,null);
+                    RepliesDataHolder.add(lastItem);
+
+                    if(RepliesDataHolder.size() > 1){
                         buildRecyclerView();
                         progressBar.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);

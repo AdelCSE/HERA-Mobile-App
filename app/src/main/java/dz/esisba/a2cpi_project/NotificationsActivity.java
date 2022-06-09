@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +27,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -61,8 +63,8 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
     private CollectionReference notifRef;
     private Button clearAll;
     private ImageButton returnBtn;
-    private TextView noNotifications;
-//    CardView notification_icon;
+    private DocumentReference doc;
+    private LinearLayout emptyNotifiactions;
 
     private NotificationBadge notificationBadge;
     public static HomeFragment homeFragment;
@@ -72,41 +74,40 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications);
 
-//        notification_icon = (CardView) findViewById(R.id.notification_icon);
+//      notification_icon = (CardView) findViewById(R.id.notification_icon);
 
         notificationBadge = homeFragment.getActivity().findViewById(R.id.badge);
         progressBar = findViewById(R.id.notificationsProgressBar);
         recview = findViewById(R.id.notifrecview);
         clearAll = findViewById(R.id.clearAll);
         returnBtn = findViewById(R.id.btnReturn);
-        noNotifications= findViewById(R.id.noNotificarions);
+        emptyNotifiactions = findViewById(R.id.emptyNotifications);
 
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
 
         progressBar.setVisibility(View.VISIBLE);
-//        noNotifications.setVisibility(View.VISIBLE);
+        emptyNotifiactions.setVisibility(GONE);
         FetchNotifications();
 
 
         clearAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (NotificationsDataHolder.size()==1) {
+                if (NotificationsDataHolder.size()==0) {
                     Toast.makeText(NotificationsActivity.this, "Notifications Already Cleared", Toast.LENGTH_SHORT).show();
                 } else {
                     new AlertDialog.Builder(NotificationsActivity.this)
-                            .setMessage("Are you sure you want to Delete all Notifications ?")
+                            .setMessage("Are you sure you want to delete all notifications ?")
                             .setPositiveButton("Delete All", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     //clear recView from items
                                     NotificationsDataHolder.clear();
                                     mAdapter.notifyDataSetChanged();
+                                    emptyNotifiactions.setVisibility(View.VISIBLE);
 
-                                    noNotifications.setVisibility(View.VISIBLE);
-                                    //delete Notifications (documents) from firestore
                                     fstore.collection("Users").document(user.getUid()).collection("Notifications").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -149,12 +150,12 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
                         NotificationsDataHolder.add(notification);
                     }
                     if(NotificationsDataHolder.size() <= 1){
-                        noNotifications.setVisibility(View.VISIBLE);
+                        emptyNotifiactions.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(GONE);
                         recview.setVisibility(GONE);
                     }else {
                         buildRecyclerView();
-                        noNotifications.setVisibility(GONE);
+                        emptyNotifiactions.setVisibility(GONE);
                         progressBar.setVisibility(GONE);
                         recview.setVisibility(View.VISIBLE);
                     }
@@ -186,7 +187,6 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
                             notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
                         }
                     } else {
-                        Toast.makeText(HomeFragment.homeFragment.getContext() , "You Don't Have Notifications ! ", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -199,68 +199,120 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         //get the id of clicked notification
         String id = NotificationsDataHolder.get(position).getNotifId();
         //remove the item from recView
-            NotificationsDataHolder.remove(position);
-            mAdapter.notifyItemRemoved(position);
-        //delete the notification from firebase
-        fstore.collection("Users").document(auth.getUid()).collection("Notifications").document(id).delete();
-        fstore.collection("Users").document(user.getUid()).update("unseenNotifications", FieldValue.increment(-1));
+
+        fstore.collection("Users").document(auth.getUid()).collection("Notifications").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    NotificationModel notification1 = task.getResult().toObject(NotificationModel.class);
+                    if (!notification1.isSeen()) {
+                        fstore.collection("Users").document(user.getUid()).update("unseenNotifications", FieldValue.increment(-1));
+                    }
+                    NotificationsDataHolder.remove(position);
+                    mAdapter.notifyItemRemoved(position);
+                    if(NotificationsDataHolder.size()<2){
+                        NotificationsDataHolder.remove(0);
+                        mAdapter.notifyItemRemoved(0);
+                        emptyNotifiactions.setVisibility(View.VISIBLE);
+
+                    }
+                    //delete the notification from firebase
+                    fstore.collection("Users").document(auth.getUid()).collection("Notifications").document(id).delete();
+                }
+            }
+        });
+        if(NotificationsDataHolder.size()<2){
+            emptyNotifiactions.setVisibility(View.VISIBLE);
+        }
+
         Toast.makeText(this,"Notification Deleted Successfully", Toast.LENGTH_SHORT).show();
 
+    }
+
+    public void StartUserProfileActivity(int position) {
+        if (NotificationsDataHolder.get(position).getUserId().equals(user.getUid())) {
+            //switch to profile
+        } else {
+            DocumentReference DocRef = fstore.collection("Users").document(NotificationsDataHolder.get(position).getUserId());
+            DocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        UserModel User;
+                        DocumentSnapshot doc = task.getResult();
+                        if (doc.exists()) {
+                            User = doc.toObject(UserModel.class);
+                            Intent intent = new Intent(NotificationsActivity.this, UserProfileActivity.class);
+                            intent.putExtra("Tag", (Serializable) User);
+                            startActivity(intent);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    public void StartQuestionBlocActivity(int position){
+        DocumentReference DocRef = fstore.collection("Posts").document(NotificationsDataHolder.get(position).getPostId());
+        DocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    PostModel Post;
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc.exists()) {
+                        Post = doc.toObject(PostModel.class);
+                        Intent intent = new Intent(NotificationsActivity.this, QuestionBlocActivity.class);
+                        intent.putExtra("Tag", (Serializable) Post);
+                        startActivity(intent);
+                    }
+                }
+            }
+        });
     }
 
     @Override
     public void onItemClick(View view , int position) {
 
-//        PostModel postModel = new PostModel(NotificationsDataHolder.get(position).getPostId());
         String id = NotificationsDataHolder.get(position).getNotifId();
 
-        fstore.collection("Users").document(user.getUid()).update("unseenNotifications", FieldValue.increment(-1));
-        fstore.collection("Users").document(user.getUid()).collection("Notifications").document(id).update("seen",true);
-//        FetchNotifications(); // we need to update only the selected item ,Because there's no need to Fetch and update the whole recyclerView...
-//        Optimization purposes.
+//        PostModel postModel = new PostModel(NotificationsDataHolder.get(position).getPostId());
+        fstore.collection("Users").document(auth.getUid()).collection("Notifications").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    NotificationModel notification = task.getResult().toObject(NotificationModel.class);
+                    if(!notification.isSeen()){
+                        fstore.collection("Users").document(user.getUid()).collection("Notifications").document(id).update("Seen",true);
+                        fstore.collection("Users").document(user.getUid()).update("unseenNotifications", FieldValue.increment(-1));
 
-
+                    }
+                }
+            }
+        });
 
         switch (NotificationsDataHolder.get(position).getType()){
 
             //follow = open profile
             case 0:
-                Log.d("__________________", "follow note");
-
-//                Intent intent = new Intent(view.getContext(), UserProfileActivity.class);
-//                intent.putExtra("Tag", (Serializable) NotificationsDataHolder.get(position).getUserId());
-//                view.getContext().startActivity(intent);
-
+                StartUserProfileActivity(position);
                 break;
+
                 //like post = open post
             case 1 :
-                Log.d("__________________", "like post");
-//                Intent intent1 = new Intent(view.getContext(), QuestionBlocActivity.class);
-//                intent1.putExtra("Tag", (Serializable) postModel);
-//                intent1.putExtra("position", position);
-//                view.getContext().startActivity(intent1);
-
+                StartQuestionBlocActivity(position);
                 break;
+
                 //liked answer = open post (see answer)
             case 2 :
-                Log.d("__________________", "liked answer");
-//                Intent intent2 = new Intent(view.getContext(), QuestionBlocActivity.class);
-//                intent2.putExtra("Tag", (Serializable) postModel);
-//                intent2.putExtra("position", position);
-//                view.getContext().startActivity(intent2);
-
+                StartQuestionBlocActivity(position);
                 break;
+
                 //answered your question = open post (see answer)
             case 3 :
-                Log.d("__________________", "answered your question");
-//                Intent intent3 = new Intent(view.getContext(), QuestionBlocActivity.class);
-//                intent3.putExtra("Tag", (Serializable) postModel);
-//                intent3.putExtra("position", position);
-//                view.getContext().startActivity(intent3);
+                StartQuestionBlocActivity(position);
                 break;
         }
-
-
     }
 
     @Override
@@ -269,5 +321,3 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         super.onBackPressed();
     }
 }
-
-//TODO OnRemoveClick crashing when pressing twice too fast [not very important]
