@@ -76,12 +76,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
 
         if (likes.contains(FirebaseAuth.getInstance().getCurrentUser().getUid()))
         {
-            lottieAnimationView.setSpeed(100);
-            lottieAnimationView.playAnimation();
+            lottieAnimationView.setProgress(1);
             lottieAnimationView.setTag("Liked");
         }
         else
         {
+            lottieAnimationView.setProgress(0);
             lottieAnimationView.setTag("Like");
         }
         /*likesRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

@@ -4,6 +4,7 @@ import static android.view.View.VISIBLE;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,6 +33,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -47,9 +50,18 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.nex3z.notificationbadge.NotificationBadge;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import NotificationTest.FcmNotificationsSender;
 import dz.esisba.a2cpi_project.NotificationsActivity;
@@ -70,15 +82,16 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     private RecyclerView recyclerView;
     private ArrayList<PostModel> PostsDataHolder;
     private ArrayList<String> likes;
+    private ArrayList<String> following = new ArrayList<>();
     private PostAdapter adapter;
-    private ImageButton settingsBtn , searchBtn , notificationsBtn;
+    private ImageButton settingsBtn, searchBtn, notificationsBtn;
     private SwipeRefreshLayout refresh;
     private ProgressBar progressBar;
 
     private FirebaseAuth auth;
     private FirebaseUser user;
     private FirebaseFirestore fstore;
-    private DocumentReference likesRef,userInfos;
+    private DocumentReference  userInfos, likesRef;
     private CollectionReference postRef;
     private String downloadUrl;
 
@@ -88,13 +101,14 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     private boolean isScrolling;
     private boolean isLastItemPaged;
     private LinearLayoutManager linearLayoutManager;
+    private HashMap<String, Long> tagsMap = new HashMap<String, Long>();
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        parentHolder = inflater.inflate(R.layout.fragment_home,container,false);
+        parentHolder = inflater.inflate(R.layout.fragment_home, container, false);
 
         refresh = parentHolder.findViewById(R.id.homeRefreshLayout);
         searchBtn = parentHolder.findViewById(R.id.search_btn);
@@ -106,23 +120,18 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
         linearLayoutManager = new LinearLayoutManager(getContext());
 
-        NotificationsActivity.homeFragment=this;
-        QuestionBlocActivity.homeFragment=this;
-
+        NotificationsActivity.homeFragment = this;
+        QuestionBlocActivity.homeFragment = this;
 
 
         Main();
-
-
 
         return parentHolder;
 
     }
 
 
-
-    private void Main()
-    {
+    private void Main() {
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
@@ -130,21 +139,30 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         userInfos = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
 
 
-
         userInfos.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    if (task.getResult().getLong("unseenNotifications")!= null) {
-                    if(task.getResult().getLong("unseenNotifications").intValue() >99) {
-                        notificationBadge.setText("99+");
+                if (task.isSuccessful()) {
+                    if (task.getResult().get("following") != null) {
+                        following = (ArrayList<String>) task.getResult().get("following");
+                        if (task.getResult().get("LikedTags") != null) {
+                            tagsMap = (HashMap<String, Long>) task.getResult().get("LikedTags");
+                            SetFeed();
+                        }
                     }
-                    else{
+
+
+
+                    if (task.getResult().getLong("unseenNotifications") != null) {
+                        if (task.getResult().getLong("unseenNotifications").intValue() > 99) {
+                            notificationBadge.setText("99+");
+                        } else {
+                            notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
+                        }
                         notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
-                    }
-                        notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
-                    }else{
-                       Toast.makeText(getContext(), "You Don't Have Notifications ! ", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), "You Don't Have Notifications ! ", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -165,8 +183,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                     if (snapshot.get("profilePictureUrl") != null) {
                         downloadUrl = snapshot.get("profilePictureUrl").toString();
                     }
-                }
-                else {
+                } else {
                     Log.d(this.toString(), "Current data: null");
                 }
             }
@@ -203,7 +220,80 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
             }
         });
         progressBar.setVisibility(View.VISIBLE);
-        FetchPosts();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void SetFeed() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DATE, -30); //current day -30 days
+
+
+        //combining queries
+        ArrayList<Task> tasks = new ArrayList<>();
+        for (String user : following) {
+            Task t = postRef.whereEqualTo("publisher", user)
+                    .whereGreaterThanOrEqualTo("Date", c.getTime())
+                    .get();
+            tasks.add(t);
+        }
+        //getting the result from combined queries - works fine
+        Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(tasks);
+        allTasks.addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
+            @Override
+            public void onSuccess(List<QuerySnapshot> querySnapshots) {
+                for (QuerySnapshot nextQueryDocumentSnapshots : querySnapshots) {
+                    for (QueryDocumentSnapshot document : nextQueryDocumentSnapshots) {
+                        PostModel post = document.toObject(PostModel.class);
+                        userInfos.collection("Feed").document(post.getPostid()).set(post);
+                        FetchPosts();
+                    }
+                }
+
+            }
+        });
+
+        //adding recommended
+
+        List<Map.Entry<String, Long>> list = new LinkedList<>(tagsMap.entrySet());
+
+        // Sorting the list based on values
+        list.sort((o1, o2) -> false ? o1.getValue().compareTo(o2.getValue()) == 0
+                ? o1.getKey().compareTo(o2.getKey())
+                : o1.getValue().compareTo(o2.getValue()) : o2.getValue().compareTo(o1.getValue()) == 0
+                ? o2.getKey().compareTo(o1.getKey())
+                : o2.getValue().compareTo(o1.getValue()));
+       tagsMap = list.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
+        ArrayList<String> tags = new ArrayList<>(tagsMap.keySet());
+
+        for (int i = 0; i < 2; i++) {
+            try {
+                fstore.collection("Posts").whereArrayContains("tags", tags.get(i)).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            PostModel post = document.toObject(PostModel.class);
+                            userInfos.collection("Feed").document(post.getPostid()).set(post);
+                        }
+                    }
+                });
+            }catch (IndexOutOfBoundsException e){Log.e("ERRO:", e.getMessage());
+            }
+        }
+
+
+        //delete extras
+        Query query = userInfos.collection("Feed").whereLessThan("Date", c.getTime());
+        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    doc.getReference().delete();
+                }
+            }
+        });
     }
 
     //Fetch Posts and display them in home
@@ -211,28 +301,28 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         PostsDataHolder = new ArrayList<>();
         isLastItemPaged = false;
 
-        Query postRef = fstore.collection("Posts").orderBy("Date", Query.Direction.DESCENDING).limit(5);
-
-        postRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        Query query = fstore.collection("Users").document(user.getUid()).collection("Feed").orderBy("ddate", Query.Direction.DESCENDING).limit(5);
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         PostModel post = document.toObject(PostModel.class);
                         PostsDataHolder.add(post);
+
                     }
-                    buildRecyclerView();
                     progressBar.setVisibility(View.GONE);
                     recyclerView.setVisibility(VISIBLE);
-                    lastVisible = task.getResult().getDocuments().get(task.getResult().size()-1);;
+                    if (task.getResult().size() > 0)
+                        lastVisible = task.getResult().getDocuments().get(task.getResult().size() - 1);
+                    buildRecyclerView();
 
                     RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
                         @Override
                         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                             super.onScrollStateChanged(recyclerView, newState);
 
-                            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
-                            {
+                            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                                 isScrolling = true;
                             }
                         }
@@ -245,11 +335,12 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                             int visibleItemCount = linearLayoutManager.getChildCount();
                             int totalItemCount = linearLayoutManager.getItemCount();
 
-                            if (isScrolling &&(firstVisibileItem+visibleItemCount == totalItemCount) && !isLastItemPaged)
-                            {
+                            if (isScrolling && (firstVisibileItem + visibleItemCount == totalItemCount) && !isLastItemPaged) {
                                 isScrolling = false;
-                                Query nextQuery  = fstore.collection("Posts").orderBy("Date", Query.Direction.DESCENDING)
-                                        .startAfter(lastVisible).limit(3);
+
+                                Query nextQuery = userInfos.collection("Feed").orderBy("date", Query.Direction.DESCENDING)
+                                        .startAfter(lastVisible)
+                                        .limit(2);
                                 nextQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -258,19 +349,20 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                                             PostsDataHolder.add(post);
                                         }
                                         adapter.notifyDataSetChanged();
-
-                                        if (task.getResult().size()<3) isLastItemPaged = true;
-                                   if (task.getResult().size()>0)    lastVisible = task.getResult().getDocuments().get(task.getResult().size()-1);                                    }
+                                        if (task.getResult().size() < 1) isLastItemPaged = true;
+                                        if (task.getResult().size() > 0)
+                                            lastVisible = task.getResult().getDocuments().get(task.getResult().size() - 1);
+                                    }
                                 });
+
                             }
                         }
                     };
                     recyclerView.addOnScrollListener(onScrollListener);
-                } else {
-                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
     }
 
 
@@ -278,18 +370,18 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     public void buildRecyclerView() {
         recyclerView = parentHolder.findViewById(R.id.recview);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new PostAdapter(PostsDataHolder,this);
+        adapter = new PostAdapter(PostsDataHolder, this);
         recyclerView.setAdapter(adapter);
 
     }
 
     //Start Question Bloc Activity
-    public void StartQuestionBlocActivity(int position){
+    public void StartQuestionBlocActivity(int position) {
         PostModel Post1 = new PostModel(PostsDataHolder.get(position).getAskedBy(), PostsDataHolder.get(position).getPublisher()
-                , PostsDataHolder.get(position).getUsername() , PostsDataHolder.get(position).getQuestion() ,
-                PostsDataHolder.get(position).getBody(),PostsDataHolder.get(position).getPostid(),
-                PostsDataHolder.get(position).getDate(),PostsDataHolder.get(position).getPublisherPic(),
-                PostsDataHolder.get(position).getLikesCount(),PostsDataHolder.get(position).getAnswersCount(), PostsDataHolder.get(position).getTags());
+                , PostsDataHolder.get(position).getUsername(), PostsDataHolder.get(position).getQuestion(),
+                PostsDataHolder.get(position).getBody(), PostsDataHolder.get(position).getPostid(),
+                PostsDataHolder.get(position).getDate(), PostsDataHolder.get(position).getPublisherPic(),
+                PostsDataHolder.get(position).getLikesCount(), PostsDataHolder.get(position).getAnswersCount(), PostsDataHolder.get(position).getTags());
         Intent intent = new Intent(getActivity(), QuestionBlocActivity.class);
         intent.putExtra("Tag", (Serializable) Post1);
         intent.putExtra("position", position);
@@ -304,30 +396,28 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // There are no request codes
                         Intent data = result.getData();
-                        ArrayList<String> likes = (ArrayList<String>)data.getExtras().getSerializable("likes");
+                        ArrayList<String> likes = (ArrayList<String>) data.getExtras().getSerializable("likes");
                         int position = data.getIntExtra("position", 0);
-                        Refresh(likes,position);
+                        Refresh(likes, position);
                     }
                 }
             });
 
-    private void Refresh(ArrayList<String> likes, int position)
-    {
-         if (likes != null && position>=0)
-         {
-             PostsDataHolder.get(position).setLikes(likes);
-             PostsDataHolder.get(position).setLikesCount(likes.size());
-             adapter.notifyItemChanged(position);
-             adapter.notifyDataSetChanged();
-             buildRecyclerView();
-         }
+    private void Refresh(ArrayList<String> likes, int position) {
+        if (likes != null && position >= 0) {
+            PostsDataHolder.get(position).setLikes(likes);
+            PostsDataHolder.get(position).setLikesCount(likes.size());
+            adapter.notifyItemChanged(position);
+            adapter.notifyDataSetChanged();
+            buildRecyclerView();
+        }
     }
 
     //Start User Profile Activity
-    public void StartUserProfileActivity(int position){
-        if (PostsDataHolder.get(position).getPublisher().equals(user.getUid())){
+    public void StartUserProfileActivity(int position) {
+        if (PostsDataHolder.get(position).getPublisher().equals(user.getUid())) {
             //switch to profile
-        }else{
+        } else {
             DocumentReference DocRef = fstore.collection("Users").document(PostsDataHolder.get(position).getPublisher());
             DocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -358,19 +448,23 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     }
 
     @Override
-    public void onPictureClick(int position) {StartUserProfileActivity(position);}
+    public void onPictureClick(int position) {
+        StartUserProfileActivity(position);
+    }
 
     @Override
-    public void onNameClick(int position) {StartUserProfileActivity(position);}
+    public void onNameClick(int position) {
+        StartUserProfileActivity(position);
+    }
 
     @Override
     public void onShareClick(int position) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         String Body = "Download this app";
-        intent.putExtra(Intent.EXTRA_TEXT,Body);
-        intent.putExtra(Intent.EXTRA_TEXT,"URL");
-        startActivity(Intent.createChooser(intent,"Share using"));
+        intent.putExtra(Intent.EXTRA_TEXT, Body);
+        intent.putExtra(Intent.EXTRA_TEXT, "URL");
+        startActivity(Intent.createChooser(intent, "Share using"));
     }
 
     @Override
@@ -384,7 +478,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
             fstore.collection("Users").document(post.getPublisher()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if(task.isSuccessful()&& s.isSuccessful()){
+                    if (task.isSuccessful() && s.isSuccessful()) {
                         Notify(task.getResult().getString("Token"),
                                 s.getResult().getString("Username"),
                                 getActivity(),
@@ -405,17 +499,15 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
             postRef.document(post.getPostid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful())
-                    {
+                    if (task.isSuccessful()) {
                         DocumentSnapshot doc = task.getResult();
-                        if (doc.exists())
-                        {
+                        if (doc.exists()) {
                             likes = (ArrayList<String>) doc.get("likes");
-                            if(!likes.contains(user.getUid())) likes.add(user.getUid());
+                            if (!likes.contains(user.getUid())) likes.add(user.getUid());
                             PostsDataHolder.get(position).setLikes(likes);
                             PostsDataHolder.get(position).setLikesCount(likes.size());
                             //likes are stored for user for faster query
-                            Map<String,Object> hm = new HashMap<>();
+                            Map<String, Object> hm = new HashMap<>();
                             hm.put("likes", likes);
                             hm.put("likesCount", likes.size());
                             //update likes count for the post
@@ -431,8 +523,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                                 }
                             });
                         }
-                    }
-                    else LikeFailure(lottieAnimationView, likesTxt, position);
+                    } else LikeFailure(lottieAnimationView, likesTxt, position);
                 }
             });
         } else {
@@ -448,18 +539,16 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
             postRef.document(post.getPostid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful())
-                    {
+                    if (task.isSuccessful()) {
                         DocumentSnapshot doc = task.getResult();
-                        if (doc.exists())
-                        {
+                        if (doc.exists()) {
                             likes = (ArrayList<String>) doc.get("likes");
                             likes.remove(user.getUid());
                             PostsDataHolder.get(position).setLikes(likes);
                             PostsDataHolder.get(position).setLikesCount(likes.size());
                             likesRef = fstore.collection("Users").document(user.getUid()).
                                     collection("Likes").document(post.getPostid());
-                            Map<String,Object> hm = new HashMap<>();
+                            Map<String, Object> hm = new HashMap<>();
                             hm.put("likes", likes);
                             hm.put("likesCount", likes.size());
                             //update likes count for the post
@@ -482,14 +571,16 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         //updateToken();
     }
 
-    private void SetLikesForUser(ArrayList<String> tags, int i)
-    {
-        CollectionReference userRef = fstore.collection("Users").document(user.getUid())
-                .collection("LikedTags");
-        for (String tag: tags) {
-            DocumentReference tagRef = userRef.document(tag);
-            tagRef.update("occurrence", FieldValue.increment(i));
+    private void SetLikesForUser(ArrayList<String> tags, int i) {
+        DocumentReference userRef = fstore.collection("Users").document(user.getUid());
+        HashMap<String, Long> updatedTags = new HashMap<>();
+        if (tagsMap == null) tagsMap = new HashMap<String, Long>();
+        for (String tag : tags) {
+            long occ = 1;
+            if (tagsMap.containsKey(tag)) occ = tagsMap.get(tag) + 1;
+            updatedTags.put(tag, occ);
         }
+        userRef.update("LikedTags", updatedTags);
     }
 
     private void DislikeFailure(LottieAnimationView lottieAnimationView, TextView likesTxt, int position) {
@@ -501,7 +592,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         likesTxt.setText(Integer.toString(i));
     }
 
-    private void LikeFailure(LottieAnimationView lottieAnimationView,TextView likesTxt, int position) {
+    private void LikeFailure(LottieAnimationView lottieAnimationView, TextView likesTxt, int position) {
         lottieAnimationView.setSpeed(-2);
         lottieAnimationView.playAnimation();//play like animation
         lottieAnimationView.setTag("Like");
@@ -511,16 +602,16 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     }
 
 
-    public void Notify(String publisherToken,String title,Activity activity,int position) {
+    public void Notify(String publisherToken, String title, Activity activity, int position) {
 
         fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    if(!task.getResult().getString("Token").equals(publisherToken) || true) {
+                if (task.isSuccessful()) {
+                    if (!task.getResult().getString("Token").equals(publisherToken) || true) {
                         FcmNotificationsSender send = new FcmNotificationsSender(
                                 publisherToken,
-                                title+" Liked your Question !",
+                                title + " Liked your Question !",
                                 "Click To See All Notifications",
                                 activity);
                         send.SendNotifications();
@@ -539,19 +630,19 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         notif.put("PostId", postModel.getPostid());
         notif.put("Username", title);
         notif.put("Date", Timestamp.now());
-        notif.put("Image",downloadUrl);
-        notif.put("UserId",auth.getCurrentUser().getUid() );
+        notif.put("Image", downloadUrl);
+        notif.put("UserId", auth.getCurrentUser().getUid());
         notif.put("Seen", false);
         //add the document to the notification collection
         DocRef.add(notif);
 
-        fstore.collection("Users").document(PostsDataHolder.get(position).getPublisher()).update("unseenNotifications",FieldValue.increment(1));
+        fstore.collection("Users").document(PostsDataHolder.get(position).getPublisher()).update("unseenNotifications", FieldValue.increment(1));
 
         userInfos.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    if (task.getResult().getLong("unseenNotifications")!= null) {
+                if (task.isSuccessful()) {
+                    if (task.getResult().getLong("unseenNotifications") != null) {
 //                    if(task.getResult().getLong("unseenNotifications").intValue() >99) {
 //                        notificationBadge.setText("99+");
 //                    }
@@ -559,13 +650,12 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 //                        notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
 //                    }
                         notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
-                    }else{
+                    } else {
                         Log.d("____________", "onComplete: null value");
                     }
                 }
             }
         });
-
 
 
     }

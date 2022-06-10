@@ -277,7 +277,7 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                                 public void onSuccess(Void unused) {
                                                     DocumentReference userRef = FirebaseFirestore.getInstance().collection("Users")
                                                             .document(user.getUid());
-                                                    userRef.update("posts", FieldValue.arrayRemove(postModel.getPostid()));
+                                                    userRef.update("answers", FieldValue.arrayRemove(postModel.getPostid()));
                                                     Intent i = new Intent(context.getApplicationContext(), BottomNavigationActivity.class);
                                                     Toast.makeText(view.getContext(), "Post deleted", Toast.LENGTH_SHORT).show();
                                                     ((QuestionBlocActivity)context).startActivity(i);

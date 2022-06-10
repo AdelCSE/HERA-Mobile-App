@@ -19,6 +19,7 @@
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/profileimg.xml" value="0.1965" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/textField.xml" value="0.2045" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/toolbar.xml" value="0.178" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_OnboardingScreens.xml" value="0.20416666666666666" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_add_post.xml" value="0.25" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_answer_bloc.xml" value="0.20416666666666666" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_bottom_navigation.xml" value="0.20416666666666666" />
@@ -31,7 +32,9 @@
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_profile.xml" value="0.5" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_register.xml" value="0.22" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_user_profile.xml" value="0.33" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_verification.xml" value="0.22" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activty_add_answer.xml" value="0.1" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/cardview_post.xml" value="0.20416666666666666" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/fragment_home.xml" value="0.33" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/fragment_profile.xml" value="0.44243792325056436" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/item_container_onboarding.xml" value="0.264" />

@@ -151,7 +151,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(Void unused) {
                                         Toast.makeText(RegisterActivity.this, "Please verifiy your email and sign in", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                                        startActivity(new Intent(getApplicationContext(), VerificationActivity.class));
                                         finish();
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
