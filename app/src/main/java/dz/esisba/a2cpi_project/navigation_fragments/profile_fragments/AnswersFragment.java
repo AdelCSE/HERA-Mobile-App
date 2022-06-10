@@ -97,13 +97,16 @@ public class AnswersFragment extends Fragment implements AnswersOnItemClickListn
         AnswersDataHolder = new ArrayList<>();
         ArrayList<String> answers = userModel.getAnswers();
         ArrayList<String> postIDs = new ArrayList<>();
-        if (answers!=null)
-        {
+        if (answers.size()!=0) {
             for (String s: answers) {
                 String id = s.split("#")[0];
                 if(!postIDs.contains(id)) postIDs.add(id);
             }
-            for (String id: postIDs) {
+            boolean last = false;
+            for (int i=0;i<postIDs.size();i++) {
+                String id = postIDs.get(i);
+
+                int finalI = i;
                 postRef.document(id).collection("Answers")
                         .whereEqualTo("publisher", userModel.getUid())
                         .orderBy("Date", Query.Direction.DESCENDING)
@@ -115,6 +118,10 @@ public class AnswersFragment extends Fragment implements AnswersOnItemClickListn
                                 PostModel answer = document.toObject(PostModel.class);
                                 answer.setAnswersCount(-1);
                                 AnswersDataHolder.add(answer);
+                            }
+                            if(finalI ==postIDs.size()-1){
+                                PostModel lastItem = new PostModel(null,null,null,null,null,null,null,null,-1,-1,null);
+                                AnswersDataHolder.add(lastItem);
                             }
                             buildRecyclerView();
                             progressBar.setVisibility(View.GONE);

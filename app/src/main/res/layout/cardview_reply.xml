@@ -84,14 +84,29 @@
             android:textSize="14dp"
             android:textColor="@color/black"/>
 
-        <ImageView
-            android:id="@+id/replyThanksBtn"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:src="@drawable/ic_notif_settings"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"/>
+            android:gravity="center_vertical"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="5dp">
+
+            <ImageView
+                android:id="@+id/replyStarBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_star__3_" />
+
+            <ImageView
+                android:id="@+id/deleteReplyBtn"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/ic_cross_answer"/>
+
+        </LinearLayout>
+
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

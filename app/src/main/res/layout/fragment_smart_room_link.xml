@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/back"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SmartRoomLink">
+
+    <ImageButton
+        android:id="@+id/SmartRoomBtnReturn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/mainbtn"
+        android:src="@drawable/ic_arrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp"
+        android:text="Smart Room"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Discover our Smart Room technology and keep your child safe"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:layout_below="@id/SmartRoomBtnReturn"
+        android:layout_marginTop="60dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"/>
+
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/SmartRoomAnimation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-175dp"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/smart_rooom" />
+
+    <TextView
+        android:id="@+id/SmartRoomCodeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Link your device to view the statistics!"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="16dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="525dp"/>
+
+    <EditText
+        android:id="@+id/SRCodeEditTxt"
+        android:layout_width="200dp"
+        android:layout_height="45dp"
+        android:background="@drawable/smart_room_edit_text"
+        android:layout_below="@+id/SmartRoomCodeText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:hint="ex: R4JK6LMN9"
+        android:gravity="center"/>
+
+    <Button
+        android:layout_width="120dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/fllwbtn"
+        android:layout_below="@+id/SRCodeEditTxt"
+        android:layout_centerHorizontal="true"
+        android:text="Connect"
+        android:textColor="@color/white"/>
+
+
+
+
+</RelativeLayout>
