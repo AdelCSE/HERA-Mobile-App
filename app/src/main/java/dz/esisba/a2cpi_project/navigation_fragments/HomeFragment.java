@@ -126,8 +126,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
         Main();
 
-        FetchPosts();
-
         return parentHolder;
 
     }
@@ -250,6 +248,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                     for (QueryDocumentSnapshot document : nextQueryDocumentSnapshots) {
                         PostModel post = document.toObject(PostModel.class);
                         userInfos.collection("Feed").document(post.getPostid()).set(post);
+                        FetchPosts();
                     }
                 }
 
@@ -302,7 +301,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         PostsDataHolder = new ArrayList<>();
         isLastItemPaged = false;
 
-        Query query = fstore.collection("Users").document(user.getUid()).collection("Feed").orderBy("date", Query.Direction.DESCENDING).limit(5);
+        Query query = fstore.collection("Users").document(user.getUid()).collection("Feed").orderBy("ddate", Query.Direction.DESCENDING).limit(5);
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
