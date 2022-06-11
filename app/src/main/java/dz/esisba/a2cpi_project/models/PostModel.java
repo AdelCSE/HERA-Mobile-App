@@ -59,7 +59,7 @@ public class PostModel implements Serializable, Parcelable {
     }
 
     public String ConvertDate() {
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy • HH:mm");
+        SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy • HH:mm");
         /**/
         Date now = new Date();
         Date then = now;

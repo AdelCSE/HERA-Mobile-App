@@ -1,9 +1,14 @@
 package dz.esisba.a2cpi_project.models;
 
+import android.annotation.SuppressLint;
+
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.Exclude;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class NotificationModel {
     String Username, PostId , UserId , Image ,notifId;
@@ -26,14 +31,9 @@ public class NotificationModel {
     }
 
 
-
-    public NotificationModel() {
-    }
-
-
     public String ConvertDate() {
         SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy • HH:mm");
-        return  sfd.format(getDate().toDate());
+        return sfd.format(getDate().toDate());
     }
 
 
