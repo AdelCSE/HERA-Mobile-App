@@ -106,7 +106,9 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
                         PostModel post = document.toObject(PostModel.class);
                         QuestionsDataHolder.add(post);
                     }
-                    if(QuestionsDataHolder.size() != 0){
+                    PostModel lastItem = new PostModel(null,null,null,null,null,null,null,null,-1,-1,null);
+                    QuestionsDataHolder.add(lastItem);
+                    if(QuestionsDataHolder.size() > 1){
                         buildRecyclerView();
                         progressBar.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);

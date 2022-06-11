@@ -61,7 +61,8 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
     private TextView usernameTxt,name, bio, followersCount, followingCount;
     private ImageView banner;
     private CircleImageView profilePic;
-    private Button followBtn,askQuestion;
+    private Button followBtn;
+    private ImageButton askQuestion;
     private CollapsingToolbarLayout toolbarLayout;
     private BottomSheetDialog dialog;
     private String askedByName,askedByUsername = "";
