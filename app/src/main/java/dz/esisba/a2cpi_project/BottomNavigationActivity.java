@@ -189,7 +189,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
                             selectedFragment = new HomeFragment();
                             break;
                         case R.id.nav_sr:
-                            selectedFragment = new SmartRoomFragment();
+                            selectedFragment = new SmartRoomLink();
                             break;
                         case R.id.nav_notif:
                             selectedFragment = new CharityFragment();

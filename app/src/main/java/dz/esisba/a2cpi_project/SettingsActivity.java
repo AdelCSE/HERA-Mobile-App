@@ -6,16 +6,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.SwitchCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -44,6 +47,8 @@ public class SettingsActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private LinearLayout logOut,changePassword,sendFeedBack,reportProblem;
     private AppCompatButton editprofileBtn;
+    private SwitchCompat securitySwitch;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +71,7 @@ public class SettingsActivity extends AppCompatActivity {
         sendFeedBack = findViewById(R.id.sendFeedBackBtn);
         reportProblem = findViewById(R.id.reportProblemBtn);
         editprofileBtn=findViewById(R.id.settingsEditProfileBtn);
+        securitySwitch = findViewById(R.id.securitySwitch);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +131,13 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        securitySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                fstore.collection("Users").document(user.getUid()).update("Security",b);
+            }
+        });
+
         progressBar.setVisibility(View.VISIBLE);
 
         SetUserInfos();
@@ -150,6 +163,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                         settingsUsername.setText("@"+doc.get("Username").toString());
                         settingsEmail.setText(doc.get("Email").toString());
+                        securitySwitch.setChecked(Boolean.TRUE.equals(doc.getBoolean("Security")));
                     }
                     progressBar.setVisibility(View.GONE);
                     scrollView.setVisibility(VISIBLE);
@@ -158,6 +172,8 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     //function that delete the token of the user Because when the user is signed-out he doesn't receive Notifications
     private void clearToken(String uid){
@@ -170,3 +186,5 @@ public class SettingsActivity extends AppCompatActivity {
                 .update(emptyToken);
     }
 }
+
+//TODO // fe logout Onclick  dir if(securityCheck ==true) Email yweli unVerified

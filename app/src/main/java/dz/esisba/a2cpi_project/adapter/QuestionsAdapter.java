@@ -33,8 +33,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
+import dz.esisba.a2cpi_project.models.UserModel;
 
-public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.myviewholder>{
+public class QuestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private ArrayList<PostModel> QuestionsHolder;
     private PostsOnItemClickListner aListner;
@@ -45,25 +46,50 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.myvi
         aListner = listner;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if(QuestionsHolder.get(position).getQuestion()!=null){
+            return 1;
+        }else{
+            return 2;
+        }
+    }
+
     @NonNull
     @Override
-    public myviewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_profile_question,parent,false);
-        context = parent.getContext();
-        return new myviewholder(view, aListner , this);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
+        if(viewType==1){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_profile_question,parent,false);
+            context = parent.getContext();
+            return new myviewholder(view, aListner , this);
+        }else{
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.last_item_text,parent,false);
+            context = parent.getContext();
+            return new myviewholder2(view);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull myviewholder holder, int position) {
-        Glide.with(context).load(QuestionsHolder.get(position).getPublisherPic()).into(holder.img);
-        holder.Question.setText(QuestionsHolder.get(position).getQuestion());
-        holder.Name.setText(QuestionsHolder.get(position).getAskedBy());
-        holder.Username.setText("@"+QuestionsHolder.get(position).getUsername());
-        holder.Details.setText(QuestionsHolder.get(position).getBody());
-        holder.Likes.setText(Integer.toString(QuestionsHolder.get(position).getLikesCount())+" Likes");
-        holder.Answers.setText(Integer.toString(QuestionsHolder.get(position).getAnswersCount()));
-        holder.Date.setText(QuestionsHolder.get(position).ConvertDate());
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if(holder.getItemViewType()==1){
+            myviewholder viewholder = (myviewholder)holder;
+            Glide.with(context).load(QuestionsHolder.get(position).getPublisherPic()).into(viewholder.img);
+            viewholder.Question.setText(QuestionsHolder.get(position).getQuestion());
+            viewholder.Name.setText(QuestionsHolder.get(position).getAskedBy());
+            viewholder.Username.setText("@"+QuestionsHolder.get(position).getUsername());
+            viewholder.Details.setText(QuestionsHolder.get(position).getBody());
+            viewholder.Likes.setText(Integer.toString(QuestionsHolder.get(position).getLikesCount())+" Likes");
+            viewholder.Answers.setText(Integer.toString(QuestionsHolder.get(position).getAnswersCount()));
+            viewholder.Date.setText(QuestionsHolder.get(position).ConvertDate());
+        }else{
+            myviewholder2 viewholder2 = (myviewholder2) holder;
+            viewholder2.lastItem.setText("That's it");
+            viewholder2.txt1.setText("Feel free to ask people whatever you want");
+            viewholder2.txt2.setText("");
+        }
     }
+
 
     @Override
     public int getItemCount() {
@@ -79,6 +105,8 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.myvi
         private FirebaseUser user;
         private FirebaseFirestore fstore;
         private LinearLayout emptyPosts;
+
+
 
         public myviewholder(@NonNull View itemView  , PostsOnItemClickListner listner , QuestionsAdapter adapter) {
             super(itemView);
@@ -151,6 +179,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.myvi
                                                 document.getReference().delete();
                                             }
                                             postRef.delete();
+                                            notifyDataSetChanged();
                                             DocumentReference userRef = FirebaseFirestore.getInstance().collection("Users")
                                                     .document(user.getUid());
                                             userRef.update("posts", FieldValue.arrayRemove(postModel.getPostid()));
@@ -183,6 +212,17 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.myvi
                     popupMenu.show();
                 }
             });
+        }
+    }
+
+    public class myviewholder2 extends RecyclerView.ViewHolder{
+        TextView lastItem,txt1,txt2;
+
+        public myviewholder2(@NonNull View itemView) {
+            super(itemView);
+            lastItem=itemView.findViewById(R.id.lastItem);
+            txt1=itemView.findViewById(R.id.txt);
+            txt2=itemView.findViewById(R.id.txt2);
         }
     }
 }

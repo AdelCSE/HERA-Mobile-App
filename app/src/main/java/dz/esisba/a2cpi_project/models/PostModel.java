@@ -1,13 +1,19 @@
 package dz.esisba.a2cpi_project.models;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.google.firebase.Timestamp;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class PostModel implements Serializable, Parcelable {
    private String askedBy,publisher,Username,question,body,postid,publisherPic,answerBy;
@@ -52,10 +58,31 @@ public class PostModel implements Serializable, Parcelable {
         this.likes = likes;
     }
 
-    public String ConvertDate()
-    {
-        SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy • HH:mm");
-        return  sfd.format(getDate().toDate());
+    public String ConvertDate() {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy • HH:mm");
+        /**/
+        Date now = new Date();
+        Date then = now;
+        try {
+            then = sfd.parse("11/06/2022"/*sfd.format(getDate().toDate())*/);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        long duration = now.getTime()-then.getTime();
+        long min = TimeUnit.MILLISECONDS.toMinutes(duration);
+        if(min<1){return " Just Now";}
+        if(min<60){
+            return min+" minutes ago";
+        }
+        long hours =  TimeUnit.MILLISECONDS.toHours(duration);
+        if(hours<24){
+            return hours+" hours ago";
+        }
+        long day =  TimeUnit.MILLISECONDS.toDays(duration);
+        if(day<7){
+            return day+" days ago";
+        }
+        return day /~ 7+" weeks ago" ;
     }
 
     protected PostModel(Parcel in) {
