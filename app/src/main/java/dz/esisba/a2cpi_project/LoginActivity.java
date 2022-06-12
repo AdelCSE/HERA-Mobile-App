@@ -1,9 +1,14 @@
 package dz.esisba.a2cpi_project;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -23,11 +28,26 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.Random;
+
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -36,12 +56,18 @@ public class LoginActivity extends AppCompatActivity {
     TextView singupBtn, forgotPwBtn;
 
     FirebaseAuth auth;
+    private FirebaseFirestore fstore;
+    private FirebaseUser user;
+
 
     ProgressBar progressBar;
 
     AlertDialog.Builder reset_alert;
 
     LayoutInflater inflater;
+
+    private boolean securitySwitch1;
+    public String code;
 
 
     @Override
@@ -59,6 +85,8 @@ public class LoginActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar2);
 
         auth = FirebaseAuth.getInstance();
+        fstore = FirebaseFirestore.getInstance();
+
 
         reset_alert = new AlertDialog.Builder(this);
         inflater = this.getLayoutInflater();
@@ -104,11 +132,31 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            //verify if user is signed in 
-                            if (auth.getCurrentUser().isEmailVerified()) {
-                                retrieveRestoreToken();
-                                startActivity(new Intent(LoginActivity.this, BottomNavigationActivity.class));
-                                finish();
+                            user = auth.getCurrentUser();
+
+                            //verify if user is signed in
+                            if (auth.getCurrentUser().isEmailVerified() ) { //Here in we need to add SecurityCheck Condition (false)
+                            //Security check =boolean value in users collection
+
+                            //true=verify email each time user try to login , else = login directly
+                                fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if(task.isSuccessful()){
+                                            boolean securitySwitch = Boolean.TRUE.equals(task.getResult().getBoolean("Security"));
+                                            if(!securitySwitch){
+                                                //login directly
+                                                retrieveRestoreToken();
+                                                startActivity(new Intent(LoginActivity.this, BottomNavigationActivity.class));
+                                                finish();
+                                            }else{
+                                                //send verification email contains random 6 digits code and verify it in Security Activity...
+                                                code = getRandomNumber();
+                                                    sendEmail(code);
+                                            }
+                                        }
+                                    }
+                                });
                             }
                             else 
                             {
@@ -137,7 +185,7 @@ public class LoginActivity extends AppCompatActivity {
                             
                         } else {
                             //if loggin in wasn't successful get the error (debugging purpose can be removed later)
-                            Toast.makeText(LoginActivity.this, "Some error has occured " + task.getException().
+                            Toast.makeText(LoginActivity.this, "Some error has occurred " + task.getException().
                                     getMessage(), Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.GONE);
                         }
@@ -207,5 +255,98 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void sendEmail(String verificationCode){
+        final String ourEmail = "HeraAppTeam@gmail.com";
+        final String ourPassword = "gnkquvxmgonntkxw";
+        final String emailVerification= "Your Confirmation Code : "+verificationCode;
+        String userEmail = emailEditTxt.getText().toString().trim();
+
+        Properties props = new Properties();
+        props.put("mail.smtp.auth","true");
+        props.put("mail.smtp.starttls.enable","true");
+        props.put("mail.smtp.starttls.required", "true");
+        props.put("mail.smtp.host","smtp.gmail.com");
+        props.put("mail.smtp.port","587");
+        props.put("mail.smtp.user", ourEmail);
+
+        Session session = Session.getInstance(props,
+                new Authenticator(){
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(ourEmail,ourPassword);
+                    }
+                });
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(ourEmail));
+            message.setRecipients(Message.RecipientType.TO , InternetAddress.parse(userEmail));
+            message.setSubject("HERA VERIFICATION CODE");
+            message.setText(emailVerification);
+            new SendMail().execute(message);
+        }catch(MessagingException e){
+            e.printStackTrace();
+        }
+    }
+
+    private class SendMail extends AsyncTask<Message,String,String> {
+        private ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = ProgressDialog.show(LoginActivity.this , "Please Wait","Sending Email...", true,false);
+        }
+
+        @Override
+        protected String doInBackground(Message... messages) {
+            try {
+                Transport.send(messages[0]);
+                return "Success";
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+            return "Error in SendingEmail->doInBackground";
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            pd.dismiss();
+            if(s.equals("Success")){
+                AlertDialog.Builder ad = new AlertDialog.Builder(LoginActivity.this);
+                ad.setCancelable(false);
+                ad.setTitle(Html.fromHtml("<font color ='#509324'>Email Sent Successfully</font>"));
+                ad.setMessage("A Verification code is sent to your email\nGo Check it out now");
+                ad.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //open verification activity
+                        //and passing the verification code to it
+                        Intent intent = new Intent(LoginActivity.this,SecurityVerification.class);
+                        intent.putExtra("verificationCode",code);
+                        startActivity(intent);
+                        dialog.dismiss();
+                    }
+                });
+                ad.show();
+            }else{
+                Toast.makeText(LoginActivity.this,"Something went wrong", Toast.LENGTH_LONG).show();
+            }
+        }
+
+
+    }
+
+    private String getRandomNumber() {
+        // It will generate 6 digit random Number.
+        // from 0 to 999999
+        Random rnd = new Random();
+        int number = rnd.nextInt(999999);
+
+        // this will convert any number sequence into 6 character.
+        return String.format("%06d", number);
     }
 }

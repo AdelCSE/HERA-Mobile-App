@@ -195,7 +195,7 @@ public class RequestsFragment extends Fragment implements SearchOnItemClick {
         String replyId = replyRef.getId();
         HashMap<String, Object> data = new HashMap<>();
 
-        data.put("RequestId",replyId);
+        data.put("ReplyId",replyId);
         data.put("Question",RequestsDataHolder.get(position).getQuestion());
         data.put("Reply", reply);
         data.put("Name",repliedByName);

@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,11 +36,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -69,7 +66,7 @@ public class ProfileFragment extends Fragment {
     private CollectionReference requestRef,repliesRef;
 
 
-    private TextView username, name, bio, followersCount, followingCount;
+    private TextView username, name, bio, followersCount, followingCount, reputationText;
     private ImageButton editProfile;
     private Button bannerBtn,confirmBanner;
     private CollapsingToolbarLayout toolbarLayout;
@@ -160,7 +157,8 @@ public class ProfileFragment extends Fragment {
         tabLayoutMediator.attach();
 
         username = Holder.findViewById(R.id.usernameTxt);
-        name = Holder.findViewById(R.id.nameText);
+        name = Holder.findViewById(R.id.profileName);
+        reputationText = Holder.findViewById(R.id.reputationText);
         bio = Holder.findViewById(R.id.bioText);
         followersCount = Holder.findViewById(R.id.fllwNb2);
         followingCount = Holder.findViewById(R.id.fllwingNb2);
@@ -292,6 +290,7 @@ public class ProfileFragment extends Fragment {
             if (userModel.getBio() != null) { //set bio
                 bio.setText(userModel.getBio());
             }
+            reputationText.setText(userModel.getReputation()+"");
         }
     }
 
