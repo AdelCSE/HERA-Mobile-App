@@ -30,6 +30,8 @@ public class NotificationModel {
         this.notifId = notifId;
     }
 
+    public NotificationModel() {
+    }
 
     public String ConvertDate() {
         SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy • HH:mm");
