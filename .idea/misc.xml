@@ -15,6 +15,8 @@
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/ic_arrow.xml" value="0.178" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/ic_home.xml" value="0.1965" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/ic_picture.xml" value="0.1965" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/ic_star__2_.xml" value="0.1965" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/ic_star__3_.xml" value="0.1965" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/play_button_selector.xml" value="0.1965" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/profileimg.xml" value="0.1965" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/textField.xml" value="0.2045" />
@@ -32,8 +34,9 @@
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_register.xml" value="0.22" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_user_profile.xml" value="0.33" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activty_add_answer.xml" value="0.1" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/cardview_reply.xml" value="0.67" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/fragment_home.xml" value="0.33" />
-        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/fragment_profile.xml" value="0.44243792325056436" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/fragment_profile.xml" value="0.257227575982209" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/item_container_onboarding.xml" value="0.264" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/post_retrieved_layout.xml" value="0.25" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/request_bottom_sheet_dialog.xml" value="0.20416666666666666" />
@@ -162,12 +165,5 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
-  </component>
-  <component name="VisualizationToolProject">
-    <option name="state">
-      <ProjectState>
-        <option name="scale" value="0.2" />
-      </ProjectState>
-    </option>
   </component>
 </project>

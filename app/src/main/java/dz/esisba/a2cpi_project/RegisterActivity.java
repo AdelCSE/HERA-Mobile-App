@@ -22,6 +22,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -30,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import dz.esisba.a2cpi_project.models.PostModel;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -140,12 +144,24 @@ public class RegisterActivity extends AppCompatActivity {
                                 userInfor.put("followers", followers);
                                 userInfor.put("posts", posts);
                                 userInfor.put("answers", answers);
+                                userInfor.put("reputation", 0);
                                 userInfor.put("profilePictureUrl", "https://firebasestorage.googleapis.com/v0/b/cpi-project-b42b5.appspot.com/o/profileImages%2Fdefualty.png?alt=media&token=388b0aef-35f1-418a-b165-89f1e8b7e8b0");
 
                                 //specify access level (if user is admin)
                                 userInfor.put("isAdmin",false);
 
                                 df.set(userInfor); //pass our map to the fb document
+                                fstore.collection("Posts").orderBy("likesCount", Query.Direction.DESCENDING).limit(50)
+                                        .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                                            PostModel post = document.toObject(PostModel.class);
+                                            df.collection("Feed").document(post.getPostid()).set(post);
+                                            df.collection("Feed").document(post.getPostid()).update("priority", 2);
+                                        }
+                                    }
+                                });
 
                                 user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override

@@ -6,6 +6,25 @@ import java.util.ArrayList;
 public class UserModel implements Serializable {
     private String Name, Username, profilePictureUrl, bannerUrl, uid, bio;
     private ArrayList<String> followers, following, posts, answers;
+    private int reputation;
+
+    public int getReputation() {
+        return reputation;
+    }
+
+    public UserModel(String name, String username, String profilePictureUrl, String bannerUrl, String uid, String bio, ArrayList<String> followers, ArrayList<String> following, ArrayList<String> posts, ArrayList<String> answers, int reputation) {
+        Name = name;
+        Username = username;
+        this.profilePictureUrl = profilePictureUrl;
+        this.bannerUrl = bannerUrl;
+        this.uid = uid;
+        this.bio = bio;
+        this.followers = followers;
+        this.following = following;
+        this.posts = posts;
+        this.answers = answers;
+        this.reputation = reputation;
+    }
 
     public UserModel(String Name, String Username, String profilePictureUrl) {
         this.Name = Name;

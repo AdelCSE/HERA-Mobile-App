@@ -6,6 +6,27 @@ import java.text.SimpleDateFormat;
 public class ReplyModel {
     private String Username,Name,Question,Reply,Uid,ReplyId,ProfilePictureUrl;
     private Timestamp Date;
+    private boolean liked;
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public ReplyModel(String username, String name, String question, String reply, String uid, String replyId, String profilePictureUrl, Timestamp date, boolean liked) {
+        Username = username;
+        Name = name;
+        Question = question;
+        Reply = reply;
+        Uid = uid;
+        ReplyId = replyId;
+        ProfilePictureUrl = profilePictureUrl;
+        Date = date;
+        this.liked = liked;
+    }
 
     public ReplyModel(String username, String name, String question, String reply, String uid, String requestId, String profilePictureUrl, Timestamp date) {
         Username = username;

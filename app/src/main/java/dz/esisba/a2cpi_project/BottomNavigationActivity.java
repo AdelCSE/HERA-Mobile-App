@@ -215,4 +215,21 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        user.reload().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                if (user == null) {
+                    startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
+                    finish();
+                } else if (!user.isEmailVerified()) {
+                    startActivity(new Intent(BottomNavigationActivity.this, VerificationActivity.class));
+                    finish();
+                }
+            }
+        });
+    }
 }

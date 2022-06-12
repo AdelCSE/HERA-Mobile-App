@@ -126,6 +126,31 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
         Main();
 
+
+        //DO NOT REMOVE THIS WE NEED IT LATER!!!!!!!
+        //SETTING FEED FOR ALL USERS **IMPORTANT**
+
+        /*Query user = fstore.collection("Users");
+        user.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots)
+                {
+                    fstore.collection("Posts").orderBy("likesCount", Query.Direction.DESCENDING).limit(50).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                                PostModel post = document.toObject(PostModel.class);
+                                doc.getReference().collection("Feed").document(post.getPostid()).set(post);
+                                doc.getReference().collection("Feed").document(post.getPostid()).update("priority", 2);
+                            }
+                        }
+                    });
+                    doc.getReference().update("reputation", 0);
+                }
+            }
+        });*/
+
         return parentHolder;
 
     }
@@ -148,8 +173,8 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                         following = (ArrayList<String>) task.getResult().get("following");
                         if (task.getResult().get("LikedTags") != null) {
                             tagsMap = (HashMap<String, Long>) task.getResult().get("LikedTags");
-                            SetFeed();
                         }
+                        SetFeed();
                     }
 
 
@@ -167,6 +192,8 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 }
             }
         });
+
+        FetchPosts();
 
 /////////////////////////////////////////////////////////////////////////
 
@@ -190,10 +217,12 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         });
 
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onRefresh() {
-                FetchPosts();
                 refresh.setRefreshing(false);
+                FetchPosts();
+                SetFeed();
             }
         });
 
@@ -222,6 +251,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         progressBar.setVisibility(View.VISIBLE);
     }
 
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void SetFeed() {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -248,10 +278,9 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                     for (QueryDocumentSnapshot document : nextQueryDocumentSnapshots) {
                         PostModel post = document.toObject(PostModel.class);
                         userInfos.collection("Feed").document(post.getPostid()).set(post);
-                        FetchPosts();
+                        userInfos.collection("Feed").document(post.getPostid()).update("priority", 0);
                     }
                 }
-
             }
         });
 
@@ -276,13 +305,14 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             PostModel post = document.toObject(PostModel.class);
                             userInfos.collection("Feed").document(post.getPostid()).set(post);
+                            userInfos.collection("Feed").document(post.getPostid()).update("priority", 1);
                         }
                     }
                 });
-            }catch (IndexOutOfBoundsException e){Log.e("ERRO:", e.getMessage());
+            }catch (IndexOutOfBoundsException e){
+                Log.e("ERRO:", e.getMessage());
             }
         }
-
 
         //delete extras
         Query query = userInfos.collection("Feed").whereLessThan("Date", c.getTime());
@@ -294,6 +324,20 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 }
             }
         });
+        /*ArrayList<PostModel> safePosts = new ArrayList<>();
+        for (String id: following) {
+            Query delete = fstore.collection("Users").document(user.getUid()).collection("Feed")
+                    .whereEqualTo("publisher", id);
+            delete.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    for (QueryDocumentSnapshot doc: queryDocumentSnapshots) {
+                        PostModel post = doc.toObject(PostModel.class);
+                        safePosts.add(post);
+                    }
+                }
+            });
+        }*/
     }
 
     //Fetch Posts and display them in home
@@ -301,7 +345,11 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         PostsDataHolder = new ArrayList<>();
         isLastItemPaged = false;
 
-        Query query = fstore.collection("Users").document(user.getUid()).collection("Feed").orderBy("ddate", Query.Direction.DESCENDING).limit(5);
+
+        Query query = fstore.collection("Users").document(user.getUid()).collection("Feed")
+                .orderBy("date", Query.Direction.DESCENDING)
+                .orderBy("priority")
+                .limit(5);
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -557,11 +605,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                                 public void onFailure(@NonNull Exception e) {
                                     DislikeFailure(lottieAnimationView, likesTxt, position);
                                 }
-                            }).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    SetLikesForUser(post.getTags(), -1);
-                                }
                             });
                         }
                     } else DislikeFailure(lottieAnimationView, likesTxt, position);
@@ -573,8 +616,9 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
     private void SetLikesForUser(ArrayList<String> tags, int i) {
         DocumentReference userRef = fstore.collection("Users").document(user.getUid());
-        HashMap<String, Long> updatedTags = new HashMap<>();
         if (tagsMap == null) tagsMap = new HashMap<String, Long>();
+        HashMap<String, Long> updatedTags = tagsMap;
+
         for (String tag : tags) {
             long occ = 1;
             if (tagsMap.containsKey(tag)) occ = tagsMap.get(tag) + 1;
