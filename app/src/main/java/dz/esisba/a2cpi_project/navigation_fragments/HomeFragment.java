@@ -146,6 +146,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                             }
                         }
                     });
+                    doc.getReference().update("reputation", 0);
                 }
             }
         });*/
@@ -278,7 +279,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                         PostModel post = document.toObject(PostModel.class);
                         userInfos.collection("Feed").document(post.getPostid()).set(post);
                         userInfos.collection("Feed").document(post.getPostid()).update("priority", 0);
-                        Toast.makeText(getActivity(), "setting done", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -605,11 +605,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                                 public void onFailure(@NonNull Exception e) {
                                     DislikeFailure(lottieAnimationView, likesTxt, position);
                                 }
-                            }).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    SetLikesForUser(post.getTags(), -1);
-                                }
                             });
                         }
                     } else DislikeFailure(lottieAnimationView, likesTxt, position);
@@ -621,8 +616,9 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
     private void SetLikesForUser(ArrayList<String> tags, int i) {
         DocumentReference userRef = fstore.collection("Users").document(user.getUid());
-        HashMap<String, Long> updatedTags = new HashMap<>();
         if (tagsMap == null) tagsMap = new HashMap<String, Long>();
+        HashMap<String, Long> updatedTags = tagsMap;
+
         for (String tag : tags) {
             long occ = 1;
             if (tagsMap.containsKey(tag)) occ = tagsMap.get(tag) + 1;

@@ -84,23 +84,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
             lottieAnimationView.setProgress(0);
             lottieAnimationView.setTag("Like");
         }
-        /*likesRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override //check if the document exists, i.e current user likes the post
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot doc = task.getResult();
-                    if (doc.exists()) {
-                        lottieAnimationView.setSpeed(100);
-                        lottieAnimationView.playAnimation();
-                        lottieAnimationView.setTag("Liked");
-                    }
-                    else
-                    {
-                        lottieAnimationView.setTag("Like");
-                    }
-                }
-            }
-        });*/
     }
 
 

@@ -1,20 +1,33 @@
 package dz.esisba.a2cpi_project.adapter;
 
 import android.content.Context;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.R;
+import dz.esisba.a2cpi_project.models.PostModel;
 import dz.esisba.a2cpi_project.models.ReplyModel;
 
 public class RepliesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -42,7 +55,7 @@ public class RepliesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (viewType==1){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_reply,parent,false);
             context = parent.getContext();
-            return new Myviewholder(view);
+            return new Myviewholder(view, RepliesHolder);
         }else{
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.last_item_text,parent,false);
             context = parent.getContext();
@@ -60,6 +73,7 @@ public class RepliesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             myviewholder1.Date.setText(RepliesHolder.get(position).ConvertDate());
             myviewholder1.Question.setText(RepliesHolder.get(position).getQuestion());
             myviewholder1.Answer.setText(RepliesHolder.get(position).getReply());
+            RunCheckForLikes(RepliesHolder.get(position), myviewholder1.star);
         }else{
             Myviewholder2 myviewholder2 = (Myviewholder2) holder;
             myviewholder2.lastItem.setText("That's it");
@@ -68,6 +82,22 @@ public class RepliesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
     }
+
+    private void RunCheckForLikes(ReplyModel post, ImageView star) {
+        boolean likes = post.isLiked();
+
+        if (post.isLiked())
+        {
+            star.setImageResource(R.drawable.ic_star__2_);
+            star.setTag("Liked");
+        }
+        else
+        {
+            star.setImageResource(R.drawable.ic_star__3_);
+            star.setTag("Like");
+        }
+    }
+
 
 
     @Override
@@ -78,15 +108,47 @@ public class RepliesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     static class Myviewholder extends RecyclerView.ViewHolder {
 
         CircleImageView Img;
+        ImageView star;
         TextView Username,Date,Question,Answer;
 
-        public Myviewholder (@NonNull View itemView){
+        private FirebaseAuth auth;
+        private FirebaseUser user;
+        private FirebaseFirestore fstore;
+
+        public Myviewholder (@NonNull View itemView, ArrayList<ReplyModel> replies){
             super(itemView);
             Img = itemView.findViewById(R.id.replyImg);
             Username = itemView.findViewById(R.id.replyUsername);
             Date = itemView.findViewById(R.id.replyDate);
             Question = itemView.findViewById(R.id.replyQuestion);
             Answer = itemView.findViewById(R.id.reply);
+            star = itemView.findViewById(R.id.replyStarBtn);
+
+            auth = FirebaseAuth.getInstance();
+            fstore = FirebaseFirestore.getInstance();
+            user = auth.getCurrentUser();
+
+            star.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    DocumentReference userRef = fstore.collection("Users").document(user.getUid());
+                    int position = getAbsoluteAdapterPosition();
+                    if (star.getTag().equals("Like"))
+                    {
+                        star.setTag("Liked");
+                        star.setImageResource(R.drawable.ic_star__2_);
+                        fstore.collection("Users").document(replies.get(position).getUid()).update("reputation", FieldValue.increment(1));
+                        userRef.collection("Replies").document(replies.get(position).getReplyId()).update("liked", true);
+                    }
+                    else
+                    {
+                        star.setImageResource(R.drawable.ic_star__3_);
+                        star.setTag("Like");
+                        fstore.collection("Users").document(replies.get(position).getUid()).update("reputation", FieldValue.increment(-1));
+                        userRef.collection("Replies").document(replies.get(position).getReplyId()).update("liked", false);
+                    }
+                }
+            });
         }
     }
 

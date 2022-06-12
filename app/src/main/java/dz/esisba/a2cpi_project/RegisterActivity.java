@@ -144,6 +144,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 userInfor.put("followers", followers);
                                 userInfor.put("posts", posts);
                                 userInfor.put("answers", answers);
+                                userInfor.put("reputation", 0);
                                 userInfor.put("profilePictureUrl", "https://firebasestorage.googleapis.com/v0/b/cpi-project-b42b5.appspot.com/o/profileImages%2Fdefualty.png?alt=media&token=388b0aef-35f1-418a-b165-89f1e8b7e8b0");
 
                                 //specify access level (if user is admin)

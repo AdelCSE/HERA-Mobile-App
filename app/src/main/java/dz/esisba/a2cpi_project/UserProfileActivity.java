@@ -58,7 +58,7 @@ import dz.esisba.a2cpi_project.models.UserModel;
 
 public class UserProfileActivity extends AppCompatActivity implements GetUserInterface {
 
-    private TextView usernameTxt,name, bio, followersCount, followingCount;
+    private TextView usernameTxt,name, bio, followersCount, followingCount, reputationText;
     private ImageView banner;
     private CircleImageView profilePic;
     private Button followBtn;
@@ -106,6 +106,7 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
 
         followBtn = findViewById(R.id.followBtn);
         name = findViewById(R.id.profileName);
+        reputationText = findViewById(R.id.reputationText);
         usernameTxt = findViewById(R.id.usernameTxt);
         bio = findViewById(R.id.profileBio);
         followersCount = findViewById(R.id.fllwNb);
@@ -260,6 +261,7 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
         usernameTxt.setText("@"+userModel.getUsername());
         name.setText(userModel.getName());
         bio.setText(userModel.getBio());
+        reputationText.setText(userModel.getReputation()+"");
         Glide.with(UserProfileActivity.this).load(userModel.getProfilePictureUrl()).into(profilePic);
         Glide.with(UserProfileActivity.this).load(userModel.getBannerUrl()).into(banner);
     }
