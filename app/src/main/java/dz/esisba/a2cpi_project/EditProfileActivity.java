@@ -128,9 +128,9 @@ public class EditProfileActivity extends AppCompatActivity {
                                 name2.setText(splitStr[splitStr.length - 1]); //put last string in name2
                             }
                         }
-                        if(doc.get("Bio")!=null)
+                        if(doc.get("bio")!=null)
                         {
-                            bio.setText(doc.get("Bio").toString());
+                            bio.setText(doc.get("bio").toString());
                         }
                     }
                 }
@@ -183,7 +183,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     {
                         Map<String,Object> hashMap = new HashMap(); //represents key, value
                         hashMap.put("Name", name1.getText().toString()+" "+name2.getText().toString());
-                        hashMap.put("Bio", bio.getText().toString());
+                        hashMap.put("bio", bio.getText().toString());
                         StorageReference fileReference = storageReference.child(user.getUid());
                         if(resultUri!=null) {
                             UploadImage(fileReference, hashMap, df);

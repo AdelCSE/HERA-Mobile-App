@@ -1,15 +1,45 @@
 {
   "project_info": {
     "project_number": "1099260660825",
+    "firebase_url": "https://cpi-project-b42b5-default-rtdb.firebaseio.com",
     "project_id": "cpi-project-b42b5",
     "storage_bucket": "cpi-project-b42b5.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1099260660825:android:96e48b55348677a54a3548",
+        "mobilesdk_app_id": "1:1099260660825:android:50744bcd6ecd411a4a3548",
         "android_client_info": {
           "package_name": "dz.esisba.a2cpi_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1099260660825-qf1s7eet6i73e7i0ii5n105r4ns40vsv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATdjRcqpAKdLqCjOFLE_vaQyY3GViDj4Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1099260660825-qf1s7eet6i73e7i0ii5n105r4ns40vsv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1099260660825:android:8a4cc5877bfdfbb44a3548",
+        "android_client_info": {
+          "package_name": "dz.esisba.moderatorapp"
         }
       },
       "oauth_client": [

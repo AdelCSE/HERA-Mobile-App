@@ -289,6 +289,7 @@ public class ProfileFragment extends Fragment {
             }
             if (userModel.getBio() != null) { //set bio
                 bio.setText(userModel.getBio());
+                Toast.makeText(getActivity(), userModel.getBio(), Toast.LENGTH_SHORT).show();
             }
             reputationText.setText(userModel.getReputation()+"");
         }

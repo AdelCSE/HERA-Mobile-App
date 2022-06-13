@@ -163,6 +163,26 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         postRef = fstore.collection("Posts");
         userInfos = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
 
+        userInfos.collection("Feed").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (queryDocumentSnapshots.size()<=0)
+                {
+                    fstore.collection("Posts").orderBy("likesCount", Query.Direction.DESCENDING).limit(50)
+                            .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                                PostModel post = document.toObject(PostModel.class);
+                                userInfos.collection("Feed").document(post.getPostid()).set(post);
+                                userInfos.collection("Feed").document(post.getPostid()).update("priority", 2);
+                            }
+
+                        }
+                    });
+                }
+            }
+        });
 
         userInfos.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -349,7 +369,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         Query query = fstore.collection("Users").document(user.getUid()).collection("Feed")
                 .orderBy("date", Query.Direction.DESCENDING)
                 .orderBy("priority")
-                .limit(5);
+                .limit(25);
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -388,7 +408,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
                                 Query nextQuery = userInfos.collection("Feed").orderBy("date", Query.Direction.DESCENDING)
                                         .startAfter(lastVisible)
-                                        .limit(2);
+                                        .limit(25);
                                 nextQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
