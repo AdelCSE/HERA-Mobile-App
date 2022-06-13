@@ -1,5 +1,6 @@
 package dz.esisba.a2cpi_project.search_fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import dz.esisba.a2cpi_project.BottomNavigationActivity;
 import dz.esisba.a2cpi_project.QuestionBlocActivity;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.adapter.SearchRecommendationAdapter;
@@ -72,7 +74,9 @@ public class TagsFragment extends Fragment implements SearchOnItemClick {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requireActivity().onBackPressed();
+                Intent i = new Intent(getActivity(), BottomNavigationActivity.class);
+                startActivity(i);
+                ((Activity) getActivity()).overridePendingTransition(0, 0);
             }
         });
 

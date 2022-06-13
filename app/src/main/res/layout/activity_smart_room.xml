@@ -9,6 +9,7 @@
     tools:context=".SmartRoom">
 
     <ImageButton
+        android:id="@+id/srBackBtn"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginLeft="15dp"

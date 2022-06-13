@@ -34,8 +34,13 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
+        CreatPushNotification(remoteMessage);
 //        int resourceImage = getResources().getIdentifier(Objects.requireNonNull(remoteMessage.getNotification()).getIcon(), "drawable", getPackageName());
 
+
+    }
+
+    private void CreatPushNotification(RemoteMessage remoteMessage){
         Intent resultIntent = new Intent(getApplicationContext(), NotificationsActivity.class);
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         TaskStackBuilder stakBuilder = TaskStackBuilder.create(this);
@@ -61,7 +66,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             String channelId = "Your_channel_id";
             NotificationChannel channel = new NotificationChannel(
                     channelId,
-                    "Chak dir Hna !",
+                    "Notifications",
                     NotificationManager.IMPORTANCE_HIGH);
             Manager.createNotificationChannel(channel);
             builder.setChannelId(channelId);

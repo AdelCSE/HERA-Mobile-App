@@ -4,10 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.adapter.SearchAdapter;
 import dz.esisba.a2cpi_project.models.UserModel;
+import dz.esisba.a2cpi_project.navigation_fragments.HomeFragment;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class SearchFragment extends Fragment implements SearchAdapter.OnItemClickListener {
@@ -32,6 +36,7 @@ public class SearchFragment extends Fragment implements SearchAdapter.OnItemClic
     SearchAdapter mAdapter;
     FirebaseFirestore db ;
     SearchView searchView;
+    private ImageButton backBtn;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,6 +45,7 @@ public class SearchFragment extends Fragment implements SearchAdapter.OnItemClic
 
         db=FirebaseFirestore.getInstance();
 
+        backBtn = parentHolder.findViewById(R.id.backBtn);
         recyclerView1 = parentHolder.findViewById(R.id.recycleview1);
         recyclerView1.setHasFixedSize(true);
         recyclerView1.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -62,6 +68,18 @@ public class SearchFragment extends Fragment implements SearchAdapter.OnItemClic
                         EventChangeListener(s);
                     }
                 });
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new TagsFragment();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.searchContainer, fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
 
         return parentHolder;
     }
