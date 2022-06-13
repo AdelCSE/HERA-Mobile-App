@@ -33,7 +33,29 @@ public class NotificationModel {
 
     public String ConvertDate() {
         SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy • HH:mm");
-        return sfd.format(getDate().toDate());
+        /**/
+        Date now = new Date();
+        Date then = now;
+        try {
+            then = sfd.parse("11/06/2022"/*sfd.format(getDate().toDate())*/);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        long duration = now.getTime()-then.getTime();
+        long min = TimeUnit.MILLISECONDS.toMinutes(duration);
+        if(min<1){return " Just Now";}
+        if(min<60){
+            return min+" minutes ago";
+        }
+        long hours =  TimeUnit.MILLISECONDS.toHours(duration);
+        if(hours<24){
+            return hours+" hours ago";
+        }
+        long day =  TimeUnit.MILLISECONDS.toDays(duration);
+        if(day<7){
+            return day+" days ago";
+        }
+        return day /~ 7+" weeks ago" ;
     }
 
 
