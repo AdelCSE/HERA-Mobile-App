@@ -26,6 +26,25 @@ public class SecurityVerification extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_security_verification);
 
+        VerifyEmail();
+    }
+
+    private void retrieveRestoreToken(){
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            final Map<String, Object> userToken=new HashMap<>();
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if(task.isSuccessful()){
+                    String token = task.getResult();
+                    userToken.put("Token", token);
+                    FirebaseFirestore.getInstance().collection("Users").document(
+                            FirebaseAuth.getInstance().getCurrentUser().getUid()).update(userToken).addOnSuccessListener(unused -> Toast.makeText(SecurityVerification.this,"Success",Toast.LENGTH_LONG));
+                }
+            }
+        });
+    }
+
+    private void VerifyEmail(){
         verificationCode = findViewById(R.id.verificationCode);
         Button verify = findViewById(R.id.Verifybtn);
 
@@ -46,21 +65,6 @@ public class SecurityVerification extends AppCompatActivity {
                 }
             }else{
                 Toast.makeText(SecurityVerification.this, "Email was not sent ,Try Again", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void retrieveRestoreToken(){
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
-            final Map<String, Object> userToken=new HashMap<>();
-            @Override
-            public void onComplete(@NonNull Task<String> task) {
-                if(task.isSuccessful()){
-                    String token = task.getResult();
-                    userToken.put("Token", token);
-                    FirebaseFirestore.getInstance().collection("Users").document(
-                            FirebaseAuth.getInstance().getCurrentUser().getUid()).update(userToken).addOnSuccessListener(unused -> Toast.makeText(SecurityVerification.this,"Success",Toast.LENGTH_LONG));
-                }
             }
         });
     }

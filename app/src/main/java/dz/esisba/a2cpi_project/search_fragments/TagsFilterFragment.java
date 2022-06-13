@@ -39,7 +39,7 @@ import dz.esisba.a2cpi_project.adapter.SearchRecommendationAdapter;
 import dz.esisba.a2cpi_project.interfaces.SearchOnItemClick;
 import dz.esisba.a2cpi_project.models.PostModel;
 
-public class TagsFragment extends Fragment implements SearchOnItemClick {
+public class TagsFilterFragment extends Fragment implements SearchOnItemClick {
 
     private View parentHolder;
     private ProgressBar progressBar;

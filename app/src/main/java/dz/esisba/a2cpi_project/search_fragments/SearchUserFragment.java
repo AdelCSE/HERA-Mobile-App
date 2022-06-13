@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -25,10 +24,9 @@ import java.util.concurrent.TimeUnit;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.adapter.SearchAdapter;
 import dz.esisba.a2cpi_project.models.UserModel;
-import dz.esisba.a2cpi_project.navigation_fragments.HomeFragment;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
-public class SearchFragment extends Fragment implements SearchAdapter.OnItemClickListener {
+public class SearchUserFragment extends Fragment implements SearchAdapter.OnItemClickListener {
 
     RecyclerView recyclerView1;
     View parentHolder;
@@ -72,7 +70,7 @@ public class SearchFragment extends Fragment implements SearchAdapter.OnItemClic
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment fragment = new TagsFragment();
+                Fragment fragment = new TagsFilterFragment();
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.searchContainer, fragment);
