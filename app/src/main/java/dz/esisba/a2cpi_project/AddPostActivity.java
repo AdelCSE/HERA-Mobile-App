@@ -120,7 +120,7 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
 
-        SetCheckedChips();
+        SetCheckedTags();
 
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,7 +168,7 @@ public class AddPostActivity extends AppCompatActivity {
         else return true;
     }
 
-    private void SetCheckedChips()
+    private void SetCheckedTags()
     {
         CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override

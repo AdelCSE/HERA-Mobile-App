@@ -188,7 +188,7 @@ public class ProfileFragment extends Fragment {
         bannerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               pickMedia();
+               ChangeBanner();
             }
         });
 
@@ -243,7 +243,7 @@ public class ProfileFragment extends Fragment {
         if (resultUri != null)banner.setImageURI(resultUri);
     }*/
 
-    private void pickMedia() {
+    private void ChangeBanner() {
         String[] mimeTypes = {"image/png", "image/jpg", "image/jpeg"};
         ImagePicker.Companion.with(this)
                 .galleryMimeTypes(mimeTypes)

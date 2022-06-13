@@ -128,7 +128,7 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
         });
     }
 
-    public void buildRecyclerView() {
+    private void buildRecyclerView() {
         recyclerView = parentHolder.findViewById(R.id.recviewQuestions);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new QuestionsAdapter(QuestionsDataHolder,this);
@@ -136,7 +136,7 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
 
     }
 
-    public void StartQuestionBlocActivity(int position) {
+    private void StartQuestionBlocActivity(int position) {
         PostModel Post1 = new PostModel(QuestionsDataHolder.get(position).getAskedBy(), QuestionsDataHolder.get(position).getPublisher()
                 , QuestionsDataHolder.get(position).getUsername(), QuestionsDataHolder.get(position).getQuestion(),
                 QuestionsDataHolder.get(position).getBody(), QuestionsDataHolder.get(position).getPostid(),

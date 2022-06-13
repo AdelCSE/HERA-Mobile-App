@@ -205,7 +205,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         });
     }
 
-    public void StartUserProfileActivity(int position){
+    private void StartUserProfileActivity(int position){
         if (postsDataHolder.get(position).getPublisher().equals(user.getUid())){
             //switch to profile
         }else{
@@ -480,7 +480,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         }
     }
 
-    public void buildRecyclerView(){
+    private void buildRecyclerView(){
         setRecyclerView(findViewById(R.id.recviewa));
         getRecyclerView().setLayoutManager(new LinearLayoutManager(this));
         adapter = new QuestionBlocAdapter(postsDataHolder,this);
@@ -489,7 +489,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
 
     Date date = new Date();
 
-    public void showAnswerDialog(){
+    private void showAnswerDialog(){
         View view = getLayoutInflater().inflate(R.layout.activty_add_answer,null,false);
 
         ImageButton closeAnswerBtn = view.findViewById(R.id.closeAnswerBtn);

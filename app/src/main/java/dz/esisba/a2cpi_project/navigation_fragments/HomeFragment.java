@@ -130,7 +130,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         //DO NOT REMOVE THIS WE NEED IT LATER!!!!!!!
         //SETTING FEED FOR ALL USERS **IMPORTANT**
 
-        /*Query user = fstore.collection("Users");
+        Query user = fstore.collection("Users");
         user.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -149,7 +149,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                     doc.getReference().update("reputation", 0);
                 }
             }
-        });*/
+        });
 
         return parentHolder;
 
@@ -207,7 +207,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                         }
                         notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
                     } else {
-                        Toast.makeText(getContext(), "You Don't Have Notifications ! ", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), "You Don't Have Notifications ! ", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -330,7 +330,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                     }
                 });
             }catch (IndexOutOfBoundsException e){
-                Log.e("ERRO:", e.getMessage());
+                Log.e("Some error has occured:", e.getMessage());
             }
         }
 
@@ -383,7 +383,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                     recyclerView.setVisibility(VISIBLE);
                     if (task.getResult().size() > 0)
                         lastVisible = task.getResult().getDocuments().get(task.getResult().size() - 1);
-                    buildRecyclerView();
+                    BuildRecyclerView();
 
                     RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
                         @Override
@@ -435,7 +435,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
 
     //Build the recyclerView
-    public void buildRecyclerView() {
+    private void BuildRecyclerView() {
         recyclerView = parentHolder.findViewById(R.id.recview);
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new PostAdapter(PostsDataHolder, this);
@@ -444,7 +444,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     }
 
     //Start Question Bloc Activity
-    public void StartQuestionBlocActivity(int position) {
+    private void StartQuestionBlocActivity(int position) {
         PostModel Post1 = new PostModel(PostsDataHolder.get(position).getAskedBy(), PostsDataHolder.get(position).getPublisher()
                 , PostsDataHolder.get(position).getUsername(), PostsDataHolder.get(position).getQuestion(),
                 PostsDataHolder.get(position).getBody(), PostsDataHolder.get(position).getPostid(),
@@ -477,12 +477,12 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
             PostsDataHolder.get(position).setLikesCount(likes.size());
             adapter.notifyItemChanged(position);
             adapter.notifyDataSetChanged();
-            buildRecyclerView();
+            BuildRecyclerView();
         }
     }
 
     //Start User Profile Activity
-    public void StartUserProfileActivity(int position) {
+    private void StartUserProfileActivity(int position) {
         if (PostsDataHolder.get(position).getPublisher().equals(user.getUid())) {
             //switch to profile
         } else {
