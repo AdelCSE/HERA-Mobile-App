@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -48,6 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
     private LinearLayout logOut,changePassword,sendFeedBack,reportProblem;
     private AppCompatButton editprofileBtn;
     private SwitchCompat securitySwitch;
+
 
 
     @Override
@@ -155,7 +157,7 @@ public class SettingsActivity extends AppCompatActivity {
                     if (doc.exists()) {
                         if (doc.get("profilePictureUrl")!= null) {
                             String downloadUrl = doc.get("profilePictureUrl").toString();
-                            Glide.with(SettingsActivity.this).load(downloadUrl).into(settingsImg);
+                            Glide.with(getApplicationContext()).load(downloadUrl).into(settingsImg);
                         }
 
                         if (doc.get("Name")!= null)
