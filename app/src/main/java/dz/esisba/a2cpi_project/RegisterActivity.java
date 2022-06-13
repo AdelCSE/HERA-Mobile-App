@@ -150,32 +150,21 @@ public class RegisterActivity extends AppCompatActivity {
                                 //specify access level (if user is admin)
                                 userInfor.put("isAdmin",false);
 
-                                df.set(userInfor); //pass our map to the fb document
-                                fstore.collection("Posts").orderBy("likesCount", Query.Direction.DESCENDING).limit(50)
-                                        .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                df.set(userInfor).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
-                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                                            PostModel post = document.toObject(PostModel.class);
-                                            df.collection("Feed").document(post.getPostid()).set(post);
-                                            df.collection("Feed").document(post.getPostid()).update("priority", 2);
-                                        }
-
-                                        user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void unused) {
-                                                Toast.makeText(RegisterActivity.this, "Please verifiy your email and sign in", Toast.LENGTH_SHORT).show();
-                                                startActivity(new Intent(getApplicationContext(), VerificationActivity.class));
-                                                finish();
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(RegisterActivity.this, "writing finished", Toast.LENGTH_SHORT).show();
+                                        /*user.sendEmailVerification();
+                                        Toast.makeText(RegisterActivity.this, "Please verifiy your email and sign in", Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(getApplicationContext(), VerificationActivity.class));
+                                        finish()*/;
                                     }
-                                });
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }); //pass our map to the fb document
                             }
                             else
                             {

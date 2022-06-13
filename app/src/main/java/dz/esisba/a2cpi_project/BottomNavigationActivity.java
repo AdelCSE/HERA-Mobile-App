@@ -40,6 +40,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.io.IOException;
@@ -47,6 +50,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import dz.esisba.a2cpi_project.interfaces.GetUserInterface;
+import dz.esisba.a2cpi_project.models.PostModel;
 import dz.esisba.a2cpi_project.models.UserModel;
 import dz.esisba.a2cpi_project.navigation_fragments.AddPostFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.HomeFragment;
@@ -109,10 +113,10 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
                 if (user == null) {
                     startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
                     finish();
-                } else if (!user.isEmailVerified()) {
+                }/* else if (!user.isEmailVerified()) {
                     startActivity(new Intent(BottomNavigationActivity.this, VerificationActivity.class));
                     finish();
-                }
+                }*/
             }
         });
 
@@ -128,6 +132,29 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
                 }
             }
         });
+
+
+        df.collection("Feed").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (queryDocumentSnapshots.size()<=0)
+                {
+                    fstore.collection("Posts").orderBy("likesCount", Query.Direction.DESCENDING).limit(50)
+                            .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                                PostModel post = document.toObject(PostModel.class);
+                                df.collection("Feed").document(post.getPostid()).set(post);
+                                df.collection("Feed").document(post.getPostid()).update("priority", 2);
+                            }
+
+                        }
+                    });
+                }
+            }
+        });
+
         //TODO: FIX https://stackoverflow.com/questions/57861254/how-to-change-a-specific-icon-image-from-bottom-navigation-view
         df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -216,20 +243,4 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        user.reload().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                if (user == null) {
-                    startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
-                    finish();
-                } else if (!user.isEmailVerified()) {
-                    startActivity(new Intent(BottomNavigationActivity.this, VerificationActivity.class));
-                    finish();
-                }
-            }
-        });
-    }
 }
