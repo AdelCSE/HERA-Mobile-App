@@ -86,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
+        user = auth.getCurrentUser();
 
 
         reset_alert = new AlertDialog.Builder(this);
@@ -132,31 +133,35 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            user = auth.getCurrentUser();
 
-                            //verify if user is signed in
-                            if (auth.getCurrentUser().isEmailVerified() ) { //Here in we need to add SecurityCheck Condition (false)
-                            //Security check =boolean value in users collection
-
-                            //true=verify email each time user try to login , else = login directly
-                                fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        if(task.isSuccessful()){
-                                            boolean securitySwitch = Boolean.TRUE.equals(task.getResult().getBoolean("Security"));
-                                            if(!securitySwitch){
-                                                //login directly
+                                                                            //login directly
                                                 retrieveRestoreToken();
                                                 startActivity(new Intent(LoginActivity.this, BottomNavigationActivity.class));
                                                 finish();
-                                            }else{
-                                                //send verification email contains random 6 digits code and verify it in Security Activity...
-                                                code = getRandomNumber();
-                                                    sendEmail(code);
-                                            }
-                                        }
-                                    }
-                                });
+
+                            //verify if user is signed in
+                            if (auth.getCurrentUser().isEmailVerified() || true ) { //Here in we need to add SecurityCheck Condition (false)
+                            //Security check =boolean value in users collection
+
+                            //true=verify email each time user try to login , else = login directly
+//                                fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                                    @Override
+//                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                                        if(task.isSuccessful()){
+//                                            boolean securitySwitch = Boolean.TRUE.equals(task.getResult().getBoolean("Security"));
+//                                            if(!securitySwitch){
+//                                                //login directly
+//                                                retrieveRestoreToken();
+//                                                startActivity(new Intent(LoginActivity.this, BottomNavigationActivity.class));
+//                                                finish();
+//                                            }else{
+//                                                //send verification email contains random 6 digits code and verify it in Security Activity...
+//                                                code = getRandomNumber();
+//                                                    sendEmail(code);
+//                                            }
+//                                        }
+//                                    }
+//                                });
                             }
                             else 
                             {

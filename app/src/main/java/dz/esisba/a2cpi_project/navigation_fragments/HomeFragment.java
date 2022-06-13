@@ -712,4 +712,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
  *    1 => Like post
  *    2 => Like answer
  *    3 => answered question
+ *    4 => Arduino Temperature
+ *    5 => Arduino Movement
+ *    6 => Arduino Sound
  * */
