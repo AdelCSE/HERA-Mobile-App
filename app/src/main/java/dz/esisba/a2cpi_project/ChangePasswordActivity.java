@@ -29,18 +29,23 @@ public class ChangePasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
 
-        backBtn = findViewById(R.id.ChangePwBackBtn);
-        currentPassword = findViewById(R.id.CurrentPasswordEditTxt);
-        newPassword = findViewById(R.id.NewPasswordEditTxt);
-        confirmNewPassword = findViewById(R.id.ConfirmNewPasswordEditTxt);
-        confirmBtn = findViewById(R.id.ChangePwBtn);
-
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
             }
         });
+
+        changePassword();
+
+    }
+
+    private void changePassword(){
+        backBtn = findViewById(R.id.ChangePwBackBtn);
+        currentPassword = findViewById(R.id.CurrentPasswordEditTxt);
+        newPassword = findViewById(R.id.NewPasswordEditTxt);
+        confirmNewPassword = findViewById(R.id.ConfirmNewPasswordEditTxt);
+        confirmBtn = findViewById(R.id.ChangePwBtn);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -98,6 +103,5 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 });
             }
         });
-
     }
 }

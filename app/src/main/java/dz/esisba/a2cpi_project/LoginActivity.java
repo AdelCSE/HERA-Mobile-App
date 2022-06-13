@@ -151,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
                                                 finish();
                                             }else{
                                                 //send verification email contains random 6 digits code and verify it in Security Activity...
-                                                code = getRandomNumber();
+                                                code = generateCode();
                                                     sendEmail(code);
                                             }
                                         }
@@ -340,7 +340,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private String getRandomNumber() {
+    private String generateCode() {
         // It will generate 6 digit random Number.
         // from 0 to 999999
         Random rnd = new Random();

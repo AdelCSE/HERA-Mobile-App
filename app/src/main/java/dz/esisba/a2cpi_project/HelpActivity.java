@@ -17,6 +17,11 @@ public class HelpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
 
+        GetUserClick();
+
+    }
+
+    private void GetUserClick(){
         feedBackEditTxt = findViewById(R.id.sendFeedBackEditTxt);
         reportProblemEditTxt = findViewById(R.id.reportProblemEditTxt);
         backBtn = findViewById(R.id.helpBackBtn);

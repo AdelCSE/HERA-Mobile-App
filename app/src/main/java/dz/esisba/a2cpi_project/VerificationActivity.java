@@ -25,8 +25,31 @@ public class VerificationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verification);
 
-        verify = findViewById(R.id.verify);
+        user = FirebaseAuth.getInstance().getCurrentUser();
         continueBtn = findViewById(R.id.continueBtn);
+
+        Verification();
+
+        continueBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                user.reload().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        if (user.isEmailVerified()) {
+                            startActivity(new Intent(getApplicationContext(), OnboardingScreensActivity.class));
+                            finish();
+                        }
+                        else Toast.makeText(VerificationActivity.this, "Please verify your account and try again", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+    }
+
+    private void Verification(){
+        verify = findViewById(R.id.verify);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -47,22 +70,5 @@ public class VerificationActivity extends AppCompatActivity {
                 });
             }
         });
-
-        continueBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                user.reload().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        if (user.isEmailVerified()) {
-                            startActivity(new Intent(getApplicationContext(), OnboardingScreensActivity.class));
-                            finish();
-                        }
-                        else Toast.makeText(VerificationActivity.this, "Please verify your account and try again", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
-
     }
 }

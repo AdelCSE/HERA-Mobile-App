@@ -285,7 +285,9 @@ public class AddPostActivity extends AppCompatActivity {
            df.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
                @Override
                public void onComplete(@NonNull Task<Void> task) {
+                   Log.d("____________", "onComplete: 11111");
                    if (task.isSuccessful()) {
+                       Log.d("____________", "onComplete: 2222222222");
                        askedByRef.update("posts", FieldValue.arrayUnion(postId));
                        Toast.makeText(AddPostActivity.this, "Question posted successfully", Toast.LENGTH_SHORT).show();
                        loader.dismiss();

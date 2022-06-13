@@ -54,6 +54,19 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        RegisterUser();
+
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            }
+        });
+
+    }
+
+    private void RegisterUser(){
+
         usernameEditTxt = findViewById(R.id.usernameEditTxt);
         nameEditTxt = findViewById(R.id.nameEditTxt);
         emailEditTxt = findViewById(R.id.emailEditTxt);
@@ -189,14 +202,6 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
-
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-            }
-        });
-
     }
 
     private boolean CheckExistingUser(String name)

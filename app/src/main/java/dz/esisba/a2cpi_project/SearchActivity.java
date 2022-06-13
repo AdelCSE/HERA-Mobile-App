@@ -6,8 +6,8 @@ import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import dz.esisba.a2cpi_project.search_fragments.SearchFragment;
-import dz.esisba.a2cpi_project.search_fragments.TagsFragment;
+import dz.esisba.a2cpi_project.search_fragments.SearchUserFragment;
+import dz.esisba.a2cpi_project.search_fragments.TagsFilterFragment;
 
 public class SearchActivity extends AppCompatActivity{
 
@@ -18,16 +18,21 @@ public class SearchActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        BeginTagSearch();
+
+    }
+
+    private void BeginTagSearch(){
         sbtn = findViewById(R.id.container_searchBtn);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.searchContainer,
-                new TagsFragment()).commit();
+                new TagsFilterFragment()).commit();
 
         sbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.searchContainer,
-                        new SearchFragment()).commit();
+                        new SearchUserFragment()).commit();
             }
         });
     }
