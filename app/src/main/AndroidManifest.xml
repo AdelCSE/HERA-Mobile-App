@@ -17,6 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.2CPI_PROJECT">
         <activity
+            android:name=".SmartRoom"
+            android:exported="false" />
+        <activity
             android:name=".SecurityVerification"
             android:exported="false" />
         <activity
@@ -56,7 +59,7 @@
             android:name=".QuestionBlocActivity"
             android:exported="false" />
         <activity
-            android:name=".BottomNavigationActivity"
+            android:name=".LoginActivity"
             android:exported="false" />
         <activity
             android:name=".RegisterActivity"
@@ -65,7 +68,7 @@
             android:name=".OnboardingScreensActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".BottomNavigationActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

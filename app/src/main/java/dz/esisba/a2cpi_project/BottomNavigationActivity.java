@@ -5,8 +5,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import android.annotation.SuppressLint;
-import android.app.LauncherActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,43 +14,30 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.SpannableStringBuilder;
-import android.text.style.ImageSpan;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.snackbar.SnackbarContentLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 import dz.esisba.a2cpi_project.interfaces.GetUserInterface;
 import dz.esisba.a2cpi_project.models.UserModel;
-import dz.esisba.a2cpi_project.navigation_fragments.AddPostFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.HomeFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.CharityFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.ProfileFragment;
-import dz.esisba.a2cpi_project.navigation_fragments.SmartRoomFragment;
 
 public class BottomNavigationActivity extends AppCompatActivity implements GetUserInterface {
 
@@ -103,7 +88,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
         CheckNetwork();
 
 
-        user.reload().addOnSuccessListener(new OnSuccessListener<Void>() {
+        /*user.reload().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 if (user == null) {
@@ -114,7 +99,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
                     finish();
                 }
             }
-        });
+        });*/
 
         DocumentReference df = fstore.collection("Users").document(user.getUid());
         df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -168,7 +153,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
     private void CheckNetwork() {
         if (!isNetworkAvailable()) {
             View parentLayout = findViewById(android.R.id.content);
-            Snackbar snackbar = Snackbar.make(parentLayout, "⚠️ Please check you internet connection and try again.", Snackbar.LENGTH_INDEFINITE);
+            Snackbar snackbar = Snackbar.make(parentLayout, "⚠️Please check you internet connection and try again.", Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction("REFRESH", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -216,7 +201,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    @Override
+   /* @Override
     public void onBackPressed() {
         super.onBackPressed();
         user.reload().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -231,5 +216,5 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
                 }
             }
         });
-    }
+    }*/
 }

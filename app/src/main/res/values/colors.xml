@@ -11,5 +11,12 @@
 
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/button</color>
 
+    <!-- Temperature colors -->
+    <color name="freezing">#09ACF6</color>
+    <color name="cold">#2E85CB</color>
+    <color name="stable">#23e1b0</color>
+    <color name="hot">#C0431C</color>
+    <color name="so_hot">#AE291F</color>
+
 
 </resources>

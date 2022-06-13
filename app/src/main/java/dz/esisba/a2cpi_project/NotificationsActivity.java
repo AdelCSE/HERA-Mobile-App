@@ -135,7 +135,7 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
     }
 
 
-    public void FetchNotifications(){
+    private void FetchNotifications(){
         NotificationsDataHolder = new ArrayList<>();
         NotificationModel Notification1 = new NotificationModel(null, -1 , null , null , null ,null,null);
         NotificationsDataHolder.add(Notification1);
@@ -166,7 +166,7 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         });
     }
 
-    public void buildRecyclerView(){
+    private void buildRecyclerView(){
         recyclerView = findViewById(R.id.notifrecview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -229,7 +229,7 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
 
     }
 
-    public void StartUserProfileActivity(int position) {
+    private void StartUserProfileActivity(int position) {
         if (NotificationsDataHolder.get(position).getUserId().equals(user.getUid())) {
             //switch to profile
         } else {
@@ -252,7 +252,7 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         }
     }
 
-    public void StartQuestionBlocActivity(int position){
+    private void StartQuestionBlocActivity(int position){
         DocumentReference DocRef = fstore.collection("Posts").document(NotificationsDataHolder.get(position).getPostId());
         DocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
