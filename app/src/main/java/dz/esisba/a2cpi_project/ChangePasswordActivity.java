@@ -28,6 +28,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
+        backBtn = findViewById(R.id.ChangePwBackBtn);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,7 +42,6 @@ public class ChangePasswordActivity extends AppCompatActivity {
     }
 
     private void changePassword(){
-        backBtn = findViewById(R.id.ChangePwBackBtn);
         currentPassword = findViewById(R.id.CurrentPasswordEditTxt);
         newPassword = findViewById(R.id.NewPasswordEditTxt);
         confirmNewPassword = findViewById(R.id.ConfirmNewPasswordEditTxt);

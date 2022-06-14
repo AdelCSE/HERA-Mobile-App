@@ -102,7 +102,6 @@ public class AnswersFragment extends Fragment implements AnswersOnItemClickListn
                 String id = s.split("#")[0];
                 if(!postIDs.contains(id)) postIDs.add(id);
             }
-            boolean last = false;
             for (int i=0;i<postIDs.size();i++) {
                 String id = postIDs.get(i);
 
@@ -128,7 +127,7 @@ public class AnswersFragment extends Fragment implements AnswersOnItemClickListn
                             recyclerView.setVisibility(View.VISIBLE);
 
                         } else {
-                            Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

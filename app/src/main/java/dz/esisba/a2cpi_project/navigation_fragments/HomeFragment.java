@@ -274,6 +274,37 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void SetFeed() {
+
+        //adding recommended
+
+        List<Map.Entry<String, Long>> list = new LinkedList<>(tagsMap.entrySet());
+
+        // Sorting the list based on values
+        list.sort((o1, o2) -> false ? o1.getValue().compareTo(o2.getValue()) == 0
+                ? o1.getKey().compareTo(o2.getKey())
+                : o1.getValue().compareTo(o2.getValue()) : o2.getValue().compareTo(o1.getValue()) == 0
+                ? o2.getKey().compareTo(o1.getKey())
+                : o2.getValue().compareTo(o1.getValue()));
+        tagsMap = list.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
+        ArrayList<String> tags = new ArrayList<>(tagsMap.keySet());
+
+        for (int i = 0; i < 2; i++) {
+            try {
+                fstore.collection("Posts").whereArrayContains("tags", tags.get(i)).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            PostModel post = document.toObject(PostModel.class);
+                            userInfos.collection("Feed").document(post.getPostid()).set(post);
+                            userInfos.collection("Feed").document(post.getPostid()).update("priority", 1);
+                        }
+                    }
+                });
+            }catch (IndexOutOfBoundsException e){
+                Log.e("Some error has occured:", e.getMessage());
+            }
+        }
+
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
         Calendar c = Calendar.getInstance();
@@ -304,35 +335,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
             }
         });
 
-        //adding recommended
-
-        List<Map.Entry<String, Long>> list = new LinkedList<>(tagsMap.entrySet());
-
-        // Sorting the list based on values
-        list.sort((o1, o2) -> false ? o1.getValue().compareTo(o2.getValue()) == 0
-                ? o1.getKey().compareTo(o2.getKey())
-                : o1.getValue().compareTo(o2.getValue()) : o2.getValue().compareTo(o1.getValue()) == 0
-                ? o2.getKey().compareTo(o1.getKey())
-                : o2.getValue().compareTo(o1.getValue()));
-       tagsMap = list.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
-        ArrayList<String> tags = new ArrayList<>(tagsMap.keySet());
-
-        for (int i = 0; i < 2; i++) {
-            try {
-                fstore.collection("Posts").whereArrayContains("tags", tags.get(i)).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                            PostModel post = document.toObject(PostModel.class);
-                            userInfos.collection("Feed").document(post.getPostid()).set(post);
-                            userInfos.collection("Feed").document(post.getPostid()).update("priority", 1);
-                        }
-                    }
-                });
-            }catch (IndexOutOfBoundsException e){
-                Log.e("Some error has occured:", e.getMessage());
-            }
-        }
 
         //delete extras
         Query query = userInfos.collection("Feed").whereLessThan("Date", c.getTime());
@@ -453,6 +455,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         Intent intent = new Intent(getActivity(), QuestionBlocActivity.class);
         intent.putExtra("Tag", (Serializable) Post1);
         intent.putExtra("position", position);
+        intent.putExtra("tagsMap",tagsMap);
         questionBlocActivityResultLauncher.launch(intent);
     }
 

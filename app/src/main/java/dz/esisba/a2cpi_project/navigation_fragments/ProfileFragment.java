@@ -178,8 +178,6 @@ public class ProfileFragment extends Fragment {
                 getActivity().startActivity(intent);
             }
         });
-        //Toast.makeText(getActivity(), Boolean.toString(loadbanner), Toast.LENGTH_SHORT).show();
-
 
 
         DocumentReference df = fstore.collection("Users").document(user.getUid());
@@ -220,7 +218,7 @@ public class ProfileFragment extends Fragment {
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getActivity(), "Unknow error occured please try again later", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), "Unknown error occured, please try again later!", Toast.LENGTH_SHORT).show();
                                     loader.dismiss();
                                     return;
                                 }
@@ -289,7 +287,6 @@ public class ProfileFragment extends Fragment {
             }
             if (userModel.getBio() != null) { //set bio
                 bio.setText(userModel.getBio());
-                Toast.makeText(getActivity(), userModel.getBio(), Toast.LENGTH_SHORT).show();
             }
             reputationText.setText(userModel.getReputation()+"");
         }

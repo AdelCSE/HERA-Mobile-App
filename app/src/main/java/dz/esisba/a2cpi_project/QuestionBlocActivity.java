@@ -91,6 +91,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
 
     NotificationBadge notificationBadge;
     public static HomeFragment homeFragment;
+    private HashMap<String, Long> tagsMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +140,8 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
 
         absolutePosition = getIntent().getIntExtra("position", -1);
         post = (PostModel) getIntent().getSerializableExtra("Tag");
+        //ArrayList<String> likes = (ArrayList<String>) data.getExtras().getSerializable("likes");
+       tagsMap = (HashMap<String, Long>) getIntent().getExtras().getSerializable("tagsMap");
         postRef = fstore.collection("Posts").document(post.getPostid());
         count = post.getAnswersCount();
         postsDataHolder = new ArrayList<>();
@@ -458,11 +461,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
                                 public void onFailure(@NonNull Exception e) {
                                     DislikeFailure(lottieAnimationView, likesTxt, position);
                                 }
-                            }).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    SetLikesForUser(p.getTags(), -1);
-                                }
                             });
                         }
                     } else DislikeFailure(lottieAnimationView, likesTxt, position);
@@ -471,13 +469,17 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         }
     }
 
-    private void SetLikesForUser(ArrayList<String> tags, int i){
-        CollectionReference userRef = fstore.collection("Users").document(user.getUid())
-                .collection("LikedTags");
-        for (String tag: tags) {
-            DocumentReference tagRef = userRef.document(tag);
-            tagRef.update("occurrence", FieldValue.increment(i));
+    private void SetLikesForUser(ArrayList<String> tags, int i) {
+        DocumentReference userRef = fstore.collection("Users").document(user.getUid());
+        if (tagsMap == null) tagsMap = new HashMap<String, Long>();
+        HashMap<String, Long> updatedTags = tagsMap;
+
+        for (String tag : tags) {
+            long occ = 1;
+            if (tagsMap.containsKey(tag)) occ = tagsMap.get(tag) + 1;
+            updatedTags.put(tag, occ);
         }
+        userRef.update("LikedTags", updatedTags);
     }
 
     private void buildRecyclerView(){
