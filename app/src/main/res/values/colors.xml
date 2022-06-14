@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <color name="purple_200">#7A374F</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
+
+    <color name="purple_200">#7852A9</color>
+    <color name="purple_500">#7852A9</color>
+    <color name="purple_700">#7852A9</color>
     <color name="teal_200">#FF03DAC5</color>
-    <color name="button">#7A374F</color>
+    <color name="button">#7852A9</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="shimmer_color">#AAAAAA</color>

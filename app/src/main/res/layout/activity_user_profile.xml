@@ -111,8 +111,8 @@
                     android:layout_marginTop="1dp"
                     android:layout_gravity="center"
                     android:id="@+id/replyStarBtn"
-                    android:layout_width="8dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
                     android:layout_marginStart="10dp"
                     android:src="@drawable/ic_star__2_" />
 
@@ -121,7 +121,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="5dp"
                     android:text="0"
                     android:textSize="12sp"/>
 

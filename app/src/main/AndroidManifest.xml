@@ -17,6 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.2CPI_PROJECT">
         <activity
+            android:name=".GetStarted"
+            android:exported="false" />
+        <activity
             android:name=".SmartRoom"
             android:exported="false" />
         <activity
@@ -38,7 +41,7 @@
             android:name=".SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".SplashScreenActivity"
+            android:name=".BottomNavigationActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
@@ -68,7 +71,7 @@
             android:name=".OnboardingScreensActivity"
             android:exported="false" />
         <activity
-            android:name=".BottomNavigationActivity"
+            android:name=".SplashScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
