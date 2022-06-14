@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -18,6 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class VerificationActivity extends AppCompatActivity {
 
+    ImageView backBtn;
     LottieAnimationView verificationAnimation;
     Button continueBtn;
     FirebaseUser user;
@@ -27,6 +29,13 @@ public class VerificationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verification);
 
+        backBtn = findViewById(R.id.verificationBackBtn);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
         verificationAnimation = findViewById(R.id.verificationAnimation);
         user = FirebaseAuth.getInstance().getCurrentUser();
         continueBtn = findViewById(R.id.continueBtn);
@@ -55,20 +64,11 @@ public class VerificationActivity extends AppCompatActivity {
     private void Verification(){
 
         user = FirebaseAuth.getInstance().getCurrentUser();
-
-                user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Toast.makeText(VerificationActivity.this, "Verification email has been sent seccessfully", Toast.LENGTH_LONG).show();
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(VerificationActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-
+        boolean b = false;
+        while(!b){
+            if(user!=null){
+                user.sendEmailVerification();
+            }
+        }
     }
 }

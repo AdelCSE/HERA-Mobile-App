@@ -160,20 +160,8 @@ public class LoginActivity extends AppCompatActivity {
                             else 
                             {
                                 progressBar.setVisibility(View.GONE);
-                                View parentLayout = findViewById(android.R.id.content);
-                                final Snackbar snackbar = Snackbar.make(parentLayout, "You email is not verified, please verify and try again", Snackbar.LENGTH_INDEFINITE)
-                                        .setAction("RESEND", new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                auth.getCurrentUser().sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void unused) {
-                                                        Toast.makeText(LoginActivity.this, "Email verification has been re-sent", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-                                            }
-                                        });
-                                snackbar.show();
+                                Intent intent = new Intent(LoginActivity.this,VerificationActivity.class);
+                                startActivity(intent);
                             }
                             //to use if you want to create users without verification
                             /*Toast.makeText(LoginActivity.this, "LOGGED IN!", Toast.LENGTH_SHORT).show(); // for debug purposes, can be deleted later
@@ -185,8 +173,6 @@ public class LoginActivity extends AppCompatActivity {
                             //if loggin in wasn't successful get the error (debugging purpose can be removed later)
                             Toast.makeText(LoginActivity.this, "Some error has occurred " + task.getException().
                                     getMessage(), Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(LoginActivity.this , BottomNavigationActivity.class);
-                            startActivity(intent);
                             progressBar.setVisibility(View.GONE);
                         }
                     }

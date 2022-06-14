@@ -1,4 +1,4 @@
-package dz.esisba.a2cpi_project;
+package dz.esisba.a2cpi_project.navigation_fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +15,9 @@ import android.widget.ImageButton;
 import com.airbnb.lottie.LottieAnimationView;
 
 import java.io.Serializable;
+
+import dz.esisba.a2cpi_project.R;
+import dz.esisba.a2cpi_project.SmartRoom;
 
 public class SmartRoomLink extends Fragment {
 

@@ -1,7 +1,9 @@
 {
   "project_info": {
     "project_number": "51336240904",
+    "firebase_url": "https://hera-483e9-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "hera-483e9",
+    "firebase_url": "https://hera-483e9-default-rtdb.europe-west1.firebasedatabase.app",
     "storage_bucket": "hera-483e9.appspot.com"
   },
   "client": [

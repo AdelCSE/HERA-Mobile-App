@@ -121,8 +121,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
         linearLayoutManager = new LinearLayoutManager(getContext());
 
-        NotificationsActivity.homeFragment = this;
-        QuestionBlocActivity.homeFragment = this;
 
 
         Main();
@@ -693,7 +691,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-                    if (!task.getResult().getString("Token").equals(publisherToken) || true) {
+                    if (!task.getResult().getString("Token").equals(publisherToken) ) {
                         FcmNotificationsSender send = new FcmNotificationsSender(
                                 publisherToken,
                                 title + " Liked your Question !",

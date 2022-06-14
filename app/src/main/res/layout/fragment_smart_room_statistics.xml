@@ -4,13 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/back"
-    tools:context=".navigation_fragments.smart_room_fragments.SmartRoomNotificationsFragment">
+    android:background="@drawable/back">
+
+    <ImageButton
+        android:id="@+id/staticBackBtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/mainbtn"
+        android:src="@drawable/ic_arrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Statistics"
+        android:layout_centerHorizontal="true"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="60dp">
+        android:layout_marginTop="60dp"
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -21,7 +43,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="600dp"
                 android:layout_marginStart="15dp"
-                android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
                 android:background="@drawable/notifbox"
                 tools:ignore="MissingConstraints">
