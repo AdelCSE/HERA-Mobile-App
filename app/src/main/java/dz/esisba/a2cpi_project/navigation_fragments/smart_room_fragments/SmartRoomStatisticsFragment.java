@@ -162,13 +162,7 @@ public class SmartRoomStatisticsFragment extends Fragment {
 
     public void Notify( String title, Activity activity, int type) {
 
-        try{
-            Log.d("___________________11", "Notify: "+auth.getCurrentUser().getUid());
 
-
-        }catch (Exception e){
-            return;
-        }
         DocumentReference gg = fstore.collection("Users").document(auth.getCurrentUser().getUid());
 
 
@@ -186,7 +180,7 @@ public class SmartRoomStatisticsFragment extends Fragment {
             }
         });
 
-        //add data to notified user ******* this is for the recyclerView **********
+        //add data to notified user
 
         CollectionReference DocRef = fstore.collection("Users").document().collection("Notifications");
         //add the notification data to the notification collection of the notified user
