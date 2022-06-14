@@ -121,6 +121,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         linearLayoutManager = new LinearLayoutManager(getContext());
 
 
+
         Main();
 
 
