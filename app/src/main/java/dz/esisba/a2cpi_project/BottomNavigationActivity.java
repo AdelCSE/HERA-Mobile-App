@@ -56,7 +56,6 @@ import dz.esisba.a2cpi_project.navigation_fragments.AddPostFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.HomeFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.CharityFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.ProfileFragment;
-import dz.esisba.a2cpi_project.navigation_fragments.SmartRoomFragment;
 
 public class BottomNavigationActivity extends AppCompatActivity implements GetUserInterface {
 
@@ -104,21 +103,26 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
 
+        if (user == null) {
+            startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
+            finish();
+        }
+
         CheckNetwork();
 
 
-        user.reload().addOnSuccessListener(new OnSuccessListener<Void>() {
+        /*user.reload().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 if (user == null) {
                     startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
                     finish();
-                }/* else if (!user.isEmailVerified()) {
+                }*//* else if (!user.isEmailVerified()) {
                     startActivity(new Intent(BottomNavigationActivity.this, VerificationActivity.class));
                     finish();
-                }*/
+                }*//*
             }
-        });
+        });*/
 
         DocumentReference df = fstore.collection("Users").document(user.getUid());
         df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -147,6 +151,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
                                 PostModel post = document.toObject(PostModel.class);
                                 df.collection("Feed").document(post.getPostid()).set(post);
                                 df.collection("Feed").document(post.getPostid()).update("priority", 2);
+                                Toast.makeText(BottomNavigationActivity.this, "done", Toast.LENGTH_SHORT).show();
                             }
 
                         }

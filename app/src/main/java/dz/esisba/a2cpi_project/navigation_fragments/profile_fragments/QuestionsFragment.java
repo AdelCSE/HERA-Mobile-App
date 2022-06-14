@@ -29,6 +29,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import dz.esisba.a2cpi_project.AddPostActivity;
 import dz.esisba.a2cpi_project.QuestionBlocActivity;
@@ -122,7 +123,7 @@ public class QuestionsFragment extends Fragment implements PostsOnItemClickListn
                     }
 
                 } else {
-                    Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
