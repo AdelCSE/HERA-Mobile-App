@@ -25,7 +25,9 @@
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_add_post.xml" value="0.25" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_answer_bloc.xml" value="0.20416666666666666" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_bottom_navigation.xml" value="0.20416666666666666" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_change_password.xml" value="0.33" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_edit_profile.xml" value="0.33" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_help.xml" value="0.33" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_home.xml" value="0.3048211508553655" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_main.xml" value="0.33" />
@@ -106,7 +108,6 @@
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_question_bloc.xml" value="0.2" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_register.xml" value="0.24427083333333333" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_search.xml" value="0.264" />
-        <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_security_verification.xml" value="0.20051303976058144" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_settings.xml" value="0.264" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_smart_room.xml" value="0.20051303976058144" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_smart_room_check.xml" value="0.2" />
@@ -157,14 +158,13 @@
         <entry key="app/src/main/res/layout/activity_add_post.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/activity_answer_bloc.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/activity_bottom_navigation.xml" value="0.35625" />
-        <entry key="app/src/main/res/layout/activity_login.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.28306159420289856" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/activity_notifications.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/activity_question_bloc.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/activity_security_verification.xml" value="0.28306159420289856" />
         <entry key="app/src/main/res/layout/activity_settings.xml" value="0.28306159420289856" />
-        <entry key="app/src/main/res/layout/activity_smart_room.xml" value="0.2821557971014493" />
         <entry key="app/src/main/res/layout/activity_verification.xml" value="0.28306159420289856" />
         <entry key="app/src/main/res/layout/cardview_notifications.xml" value="0.7488038277511961" />
         <entry key="app/src/main/res/layout/cardview_post.xml" value="0.35625" />
@@ -174,7 +174,6 @@
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/fragment_questions.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/fragment_smart_room_notifications.xml" value="0.35625" />
-        <entry key="app/src/main/res/layout/fragment_smart_room_statistics.xml" value="0.33" />
       </map>
     </option>
   </component>

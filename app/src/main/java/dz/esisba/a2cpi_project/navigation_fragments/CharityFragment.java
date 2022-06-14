@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import dz.esisba.a2cpi_project.R;
 
 public class CharityFragment extends Fragment {
@@ -30,12 +32,9 @@ public class CharityFragment extends Fragment {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment fragment = new HomeFragment();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, fragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+                BottomNavigationView bottomNavigationView;
+                bottomNavigationView = (BottomNavigationView)getActivity().findViewById(R.id.bottom_navigation_layout);
+                bottomNavigationView.setSelectedItemId(R.id.nav_home);
             }
         });
 

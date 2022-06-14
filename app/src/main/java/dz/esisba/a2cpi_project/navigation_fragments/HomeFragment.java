@@ -59,6 +59,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -163,23 +164,16 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         postRef = fstore.collection("Posts");
         userInfos = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
 
-        userInfos.collection("Feed").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+
+        //adding most liked posts
+        fstore.collection("Posts").orderBy("likesCount", Query.Direction.DESCENDING).limit(10)
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                if (queryDocumentSnapshots.size()<=0)
-                {
-                    fstore.collection("Posts").orderBy("likesCount", Query.Direction.DESCENDING).limit(50)
-                            .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @Override
-                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                                PostModel post = document.toObject(PostModel.class);
-                                userInfos.collection("Feed").document(post.getPostid()).set(post);
-                                userInfos.collection("Feed").document(post.getPostid()).update("priority", 2);
-                            }
-
-                        }
-                    });
+                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    PostModel post = document.toObject(PostModel.class);
+                    userInfos.collection("Feed").document(post.getPostid()).set(post);
+                    userInfos.collection("Feed").document(post.getPostid()).update("priority", 2);
                 }
             }
         });
@@ -241,8 +235,8 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
             @Override
             public void onRefresh() {
                 refresh.setRefreshing(false);
-                FetchPosts();
                 SetFeed();
+                FetchPosts();
             }
         });
 
@@ -276,7 +270,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     private void SetFeed() {
 
         //adding recommended
-
         List<Map.Entry<String, Long>> list = new LinkedList<>(tagsMap.entrySet());
 
         // Sorting the list based on values
@@ -285,6 +278,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 : o1.getValue().compareTo(o2.getValue()) : o2.getValue().compareTo(o1.getValue()) == 0
                 ? o2.getKey().compareTo(o1.getKey())
                 : o2.getValue().compareTo(o1.getValue()));
+        //sorting the map
         tagsMap = list.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
         ArrayList<String> tags = new ArrayList<>(tagsMap.keySet());
 
@@ -295,8 +289,20 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             PostModel post = document.toObject(PostModel.class);
-                            userInfos.collection("Feed").document(post.getPostid()).set(post);
-                            userInfos.collection("Feed").document(post.getPostid()).update("priority", 1);
+                            DocumentReference feedRef = userInfos.collection("Feed").document(post.getPostid());
+                            feedRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    if (!documentSnapshot.exists()) {
+                                        feedRef.set(post);
+                                        feedRef.update("priority", 1);
+                                    }
+                                    else if(documentSnapshot.getLong("priority").intValue()>1)
+                                    {
+                                        feedRef.update("priority", 1);
+                                    }
+                                }
+                            });
                         }
                     }
                 });
@@ -328,8 +334,20 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 for (QuerySnapshot nextQueryDocumentSnapshots : querySnapshots) {
                     for (QueryDocumentSnapshot document : nextQueryDocumentSnapshots) {
                         PostModel post = document.toObject(PostModel.class);
-                        userInfos.collection("Feed").document(post.getPostid()).set(post);
-                        userInfos.collection("Feed").document(post.getPostid()).update("priority", 0);
+                        DocumentReference feedRef = userInfos.collection("Feed").document(post.getPostid());
+                        feedRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                if (!documentSnapshot.exists()) {
+                                    feedRef.set(post);
+                                    feedRef.update("priority", 0);
+                                }
+                                else if(documentSnapshot.getLong("priority").intValue()>0)
+                                {
+                                    feedRef.update("priority", 0);
+                                }
+                            }
+                        });
                     }
                 }
             }
@@ -369,8 +387,8 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
 
         Query query = fstore.collection("Users").document(user.getUid()).collection("Feed")
+                .orderBy("priority", Query.Direction.ASCENDING)
                 .orderBy("date", Query.Direction.DESCENDING)
-                .orderBy("priority")
                 .limit(25);
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override

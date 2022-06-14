@@ -82,7 +82,8 @@ public class SettingsActivity extends AppCompatActivity {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onBackPressed();
+                startActivity(new Intent(SettingsActivity.this, BottomNavigationActivity.class));
+                finish();
             }
         });
 

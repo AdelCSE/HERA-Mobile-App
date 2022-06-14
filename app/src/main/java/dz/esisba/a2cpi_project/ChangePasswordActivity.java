@@ -2,9 +2,12 @@ package dz.esisba.a2cpi_project;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -20,6 +23,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
     private ImageButton backBtn, confirmBtn;
     private TextInputEditText currentPassword,newPassword,confirmNewPassword;
+    private ProgressBar progressBar;
 
     FirebaseUser user;
 
@@ -29,6 +33,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
         backBtn = findViewById(R.id.ChangePwBackBtn);
+        progressBar = findViewById(R.id.changePwPB);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,6 +57,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
                 String newpw = newPassword.getText().toString();
                 String confirmpw = confirmNewPassword.getText().toString();
 
@@ -83,10 +89,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
                         user.updatePassword(newpw).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                View parentLayout = findViewById(android.R.id.content);
-                                Snackbar snackbar_su = Snackbar
-                                        .make(parentLayout, "Password Successfully Modified", Snackbar.LENGTH_INDEFINITE);
-                                snackbar_su.show();
+                                Toast.makeText(ChangePasswordActivity.this, "Password Successfully Modified", Toast.LENGTH_SHORT).show();
+                                progressBar.setVisibility(View.GONE);
+                                startActivity(new Intent(ChangePasswordActivity.this, SettingsActivity.class));
+                                finish();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override

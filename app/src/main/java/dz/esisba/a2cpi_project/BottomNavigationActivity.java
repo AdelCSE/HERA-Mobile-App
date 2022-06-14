@@ -85,6 +85,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
 
         bottomNav.setOnItemSelectedListener(navListener);
 
+
         //Here we're setting the home fragment as default fragment
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 new HomeFragment()).commit();
@@ -95,6 +96,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getApplicationContext(), AddPostActivity.class));
+                finish();
             }
         });
 
@@ -103,26 +105,24 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
         fstore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
 
-        if (user == null) {
-            startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
-            finish();
-        }
 
         CheckNetwork();
 
 
-        /*user.reload().addOnSuccessListener(new OnSuccessListener<Void>() {
+        user.reload().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 if (user == null) {
                     startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
                     finish();
-                }*//* else if (!user.isEmailVerified()) {
+                } else if (!user.isEmailVerified()) {
                     startActivity(new Intent(BottomNavigationActivity.this, VerificationActivity.class));
                     finish();
-                }*//*
+                }
             }
-        });*/
+        });
+
+        bottomNav.setVisibility(View.INVISIBLE);
 
         DocumentReference df = fstore.collection("Users").document(user.getUid());
         df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -132,33 +132,12 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
                     DocumentSnapshot doc = task.getResult();
                     if (doc.exists()) {
                         currUser = doc.toObject(UserModel.class);
+                        bottomNav.setVisibility(View.VISIBLE);
                     }
                 }
             }
         });
 
-
-        df.collection("Feed").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                if (queryDocumentSnapshots.size()<=0)
-                {
-                    fstore.collection("Posts").orderBy("likesCount", Query.Direction.DESCENDING).limit(50)
-                            .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @Override
-                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                                PostModel post = document.toObject(PostModel.class);
-                                df.collection("Feed").document(post.getPostid()).set(post);
-                                df.collection("Feed").document(post.getPostid()).update("priority", 2);
-                                Toast.makeText(BottomNavigationActivity.this, "done", Toast.LENGTH_SHORT).show();
-                            }
-
-                        }
-                    });
-                }
-            }
-        });
 
         //TODO: FIX https://stackoverflow.com/questions/57861254/how-to-change-a-specific-icon-image-from-bottom-navigation-view
         df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
