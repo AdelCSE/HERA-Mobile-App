@@ -37,7 +37,7 @@ public class NotificationModel {
         SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy • HH:mm");
         /**/
         Date now = new Date();
-        Date then = now;
+        Date then = getDate().toDate();
         try {
             then = sfd.parse("11/06/2022"/*sfd.format(getDate().toDate())*/);
         } catch (ParseException e) {
