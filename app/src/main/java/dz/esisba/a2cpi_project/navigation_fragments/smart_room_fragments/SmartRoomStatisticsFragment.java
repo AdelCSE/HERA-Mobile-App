@@ -180,17 +180,6 @@ public class SmartRoomStatisticsFragment extends Fragment {
             }
         });
 
-        //add data to notified user
-
-        CollectionReference DocRef = fstore.collection("Users").document().collection("Notifications");
-        //add the notification data to the notification collection of the notified user
-        Map<String, Object> notif = new HashMap<>();
-        notif.put("Type", type);
-        notif.put("Date", Timestamp.now());
-        //add the document to the notification collection
-        DocRef.add(notif);
-
-        fstore.collection("Users").document("j2DTjW0S3feHztzgMsag7wFkiuc2").update("unseenNotifications", FieldValue.increment(1));
 
         userInfos.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
