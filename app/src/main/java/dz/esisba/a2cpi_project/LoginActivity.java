@@ -134,66 +134,34 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             user = auth.getCurrentUser();
-                            fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if(task.isSuccessful()){
-                                        boolean securitySwitch = Boolean.TRUE.equals(task.getResult().getBoolean("Security"));
-                                        if(!securitySwitch){
-                                            //login directly
-                                            retrieveRestoreToken();
-                                            startActivity(new Intent(LoginActivity.this, BottomNavigationActivity.class));
-                                            finish();
-                                        }else{
-                                            //send verification email contains random 6 digits code and verify it in Security Activity...
-                                            code = generateCode();
-                                            sendEmail(code);
-                                        }
-                                    }
-                                }
-                            });
-
-                            /*//verify if user is signed in
+                            //verify if user is signed in
                             if (auth.getCurrentUser().isEmailVerified() ) { //Here in we need to add SecurityCheck Condition (false)
                             //Security check =boolean value in users collection
-
                             //true=verify email each time user try to login , else = login directly
-
-
-                                                                            //login directly
+                                fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if(task.isSuccessful()){
+                                            boolean securitySwitch = Boolean.TRUE.equals(task.getResult().getBoolean("Security"));
+                                            if(!securitySwitch){
+                                                //login directly
                                                 retrieveRestoreToken();
                                                 startActivity(new Intent(LoginActivity.this, BottomNavigationActivity.class));
                                                 finish();
-
-                            //verify if user is signed in
-                            if (auth.getCurrentUser().isEmailVerified() || true ) { //Here in we need to add SecurityCheck Condition (false)
-                            //Security check =boolean value in users collection
-
-                            //true=verify email each time user try to login , else = login directly
-//                                fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                                    @Override
-//                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                                        if(task.isSuccessful()){
-//                                            boolean securitySwitch = Boolean.TRUE.equals(task.getResult().getBoolean("Security"));
-//                                            if(!securitySwitch){
-//                                                //login directly
-//                                                retrieveRestoreToken();
-//                                                startActivity(new Intent(LoginActivity.this, BottomNavigationActivity.class));
-//                                                finish();
-//                                            }else{
-//                                                //send verification email contains random 6 digits code and verify it in Security Activity...
-//                                                code = getRandomNumber();
-//                                                    sendEmail(code);
-//                                            }
-//                                        }
-//                                    }
-//                                });
+                                            }else{
+                                                //send verification email contains random 6 digits code and verify it in Security Activity...
+                                                code = generateCode();
+                                                    sendEmail(code);
+                                            }
+                                        }
+                                    }
+                                });
                             }
                             else 
                             {
                                 progressBar.setVisibility(View.GONE);
                                 View parentLayout = findViewById(android.R.id.content);
-                                final Snackbar snackbar = Snackbar.make(parentLayout, "You email is not verified, please verify and try again", Snackbar.LENGTH_LONG)
+                                final Snackbar snackbar = Snackbar.make(parentLayout, "You email is not verified, please verify and try again", Snackbar.LENGTH_INDEFINITE)
                                         .setAction("RESEND", new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
@@ -207,7 +175,6 @@ public class LoginActivity extends AppCompatActivity {
                                         });
                                 snackbar.show();
                             }
-                            
                             //to use if you want to create users without verification
                             /*Toast.makeText(LoginActivity.this, "LOGGED IN!", Toast.LENGTH_SHORT).show(); // for debug purposes, can be deleted later
                             retrieveRestoreToken();
@@ -328,6 +295,8 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            progressBar = findViewById(R.id.progressBar2);
+            progressBar.setVisibility(View.INVISIBLE);
             pd = ProgressDialog.show(LoginActivity.this , "Please Wait","Sending Email...", true,false);
         }
 
