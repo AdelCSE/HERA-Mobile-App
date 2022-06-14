@@ -25,7 +25,6 @@ public class FcmNotificationsSender  {
 
     Activity mActivity;
 
-
     private final String postUrl = "https://fcm.googleapis.com/fcm/send";
     private final String fcmServerKey ="AAAA__EKjFk:APA91bGb7jv0cPB5wd-1fMU5jqF_uiXaCnxNulgOWItGO8sFsguI440-J81Lib25H2O9Tdi7zGCCEjGJTPb_xf6CRVBlm_YbwuNADN7LSnoP1WoKinwurBW53E4ku8GqLdQbzj8nv8aG";
 
@@ -56,10 +55,10 @@ public class FcmNotificationsSender  {
 
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, postUrl, mainObj, response -> {
 
-                // code run is got response
+                // code run if got response
 
             }, error -> {
-                // code run is got error
+                // code run if got error
 
             }) {
                 @Override

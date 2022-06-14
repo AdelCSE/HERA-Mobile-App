@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -30,6 +31,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +51,7 @@ public class SettingsActivity extends AppCompatActivity {
     private LinearLayout logOut,changePassword,sendFeedBack,reportProblem;
     private AppCompatButton editprofileBtn;
     private SwitchCompat securitySwitch;
+    private SwitchCompat notificationsSwitch;
 
 
 
@@ -74,6 +77,7 @@ public class SettingsActivity extends AppCompatActivity {
         reportProblem = findViewById(R.id.reportProblemBtn);
         editprofileBtn=findViewById(R.id.settingsEditProfileBtn);
         securitySwitch = findViewById(R.id.securitySwitch);
+        notificationsSwitch = findViewById(R.id.notificationsSwitch);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,6 +144,17 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        notificationsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    retrieveRestoreToken();
+                } else {
+                    clearToken(user.getUid());
+                }
+            }
+        });
+
         progressBar.setVisibility(View.VISIBLE);
 
         SetUserInfos();
@@ -186,6 +201,21 @@ public class SettingsActivity extends AppCompatActivity {
                 .collection("Users")
                 .document(uid)
                 .update(emptyToken);
+    }
+
+    private void retrieveRestoreToken(){
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            final Map<String, Object> userToken=new HashMap<>();
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if(task.isSuccessful()){
+                    String token = task.getResult();
+                    userToken.put("Token", token);
+                    FirebaseFirestore.getInstance().collection("Users").document(
+                            FirebaseAuth.getInstance().getCurrentUser().getUid()).update(userToken).addOnSuccessListener(unused -> Toast.makeText(SettingsActivity.this,"Succccessss",Toast.LENGTH_LONG));
+                }
+            }
+        });
     }
 }
 

@@ -56,7 +56,7 @@ import dz.esisba.a2cpi_project.navigation_fragments.AddPostFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.HomeFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.CharityFragment;
 import dz.esisba.a2cpi_project.navigation_fragments.ProfileFragment;
-import dz.esisba.a2cpi_project.navigation_fragments.SmartRoomFragment;
+//import dz.esisba.a2cpi_project.navigation_fragments.SmartRoomFragment;
 
 public class BottomNavigationActivity extends AppCompatActivity implements GetUserInterface {
 
