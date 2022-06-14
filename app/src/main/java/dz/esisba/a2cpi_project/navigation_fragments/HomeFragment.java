@@ -130,7 +130,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         //DO NOT REMOVE THIS WE NEED IT LATER!!!!!!!
         //SETTING FEED FOR ALL USERS **IMPORTANT**
 
-        Query user = fstore.collection("Users");
+        /*Query user = fstore.collection("Users");
         user.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -149,7 +149,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                     doc.getReference().update("reputation", 0);
                 }
             }
-        });
+        });*/
 
         return parentHolder;
 
@@ -732,4 +732,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
  *    1 => Like post
  *    2 => Like answer
  *    3 => answered question
+ *    4 => Arduino Temperature
+ *    5 => Arduino Movement
+ *    6 => Arduino Sound
  * */
