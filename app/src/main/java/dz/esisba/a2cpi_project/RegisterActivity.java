@@ -223,12 +223,7 @@ public class RegisterActivity extends AppCompatActivity {
                     String token = task.getResult();
                     userToken.put("Token", token);
                     FirebaseFirestore.getInstance().collection("Users").document(
-                            FirebaseAuth.getInstance().getCurrentUser().getUid()).update(userToken).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            Toast.makeText(RegisterActivity.this,"Succccessss",Toast.LENGTH_LONG);
-                        }
-                    });
+                            FirebaseAuth.getInstance().getCurrentUser().getUid()).update(userToken);
                 }
             }
         });

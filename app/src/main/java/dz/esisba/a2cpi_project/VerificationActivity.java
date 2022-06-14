@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,7 +18,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class VerificationActivity extends AppCompatActivity {
 
-    Button continueBtn, verify;
+    LottieAnimationView verificationAnimation;
+    Button continueBtn;
     FirebaseUser user;
 
     @Override
@@ -25,9 +27,11 @@ public class VerificationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verification);
 
+        verificationAnimation = findViewById(R.id.verificationAnimation);
         user = FirebaseAuth.getInstance().getCurrentUser();
         continueBtn = findViewById(R.id.continueBtn);
 
+        verificationAnimation.playAnimation();
         Verification();
 
         continueBtn.setOnClickListener(new View.OnClickListener() {
@@ -49,17 +53,13 @@ public class VerificationActivity extends AppCompatActivity {
     }
 
     private void Verification(){
-        verify = findViewById(R.id.verify);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
 
-        verify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
                 user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        Toast.makeText(VerificationActivity.this, "Verification email has been sent, check spam if you are unable to find it", Toast.LENGTH_LONG).show();
+                        Toast.makeText(VerificationActivity.this, "Verification email has been sent seccessfully", Toast.LENGTH_LONG).show();
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -68,7 +68,7 @@ public class VerificationActivity extends AppCompatActivity {
                         Toast.makeText(VerificationActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-            }
-        });
+
+
     }
 }

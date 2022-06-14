@@ -28,7 +28,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                     overridePendingTransition(androidx.navigation.ui.R.anim.nav_default_pop_enter_anim, androidx.navigation.ui.R.anim.nav_default_pop_exit_anim);
                     finish();
                 }else{
-                    Intent mainIntent = new Intent(SplashScreenActivity.this,OnboardingScreensActivity.class);
+                    Intent mainIntent = new Intent(SplashScreenActivity.this,LoginActivity.class);
                     startActivity(mainIntent);
                     overridePendingTransition(androidx.navigation.ui.R.anim.nav_default_pop_enter_anim, androidx.navigation.ui.R.anim.nav_default_pop_exit_anim);
                     finish();

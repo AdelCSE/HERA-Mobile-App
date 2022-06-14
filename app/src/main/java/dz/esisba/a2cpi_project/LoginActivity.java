@@ -218,6 +218,8 @@ public class LoginActivity extends AppCompatActivity {
                             //if loggin in wasn't successful get the error (debugging purpose can be removed later)
                             Toast.makeText(LoginActivity.this, "Some error has occurred " + task.getException().
                                     getMessage(), Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(LoginActivity.this , BottomNavigationActivity.class);
+                            startActivity(intent);
                             progressBar.setVisibility(View.GONE);
                         }
                     }
