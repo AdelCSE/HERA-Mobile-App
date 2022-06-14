@@ -38,6 +38,7 @@ import com.nex3z.notificationbadge.NotificationBadge;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -76,7 +77,7 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
 
 //      notification_icon = (CardView) findViewById(R.id.notification_icon);
 
-        notificationBadge = homeFragment.getActivity().findViewById(R.id.badge);
+        notificationBadge = homeFragment.requireActivity().findViewById(R.id.badge);
         progressBar = findViewById(R.id.notificationsProgressBar);
         recview = findViewById(R.id.notifrecview);
         clearAll = findViewById(R.id.clearAll);

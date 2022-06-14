@@ -120,9 +120,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
         linearLayoutManager = new LinearLayoutManager(getContext());
 
-        NotificationsActivity.homeFragment = this;
-        QuestionBlocActivity.homeFragment = this;
-
 
         Main();
 
