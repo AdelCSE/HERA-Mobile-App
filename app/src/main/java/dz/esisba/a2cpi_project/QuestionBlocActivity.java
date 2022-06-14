@@ -89,8 +89,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
     private DocumentReference postRef;
     private int absolutePosition;
 
-    NotificationBadge notificationBadge;
-    public static HomeFragment homeFragment;
     private HashMap<String, Long> tagsMap;
 
     @Override
@@ -110,7 +108,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
         user = auth.getCurrentUser();
         userRef = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
 
-        notificationBadge = homeFragment.getActivity().findViewById(R.id.badge);
 
         //get username of poster
         userRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -148,25 +145,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
 
         progressBar.setVisibility(View.VISIBLE);
         FetchAnswers();
-
-        fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    if (task.getResult().getLong("unseenNotifications") != null) {
-//                    if(task.getResult().getLong("unseenNotifications").intValue() >99) {
-//                        notificationBadge.setText("99+");
-//                    }
-//                    else{
-//                        notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
-//                    }
-                            notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
-                    } else {
-                        Log.d("____________", "onComplete: null value");
-                    }
-                }
-            }
-        });
 
 
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -688,7 +666,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
-                    if(!task.getResult().getString("Token").equals(publisherToken) || true) {           //****************** check  this condition ***true
+                    if(!task.getResult().getString("Token").equals(publisherToken)) {           //****************** check  this condition ***true
                         FcmNotificationsSender send = new FcmNotificationsSender(
                                 publisherToken,
                                 title+" Liked your Post",
@@ -724,7 +702,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
-                    if(!task.getResult().getString("Token").equals(publisherToken) || true) {           //****************** check  this condition ***true
+                    if(!task.getResult().getString("Token").equals(publisherToken)) {           //****************** check  this condition ***true
                         FcmNotificationsSender send = new FcmNotificationsSender(
                                 publisherToken,
                                 title+" Liked your Answer !",
@@ -760,7 +738,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
-                    if(!task.getResult().getString("Token").equals(publisherToken) || true) {           //****************** check  this condition ***true
+                    if(!task.getResult().getString("Token").equals(publisherToken)) {           //****************** check  this condition ***true
                         FcmNotificationsSender send = new FcmNotificationsSender(
                                 publisherToken,
                                 title+" Answered Your Question !",
@@ -794,25 +772,6 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
 
     @Override
     public void onBackPressed() {
-
-        fstore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    if (task.getResult().getLong("unseenNotifications") != null) {
-                        if(task.getResult().getLong("unseenNotifications").intValue() >99) {
-                            notificationBadge.setText("99+");
-                        }else{
-                            notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
-                    }
-//                        notificationBadge.setNumber(task.getResult().getLong("unseenNotifications").intValue());
-                    } else {
-                        Log.d("____________", "onComplete: null value");
-                    }
-                }
-            }
-        });
-
         ArrayList<String> likes = postsDataHolder.get(0).getLikes();
         Intent intent = new Intent();
         intent.putExtra("likes", likes);

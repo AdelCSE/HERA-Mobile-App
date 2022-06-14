@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".VerificationActivity">
 
+    <ImageView
+        android:id="@+id/verificationBackBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/ic_arrow_small_left__1_" />
+
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/verificationAnimation"
         android:layout_width="400dp"
@@ -19,12 +28,13 @@
         android:id="@+id/VerificationText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="VERIFY YOUR EMAIL!"
-        android:textStyle="bold"
-        android:textSize="24dp"
-        android:layout_centerHorizontal="true"
         android:layout_below="@+id/verificationAnimation"
-        android:textColor="@color/purple_200"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-35dp"
+        android:text="VERIFY YOUR EMAIL!"
+        android:textColor="@color/purple_200"
+        android:textSize="24dp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/VerificationDescreption"
@@ -40,14 +50,16 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/continueBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/VerificationDescreption"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/fllwbtn"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/main_button"
         android:text="Continue"
-        android:textColor="@color/white"
-        />
+        android:elevation="4dp"
+        android:textColor="@color/white" />
 
 </RelativeLayout>

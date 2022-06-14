@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -76,16 +77,17 @@ public class SmartRoomStatisticsFragment extends Fragment {
         mTemperatureProgressBar = parentHolder.findViewById(R.id.temperatureProgressBar);
         notificationBadge = parentHolder.findViewById(R.id.badge);
 
-        database = FirebaseDatabase.getInstance();
+        database = FirebaseDatabase.getInstance("https://hera-483e9-default-rtdb.europe-west1.firebasedatabase.app/");
         Temperatur = database.getReference("DHT_SENSOR");
         Sound = database.getReference("SOUND_SENSOR");
         Movement = database.getReference("MOVE_SENSOR");
+
+        Toast.makeText(getContext(), "exist", Toast.LENGTH_SHORT).show();
 
         Temperatur.addValueEventListener(new ValueEventListener() {
             @SuppressLint("ResourceAsColor")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
                 if (snapshot.exists()) {
                     String value = snapshot.getValue().toString();
                     temperature.setText(value+"°C");
