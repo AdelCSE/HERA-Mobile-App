@@ -130,7 +130,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         //DO NOT REMOVE THIS WE NEED IT LATER!!!!!!!
         //SETTING FEED FOR ALL USERS **IMPORTANT**
 
-        Query user = fstore.collection("Users");
+        /*Query user = fstore.collection("Users");
         user.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -149,7 +149,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                     doc.getReference().update("reputation", 0);
                 }
             }
-        });
+        });*/
 
         return parentHolder;
 

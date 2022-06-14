@@ -65,6 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 app:contentInsetStart="0dp"
+                android:backgroundTint="@color/purple_200"
                 app:contentInsetStartWithNavigation="0dp"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"/>

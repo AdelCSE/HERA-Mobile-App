@@ -67,18 +67,18 @@ public class OnboardingScreensActivity extends AppCompatActivity {
         List<OnboardingItemModel> onboardingItemModels = new ArrayList<OnboardingItemModel>();
 
         OnboardingItemModel item1 = new OnboardingItemModel();
-        item1.setTitle("Title1");
-        item1.setDescription("Description1");
+        item1.setTitle("Whoah, Welcome!");
+        item1.setDescription("Hey there, we are so happy you decided to join Hera! Hats off on making an excellent decision.");
         item1.setImage(R.drawable.welcomepage1);
 
         OnboardingItemModel item2 = new OnboardingItemModel();
-        item2.setTitle("Title2");
-        item2.setDescription("Description2");
+        item2.setTitle("Ask Mothers");
+        item2.setDescription("You can always post new questions related to your child, and you will get answers from experienced mothers!");
         item2.setImage(R.drawable.welcomepage2);
 
         OnboardingItemModel item3 = new OnboardingItemModel();
-        item3.setTitle("Title3");
-        item3.setDescription("Description3");
+        item3.setTitle("Smart Room ?!");
+        item3.setDescription("Discover our SmartRoom technology and be always close to your child");
         item3.setImage(R.drawable.welcomepage3);
 
         onboardingItemModels.add(item1);

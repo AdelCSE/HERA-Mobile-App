@@ -158,7 +158,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 userInfor.put("posts", posts);
                                 userInfor.put("answers", answers);
                                 userInfor.put("reputation", 0);
-                                userInfor.put("profilePictureUrl", "https://firebasestorage.googleapis.com/v0/b/cpi-project-b42b5.appspot.com/o/profileImages%2Fdefualty.png?alt=media&token=388b0aef-35f1-418a-b165-89f1e8b7e8b0");
+                                userInfor.put("profilePictureUrl", "https://firebasestorage.googleapis.com/v0/b/hera-483e9.appspot.com/o/defualty.png?alt=media&token=826ced5c-30ac-47f5-a3ad-e49b7676689d");
 
                                 //specify access level (if user is admin)
                                 userInfor.put("isAdmin",false);
@@ -166,11 +166,10 @@ public class RegisterActivity extends AppCompatActivity {
                                 df.set(userInfor).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
-                                        Toast.makeText(RegisterActivity.this, "writing finished", Toast.LENGTH_SHORT).show();
-                                        /*user.sendEmailVerification();
+                                        user.sendEmailVerification();
                                         Toast.makeText(RegisterActivity.this, "Please verifiy your email and sign in", Toast.LENGTH_SHORT).show();
                                         startActivity(new Intent(getApplicationContext(), VerificationActivity.class));
-                                        finish()*/;
+                                        finish();
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -209,7 +208,7 @@ public class RegisterActivity extends AppCompatActivity {
              }
              else valid = true;
             }
-            else Toast.makeText(getApplicationContext(), "unknown error", Toast.LENGTH_SHORT).show();
+            else Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
         }
     });
         return valid;
