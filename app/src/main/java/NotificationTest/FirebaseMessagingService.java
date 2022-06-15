@@ -56,7 +56,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         builder.setStyle(new NotificationCompat.BigTextStyle().bigText(remoteMessage.getNotification().getBody()));
         builder.setAutoCancel(true);
         builder.setPriority(Notification.PRIORITY_MAX);
-        builder.setSmallIcon(R.drawable.google);
+        builder.setSmallIcon(R.drawable.splash_screen_logo);
 
 
         NotificationManager Manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);

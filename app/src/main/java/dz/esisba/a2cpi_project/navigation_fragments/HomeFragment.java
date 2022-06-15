@@ -315,7 +315,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         c.setTime(date);
         c.add(Calendar.DATE, -30); //current day -30 days
 
-
         //combining queries
         ArrayList<Task> tasks = new ArrayList<>();
         for (String user : following) {
@@ -351,7 +350,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
             }
         });
 
-
         //delete extras
         Query query = userInfos.collection("Feed").whereLessThan("Date", c.getTime());
         query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -362,20 +360,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 }
             }
         });
-        /*ArrayList<PostModel> safePosts = new ArrayList<>();
-        for (String id: following) {
-            Query delete = fstore.collection("Users").document(user.getUid()).collection("Feed")
-                    .whereEqualTo("publisher", id);
-            delete.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                @Override
-                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                    for (QueryDocumentSnapshot doc: queryDocumentSnapshots) {
-                        PostModel post = doc.toObject(PostModel.class);
-                        safePosts.add(post);
-                    }
-                }
-            });
-        }*/
     }
 
     //Fetch Posts and display them in home
