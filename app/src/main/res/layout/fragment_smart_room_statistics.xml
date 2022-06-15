@@ -165,6 +165,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
                         android:text=""
+                        android:textColor="@color/purple_200"
                         android:textSize="24sp" />
                 </LinearLayout>
 
@@ -211,13 +212,14 @@
                     android:id="@+id/MouvementState"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="24dp"
                     android:layout_below="@+id/texttext"
                     android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="24dp"
+                    android:textColor="@color/purple_200"
                     android:text="Your child might be mouving"
                     android:textSize="20sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
             </RelativeLayout>
 
@@ -264,6 +266,7 @@
                     android:layout_below="@+id/texttexttext"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="5dp"
+                    android:textColor="@color/purple_200"
                     android:layout_marginBottom="24dp"
                     android:text="Your child might be crying"
                     android:textSize="20sp"

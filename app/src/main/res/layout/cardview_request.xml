@@ -85,7 +85,7 @@
                 android:id="@+id/answerR"
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
-                android:background="@drawable/btnn"
+                android:background="@drawable/main_button"
                 android:text="Answer"
                 android:textSize="11sp"
                 android:textColor="@color/white"/>
@@ -94,11 +94,11 @@
                 android:id="@+id/dismissR"
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
-                android:background="@drawable/btnn"
+                android:background="@drawable/dismiss_button"
                 android:layout_marginLeft="15dp"
                 android:text="Dismiss"
                 android:textSize="11sp"
-                android:textColor="@color/white"/>
+                android:textColor="@color/purple_200"/>
 
         </LinearLayout>
 

@@ -42,7 +42,7 @@ public class SmartRoom extends AppCompatActivity {
     private DatabaseReference Temperatur;
     private DatabaseReference Sound;
     private DatabaseReference Movement;
-    private TextView temperature,RoomState;
+    private TextView temperature,RoomState,mouvementState,noiseState;
     private ProgressBar mTemperatureProgressBar;
     NotificationBadge notificationBadge;
     private String downloadUrl;
@@ -66,6 +66,8 @@ public class SmartRoom extends AppCompatActivity {
 
     public void getStatisticsData(){
         temperature = findViewById(R.id.temperatureText);
+        mouvementState = findViewById(R.id.MouvementState);
+        noiseState = findViewById(R.id.NoiseState);
         RoomState = findViewById(R.id.roomState);
         mTemperatureProgressBar = findViewById(R.id.temperatureProgressBar);
         notificationBadge = findViewById(R.id.badge);
@@ -120,12 +122,16 @@ public class SmartRoom extends AppCompatActivity {
         });
 
         Sound.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     String value = snapshot.getValue().toString();
                     if(value.equals("1")){
+                        noiseState.setText("Your child might be crying!");
                         Notify("THERE'S SOME NOISE IN THE ROOM",SmartRoom.this,5);
+                    }else{
+                        noiseState.setText("Your child is stable");
                     }
                 }
             }
@@ -137,12 +143,17 @@ public class SmartRoom extends AppCompatActivity {
         });
 
         Movement.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     String value = snapshot.getValue().toString();
                     if(value.equals("1")){
+                        mouvementState.setText("Your child might be mouving!");
                         Notify("THERE'S SOME MOVEMENT IN THE ROOM",SmartRoom.this,6);
+                    }else{
+                        mouvementState.setText("Your child is stable");
+
                     }
                 }
             }
