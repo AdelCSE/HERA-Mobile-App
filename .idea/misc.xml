@@ -15,6 +15,8 @@
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/ic_arrow.xml" value="0.178" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/ic_home.xml" value="0.1965" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/ic_picture.xml" value="0.1965" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/ic_star__2_.xml" value="0.1965" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/ic_star__3_.xml" value="0.1965" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/play_button_selector.xml" value="0.1965" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/profileimg.xml" value="0.1965" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/drawable/textField.xml" value="0.2045" />
@@ -33,13 +35,18 @@
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_notifications.xml" value="0.20416666666666666" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_profile.xml" value="0.5" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_register.xml" value="0.22" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_settings.xml" value="0.20416666666666666" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_user_profile.xml" value="0.33" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activity_verification.xml" value="0.22" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/activty_add_answer.xml" value="0.1" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/cardview_post.xml" value="0.20416666666666666" />
-        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/cardview_reply.xml" value="0.3643410852713178" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/cardview_reply.xml" value="0.67" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/fragment_charity.xml" value="0.20416666666666666" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/fragment_home.xml" value="0.33" />
-        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/fragment_profile.xml" value="0.44243792325056436" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/fragment_profile.xml" value="0.257227575982209" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/fragment_search.xml" value="0.20416666666666666" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/fragment_smart_room.xml" value="0.33" />
+        <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/fragment_smart_room_link.xml" value="0.5" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/item_container_onboarding.xml" value="0.264" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/post_retrieved_layout.xml" value="0.25" />
         <entry key="..\:/Etudes/2CPI_PROJECT/app/src/main/res/layout/request_bottom_sheet_dialog.xml" value="0.20416666666666666" />
@@ -91,6 +98,7 @@
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/drawable/profile_custom_progress_bar.xml" value="0.2235" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/drawable/profileimg.xml" value="0.2105" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/drawable/search_edit_txt_background.xml" value="0.2235" />
+        <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/drawable/securitycode.xml" value="0.2235" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/drawable/smart_room_edit_text.xml" value="0.2235" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/drawable/tab_color_selector.xml" value="0.2105" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_add_post.xml" value="0.264" />
@@ -103,18 +111,21 @@
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_help.xml" value="0.264" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_login.xml" value="0.2" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_main.xml" value="0.20051303976058144" />
+        <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_new_register.xml" value="0.2" />
+        <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_new_sign_in.xml" value="0.2" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_notifications.xml" value="0.264" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_onboarding_screens.xml" value="0.20051303976058144" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_profile.xml" value="0.20051303976058144" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_question_bloc.xml" value="0.2" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_register.xml" value="0.24427083333333333" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_search.xml" value="0.264" />
+        <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_security_verification.xml" value="0.20051303976058144" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_settings.xml" value="0.264" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_smart_room.xml" value="0.20051303976058144" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_smart_room_check.xml" value="0.2" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_splash_screen.xml" value="0.2" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_user_profile.xml" value="0.264" />
-        <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_verification.xml" value="0.264" />
+        <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activity_verification.xml" value="0.2" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/activty_add_answer.xml" value="0.4" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/cadrview_reply.xml" value="0.4" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/cardview_answer.xml" value="0.4268558951965066" />
@@ -126,7 +137,7 @@
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/cardview_reply.xml" value="0.4" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/cardview_request.xml" value="0.4" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/cardview_search_user.xml" value="0.536" />
-        <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/cardview_text.xml" value="0.264" />
+        <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/cardview_text.xml" value="0.1996579734929457" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/fragment_all.xml" value="0.20051303976058144" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/fragment_answers.xml" value="0.2" />
         <entry key="..\:/Users/ACER/AndroidStudioProjects/2CPI_PROJECT/app/src/main/res/layout/fragment_charity.xml" value="0.2" />
@@ -161,13 +172,15 @@
         <entry key="app/src/main/res/layout/activity_add_post.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/activity_answer_bloc.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/activity_bottom_navigation.xml" value="0.35625" />
-        <entry key="app/src/main/res/layout/activity_login.xml" value="0.28306159420289856" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/activity_notifications.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/activity_question_bloc.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/activity_security_verification.xml" value="0.28306159420289856" />
         <entry key="app/src/main/res/layout/activity_settings.xml" value="0.28306159420289856" />
+        <entry key="app/src/main/res/layout/activity_smart_room.xml" value="0.2821557971014493" />
+        <entry key="app/src/main/res/layout/activity_user_profile.xml" value="0.271286231884058" />
         <entry key="app/src/main/res/layout/activity_verification.xml" value="0.28306159420289856" />
         <entry key="app/src/main/res/layout/cardview_notifications.xml" value="0.7488038277511961" />
         <entry key="app/src/main/res/layout/cardview_post.xml" value="0.35625" />
@@ -176,7 +189,9 @@
         <entry key="app/src/main/res/layout/fragment_home.xml" value="2.0" />
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/fragment_questions.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/fragment_smart_room_link.xml" value="0.27853260869565216" />
         <entry key="app/src/main/res/layout/fragment_smart_room_notifications.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/fragment_smart_room_statistics.xml" value="0.33" />
       </map>
     </option>
   </component>

@@ -85,7 +85,6 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getApplicationContext(), AddPostActivity.class));
-                finish();
             }
         });
 

@@ -12,11 +12,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,8 +42,8 @@ public class RegisterActivity extends AppCompatActivity {
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
     Date date = new Date();
 
-    EditText usernameEditTxt, emailEditTxt, pwEditTxt, confirmPwEditTxt, nameEditTxt;
-    Button registerBtn;
+    TextInputEditText usernameEditTxt, emailEditTxt, pwEditTxt, nameEditTxt;
+    AppCompatButton registerBtn;
     TextView loginBtn;
     FirebaseAuth auth;
     FirebaseFirestore fstore;
@@ -52,7 +54,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_new_register);
 
         RegisterUser();
 
@@ -67,14 +69,14 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void RegisterUser(){
 
-        usernameEditTxt = findViewById(R.id.usernameEditTxt);
-        nameEditTxt = findViewById(R.id.nameEditTxt);
-        emailEditTxt = findViewById(R.id.emailEditTxt);
-        pwEditTxt = findViewById(R.id.passwordEditTxt);
+        usernameEditTxt = findViewById(R.id.UsernameEditTxt);
+        nameEditTxt = findViewById(R.id.NameEditTxt);
+        emailEditTxt = findViewById(R.id.EmailEditTxt);
+        pwEditTxt = findViewById(R.id.PasswordEditTxt);
 
-        registerBtn = findViewById(R.id.registerBtn);
+        registerBtn = findViewById(R.id.SignUpButton);
 
-        loginBtn = findViewById(R.id.textLogin);
+        loginBtn = findViewById(R.id.SignInText);
 
         progressBar = findViewById(R.id.progressBar);
 

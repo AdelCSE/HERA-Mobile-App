@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -51,7 +52,7 @@ import javax.mail.internet.MimeMessage;
 
 public class LoginActivity extends AppCompatActivity {
 
-    EditText emailEditTxt, pwEditTxt;
+    TextInputEditText emailEditTxt, pwEditTxt;
     Button lloginBtn;
     TextView singupBtn, forgotPwBtn;
 
@@ -73,16 +74,16 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_new_sign_in);
 
-        emailEditTxt = findViewById(R.id.emailEditTxt);
-        pwEditTxt = findViewById(R.id.passwordEditTxt);
+        emailEditTxt = findViewById(R.id.LoginEmailEditTxt);
+        pwEditTxt = findViewById(R.id.LoginPasswordEditTxt);
 
-        lloginBtn = findViewById(R.id.loginBtn);
-        singupBtn = findViewById(R.id.textSignUp);
-        forgotPwBtn = findViewById(R.id.textForgotPw);
+        lloginBtn = findViewById(R.id.SignInButton);
+        singupBtn = findViewById(R.id.SignUpText);
+        forgotPwBtn = findViewById(R.id.ForgotPasswordText);
 
-        progressBar = findViewById(R.id.progressBar2);
+        progressBar = findViewById(R.id.progressBar);
 
         auth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
@@ -283,7 +284,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressBar = findViewById(R.id.progressBar2);
+            progressBar = findViewById(R.id.progressBar);
             progressBar.setVisibility(View.INVISIBLE);
             pd = ProgressDialog.show(LoginActivity.this , "Please Wait","Sending Email...", true,false);
         }
