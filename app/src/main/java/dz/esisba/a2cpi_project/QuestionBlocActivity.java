@@ -137,10 +137,14 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
 
         absolutePosition = getIntent().getIntExtra("position", -1);
         post = (PostModel) getIntent().getSerializableExtra("Tag");
-        //ArrayList<String> likes = (ArrayList<String>) data.getExtras().getSerializable("likes");
-       tagsMap = (HashMap<String, Long>) getIntent().getExtras().getSerializable("tagsMap");
-        postRef = fstore.collection("Posts").document(post.getPostid());
-        count = post.getAnswersCount();
+        likes = (ArrayList<String>) getIntent().getExtras().getSerializable("likes");
+        try {
+            tagsMap = (HashMap<String, Long>) getIntent().getExtras().getSerializable("tagsMap");
+            postRef = fstore.collection("Posts").document(post.getPostid());
+            count = post.getAnswersCount();
+        }catch (Exception e){
+            Log.d("__________", "onCreate: ______"+e.getMessage());
+        }
         postsDataHolder = new ArrayList<>();
 
         progressBar.setVisibility(View.VISIBLE);
@@ -343,7 +347,7 @@ public class QuestionBlocActivity extends AppCompatActivity implements Questions
     }
 
     private void PerformLikeAction(LottieAnimationView lottieAnimationView, TextView likesTxt, PostModel p, int position) {
-        postRef = fstore.collection("Posts").document(p.getPostid());
+        postRef = fstore.collection("Users").document(user.getUid()).collection("Feed").document(p.getPostid());
         if (lottieAnimationView.getTag().equals("Like"))
         {
             //sending like notification to the publisher ********************************************************************************************************************

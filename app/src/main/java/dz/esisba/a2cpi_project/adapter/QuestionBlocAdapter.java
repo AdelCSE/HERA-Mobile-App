@@ -116,7 +116,8 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private void RunCheckForLikes(PostModel post, LottieAnimationView lottieAnimationView) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        DocumentReference likesRef = FirebaseFirestore.getInstance().collection("Posts").document(post.getPostid());
+        DocumentReference likesRef = FirebaseFirestore.getInstance().collection("Users").document(user.getUid()).collection("Feed")
+                .document(post.getPostid());
         likesRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override //check if the document exists, i.e current user likes the post
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -124,12 +125,12 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     DocumentSnapshot doc = task.getResult();
                     ArrayList<String> arrayList = (ArrayList<String>) doc.get("likes");
                     if (arrayList.contains(user.getUid())) {
-                        lottieAnimationView.setSpeed(100);
-                        lottieAnimationView.playAnimation();
+                        lottieAnimationView.setProgress(1);
                         lottieAnimationView.setTag("Liked");
                     }
                     else
                     {
+                        lottieAnimationView.setProgress(0);
                         lottieAnimationView.setTag("Like");
                     }
                 }
@@ -142,14 +143,14 @@ public class QuestionBlocAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         if (likes.contains(FirebaseAuth.getInstance().getCurrentUser().getUid()))
         {
-            lottieAnimationView.setSpeed(100);
-            lottieAnimationView.playAnimation();
+            lottieAnimationView.setProgress(1);
             lottieAnimationView.setTag("Liked");
         }
         else
         {
+            lottieAnimationView.setProgress(0);
             lottieAnimationView.setTag("Like");
-        };
+        }
     }
 
     @Override
