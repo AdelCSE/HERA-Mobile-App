@@ -215,4 +215,24 @@ public class BottomNavigationActivity extends AppCompatActivity implements GetUs
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+    @Override
+    public void onBackPressed() {
+        int item = bottomNav.getSelectedItemId();
+        switch (item) {
+            case R.id.nav_home:
+                super.onBackPressed();
+                break;
+            case R.id.nav_sr:
+                bottomNav.setSelectedItemId(R.id.nav_home);
+                break;
+            case R.id.nav_notif:
+                bottomNav.setSelectedItemId(R.id.nav_home);
+                break;
+            case R.id.nav_profile:
+                bottomNav.setSelectedItemId(R.id.nav_home);
+                break;
+            default:
+                bottomNav.setSelectedItemId(R.id.nav_home);
+        }
+    }
 }

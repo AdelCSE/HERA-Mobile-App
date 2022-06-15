@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.Serializable;
 
@@ -45,6 +46,15 @@ public class SmartRoomLink extends Fragment {
         animation.playAnimation();
 
         backBtn = parentHolder.findViewById(R.id.SmartRoomBtnReturn);
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BottomNavigationView bottomNavigationView;
+                bottomNavigationView = (BottomNavigationView)getActivity().findViewById(R.id.bottom_navigation_layout);
+                bottomNavigationView.setSelectedItemId(R.id.nav_home);
+            }
+        });
 
         return parentHolder;
     }

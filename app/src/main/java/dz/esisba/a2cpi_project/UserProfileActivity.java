@@ -8,6 +8,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -95,6 +96,14 @@ public class UserProfileActivity extends AppCompatActivity implements GetUserInt
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
+        
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(UserProfileActivity.this, BottomNavigationActivity.class));
+                finish();
+            }
+        });
 
         adapter = new UserProfileAdapter(getSupportFragmentManager(),getLifecycle());
         viewPager.setAdapter(adapter);

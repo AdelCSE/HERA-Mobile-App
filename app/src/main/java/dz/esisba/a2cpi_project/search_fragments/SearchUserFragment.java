@@ -18,6 +18,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.jakewharton.rxbinding3.appcompat.RxSearchView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -89,7 +90,8 @@ public class SearchUserFragment extends Fragment implements SearchAdapter.OnItem
 
             for (QueryDocumentSnapshot dc : queryDocumentSnapshots){
                 String dataUserName = Objects.requireNonNull(dc.getString("Username")).toLowerCase().trim();
-                if(dataUserName.contains(s)){
+                String dataName = Objects.requireNonNull(dc.getString("Name")).toLowerCase().trim();
+                if(dataUserName.contains(s)|| dataName.contains(s)){
                     if(!usersArrayList.contains(dc.toObject(UserModel.class))) {
                         usersArrayList.add(dc.toObject(UserModel.class));
                     }

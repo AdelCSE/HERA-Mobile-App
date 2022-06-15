@@ -1,5 +1,6 @@
 package dz.esisba.a2cpi_project.adapter;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -25,6 +26,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -211,6 +213,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
                                 postHolder.remove(position);
                                 adapter.notifyItemRemoved(position);
                                 //DeleteLikes(postModel, "Likes");
+                                DeleteFromFeed(postModel);
                                 DocumentReference postRef = FirebaseFirestore.getInstance().collection("Posts").document(postModel.getPostid());
                                 CollectionReference answers =FirebaseFirestore.getInstance().collection("Posts").
                                         document(postModel.getPostid()).collection("Answers");
@@ -248,6 +251,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.myviewholder> 
                         }
                     });
                     popupMenu.show();
+                }
+            });
+        }
+
+        private void DeleteFromFeed(PostModel postModel) {
+            Query postRef = FirebaseFirestore.getInstance().collectionGroup("Feed").whereEqualTo("postid", postModel.getPostid());
+            postRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    for (QueryDocumentSnapshot doc: queryDocumentSnapshots) {
+                        doc.getReference().delete();
+                    }
                 }
             });
         }

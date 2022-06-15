@@ -77,7 +77,7 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
 
 //      notification_icon = (CardView) findViewById(R.id.notification_icon);
 
-        notificationBadge = homeFragment.requireActivity().findViewById(R.id.badge);
+       // notificationBadge = homeFragment.requireActivity().findViewById(R.id.badge);
         progressBar = findViewById(R.id.notificationsProgressBar);
         recview = findViewById(R.id.notifrecview);
         clearAll = findViewById(R.id.clearAll);
@@ -318,7 +318,7 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
 
     @Override
     public void onBackPressed() {
-        updateBadge();
+        //updateBadge();
         super.onBackPressed();
     }
 }

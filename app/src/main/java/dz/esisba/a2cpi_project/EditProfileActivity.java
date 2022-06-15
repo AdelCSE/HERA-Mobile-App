@@ -190,7 +190,8 @@ public class EditProfileActivity extends AppCompatActivity {
                                             .setAction("RETURN", new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View view) {
-                                                    onBackPressed();
+                                                    startActivity(new Intent(EditProfileActivity.this, SettingsActivity.class));
+                                                    finish();
                                                 }
                                             });
                                     snackbar.show();
@@ -254,7 +255,6 @@ public class EditProfileActivity extends AppCompatActivity {
                             @RequiresApi(api = Build.VERSION_CODES.N)
                             @Override
                             public void onSuccess(Void unused) {
-                                updateDataAnswers(previousInfo.getAnswers(), imageUrl, previousInfo.getAnswers());
                                updateData(previousInfo.getPosts(), imageUrl, previousInfo.getAnswers());
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -281,50 +281,51 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
 
-    private void UpdatePictureInPosts()
-    {
-        fstore.collection("Posts").whereEqualTo("publisher", user.getUid())
-                .get() //update picture in posts
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            infoUploaded= true;
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                DocumentReference pr = document.getReference();
-                                Map<String,Object> hm = new HashMap();
-                                hm.put("publisherPic", imageUrl);
-                                pr.update(hm).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Failure(e);
-                                    }
-                                }).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        loader.dismiss();
-                                        View parentLayout = findViewById(android.R.id.content);
-                                        final Snackbar snackbar = Snackbar.make(parentLayout, "Information updated", Snackbar.LENGTH_LONG)
-                                                .setAction("RETURN", new View.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(View view) {
-                                                        onBackPressed();
-                                                    }
-                                                });
-                                        snackbar.show();
-                                    }
-                                });
-                            }
-                        }
-                        else loader.dismiss();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Failure(e);
-            }
-        });
-    }
+//    private void UpdatePictureInPosts()
+//    {
+//        fstore.collection("Posts").whereEqualTo("publisher", user.getUid())
+//                .get() //update picture in posts
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            infoUploaded= true;
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                DocumentReference pr = document.getReference();
+//                                Map<String,Object> hm = new HashMap();
+//                                hm.put("publisherPic", imageUrl);
+//                                pr.update(hm).addOnFailureListener(new OnFailureListener() {
+//                                    @Override
+//                                    public void onFailure(@NonNull Exception e) {
+//                                        Failure(e);
+//                                    }
+//                                }).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                    @Override
+//                                    public void onSuccess(Void unused) {
+//                                        loader.dismiss();
+//                                        View parentLayout = findViewById(android.R.id.content);
+//                                        final Snackbar snackbar = Snackbar.make(parentLayout, "Information updated", Snackbar.LENGTH_LONG)
+//                                                .setAction("RETURN", new View.OnClickListener() {
+//                                                    @Override
+//                                                    public void onClick(View view) {
+//                                                        startActivity(new Intent(EditProfileActivity.this, SettingsActivity.class));
+//                                                        finish();
+//                                                    }
+//                                                });
+//                                        snackbar.show();
+//                                    }
+//                                });
+//                            }
+//                        }
+//                        else loader.dismiss();
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Failure(e);
+//            }
+//        });
+//    }
 
     private void Failure(Exception e)
     {
@@ -446,7 +447,8 @@ public class EditProfileActivity extends AppCompatActivity {
                             .setAction("RETURN", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    startActivity(new Intent(EditProfileActivity.this, QuestionBlocActivity.class));
+                                    startActivity(new Intent(EditProfileActivity.this, SettingsActivity.class));
+                                    finish();
                                 }
                             });
                     snackbar.show();
@@ -459,12 +461,6 @@ public class EditProfileActivity extends AppCompatActivity {
             });
         }
     }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private void updateDataAnswers(ArrayList<String> answers, String imageUrl, ArrayList<String> previousInfoAnswers)
-    {
-
-            }
 
     }
 

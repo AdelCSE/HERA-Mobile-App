@@ -233,8 +233,8 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
             @Override
             public void onRefresh() {
                 refresh.setRefreshing(false);
-                SetFeed();
-                FetchPosts();
+//                SetFeed();
+//                FetchPosts();
             }
         });
 
@@ -387,7 +387,8 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         Query query = fstore.collection("Users").document(user.getUid()).collection("Feed")
                 .orderBy("priority", Query.Direction.ASCENDING)
                 .orderBy("date", Query.Direction.DESCENDING)
-                .limit(25);
+                .limit(20);
+
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -403,6 +404,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                         lastVisible = task.getResult().getDocuments().get(task.getResult().size() - 1);
                     BuildRecyclerView();
 
+                    //paging
                     RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
                         @Override
                         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -426,7 +428,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
                                 Query nextQuery = userInfos.collection("Feed").orderBy("date", Query.Direction.DESCENDING)
                                         .startAfter(lastVisible)
-                                        .limit(25);
+                                        .limit(20);
                                 nextQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -470,6 +472,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 PostsDataHolder.get(position).getLikesCount(), PostsDataHolder.get(position).getAnswersCount(), PostsDataHolder.get(position).getTags());
         Intent intent = new Intent(getActivity(), QuestionBlocActivity.class);
         intent.putExtra("Tag", (Serializable) Post1);
+        intent.putExtra("likes", Post1.getLikes());
         intent.putExtra("position", position);
         intent.putExtra("tagsMap",tagsMap);
         questionBlocActivityResultLauncher.launch(intent);
@@ -583,7 +586,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
             likesTxt.setText(Integer.toString(i));
             PostsDataHolder.get(position).setLikesCount(i);
 
-            postRef.document(post.getPostid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            userInfos.collection("Feed").document(post.getPostid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {
@@ -593,12 +596,11 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                             if (!likes.contains(user.getUid())) likes.add(user.getUid());
                             PostsDataHolder.get(position).setLikes(likes);
                             PostsDataHolder.get(position).setLikesCount(likes.size());
-                            //likes are stored for user for faster query
                             Map<String, Object> hm = new HashMap<>();
                             hm.put("likes", likes);
                             hm.put("likesCount", likes.size());
                             //update likes count for the post
-                            postRef.document(post.getPostid()).update(hm).addOnFailureListener(new OnFailureListener() {
+                            userInfos.collection("Feed").document(post.getPostid()).update(hm).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     LikeFailure(lottieAnimationView, likesTxt, position);
@@ -623,7 +625,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
             likesTxt.setText(Integer.toString(i));
             PostsDataHolder.get(position).setLikesCount(i);
 
-            postRef.document(post.getPostid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            userInfos.collection("Feed").document(post.getPostid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {
@@ -639,7 +641,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                             hm.put("likes", likes);
                             hm.put("likesCount", likes.size());
                             //update likes count for the post
-                            postRef.document(post.getPostid()).update(hm).addOnFailureListener(new OnFailureListener() {
+                            userInfos.collection("Feed").document(post.getPostid()).update(hm).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     DislikeFailure(lottieAnimationView, likesTxt, position);
