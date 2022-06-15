@@ -163,19 +163,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         userInfos = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
 
 
-        //adding most liked posts
-        fstore.collection("Posts").orderBy("likesCount", Query.Direction.DESCENDING).limit(10)
-                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                    PostModel post = document.toObject(PostModel.class);
-                    userInfos.collection("Feed").document(post.getPostid()).set(post);
-                    userInfos.collection("Feed").document(post.getPostid()).update("priority", 2);
-                }
-            }
-        });
-
         userInfos.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -266,6 +253,19 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void SetFeed() {
+
+        //adding most liked posts
+        fstore.collection("Posts").orderBy("likesCount", Query.Direction.DESCENDING).limit(10)
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    PostModel post = document.toObject(PostModel.class);
+                    userInfos.collection("Feed").document(post.getPostid()).set(post);
+                    userInfos.collection("Feed").document(post.getPostid()).update("priority", 2);
+                }
+            }
+        });
 
         //adding recommended
         List<Map.Entry<String, Long>> list = new LinkedList<>(tagsMap.entrySet());

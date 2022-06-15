@@ -1,6 +1,6 @@
 package dz.esisba.a2cpi_project.adapter;
 
-import android.app.DownloadManager;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -23,7 +23,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -32,7 +31,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
