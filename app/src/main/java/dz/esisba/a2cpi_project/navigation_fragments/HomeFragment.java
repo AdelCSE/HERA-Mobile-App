@@ -163,19 +163,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         userInfos = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
 
 
-        //adding most liked posts
-        fstore.collection("Posts").orderBy("likesCount", Query.Direction.DESCENDING).limit(10)
-                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                    PostModel post = document.toObject(PostModel.class);
-                    userInfos.collection("Feed").document(post.getPostid()).set(post);
-                    userInfos.collection("Feed").document(post.getPostid()).update("priority", 2);
-                }
-            }
-        });
-
         userInfos.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -264,9 +251,22 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
     }
 
 
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void SetFeed() {
+
+        //adding most liked posts
+        fstore.collection("Posts").orderBy("likesCount", Query.Direction.DESCENDING).limit(10)
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    PostModel post = document.toObject(PostModel.class);
+                    userInfos.collection("Feed").document(post.getPostid()).set(post);
+                    userInfos.collection("Feed").document(post.getPostid()).update("priority", 2);
+                }
+            }
+        });
+
         //adding recommended
         List<Map.Entry<String, Long>> list = new LinkedList<>(tagsMap.entrySet());
 
@@ -276,7 +276,6 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
                 : o1.getValue().compareTo(o2.getValue()) : o2.getValue().compareTo(o1.getValue()) == 0
                 ? o2.getKey().compareTo(o1.getKey())
                 : o2.getValue().compareTo(o1.getValue()));
-
         //sorting the map
         tagsMap = list.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
         ArrayList<String> tags = new ArrayList<>(tagsMap.keySet());
@@ -315,6 +314,7 @@ public class HomeFragment extends Fragment implements PostsOnItemClickListner {
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         c.add(Calendar.DATE, -30); //current day -30 days
+
 
         //combining queries
         ArrayList<Task> tasks = new ArrayList<>();

@@ -15,6 +15,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import dz.esisba.a2cpi_project.models.PostModel;
 
 
 public class VerificationActivity extends AppCompatActivity {
@@ -39,6 +45,23 @@ public class VerificationActivity extends AppCompatActivity {
         verificationAnimation = findViewById(R.id.verificationAnimation);
         user = FirebaseAuth.getInstance().getCurrentUser();
         continueBtn = findViewById(R.id.continueBtn);
+
+        try {
+            FirebaseFirestore.getInstance().collection("Posts").orderBy("likesCount", Query.Direction.DESCENDING).limit(20)
+                    .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        PostModel post = document.toObject(PostModel.class);
+                        FirebaseFirestore.getInstance().collection("Users").document(user.getUid()).collection("Feed").document(post.getPostid()).set(post);
+                        FirebaseFirestore.getInstance().collection("Users").document(user.getUid()).collection("Feed").document(post.getPostid()).update("priority", 2);
+                    }
+                }
+            });
+        } catch (Exception e)
+        {
+
+        }
 
         verificationAnimation.playAnimation();
         Verification();

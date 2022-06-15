@@ -23,6 +23,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -33,7 +34,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.R;
 import dz.esisba.a2cpi_project.interfaces.PostsOnItemClickListner;
 import dz.esisba.a2cpi_project.models.PostModel;
-import dz.esisba.a2cpi_project.models.UserModel;
+
 
 public class QuestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
@@ -167,7 +168,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             if (menuItem.getTitle().equals("Delete")) {
                                 QuestionsHolder.remove(position);
                                 adapter.notifyItemRemoved(position);
-                                //DeleteLikes(postModel, "Likes");
+                                DeleteFromFeed(postModel);
                                 DocumentReference postRef = FirebaseFirestore.getInstance().collection("Posts").document(postModel.getPostid());
                                 CollectionReference answers = FirebaseFirestore.getInstance().collection("Posts").
                                         document(postModel.getPostid()).collection("Answers");
@@ -213,6 +214,19 @@ public class QuestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
             });
         }
+
+        private void DeleteFromFeed(PostModel postModel) {
+            Query postRef = FirebaseFirestore.getInstance().collectionGroup("Feed").whereEqualTo("postid", postModel.getPostid());
+            postRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    for (QueryDocumentSnapshot doc: queryDocumentSnapshots) {
+                        doc.getReference().delete();
+                    }
+                }
+            });
+        }
+
     }
 
     public class myviewholder2 extends RecyclerView.ViewHolder{

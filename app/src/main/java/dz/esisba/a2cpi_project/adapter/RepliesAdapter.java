@@ -1,25 +1,25 @@
 package dz.esisba.a2cpi_project.adapter;
 
 import android.content.Context;
-import android.media.Image;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.airbnb.lottie.LottieAnimationView;
+
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
+
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
+
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import dz.esisba.a2cpi_project.R;
-import dz.esisba.a2cpi_project.models.PostModel;
 import dz.esisba.a2cpi_project.models.ReplyModel;
 
 public class RepliesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -55,7 +54,7 @@ public class RepliesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (viewType==1){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_reply,parent,false);
             context = parent.getContext();
-            return new Myviewholder(view, RepliesHolder);
+            return new Myviewholder(view, RepliesHolder, this);
         }else{
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.last_item_text,parent,false);
             context = parent.getContext();
@@ -108,14 +107,14 @@ public class RepliesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     static class Myviewholder extends RecyclerView.ViewHolder {
 
         CircleImageView Img;
-        ImageView star;
+        ImageView star, delete;
         TextView Username,Date,Question,Answer;
 
         private FirebaseAuth auth;
         private FirebaseUser user;
         private FirebaseFirestore fstore;
 
-        public Myviewholder (@NonNull View itemView, ArrayList<ReplyModel> replies){
+        public Myviewholder(@NonNull View itemView, ArrayList<ReplyModel> replies, RepliesAdapter repliesAdapter){
             super(itemView);
             Img = itemView.findViewById(R.id.replyImg);
             Username = itemView.findViewById(R.id.replyUsername);
@@ -123,6 +122,7 @@ public class RepliesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             Question = itemView.findViewById(R.id.replyQuestion);
             Answer = itemView.findViewById(R.id.reply);
             star = itemView.findViewById(R.id.replyStarBtn);
+            delete = itemView.findViewById(R.id.deleteReplyBtn);
 
             auth = FirebaseAuth.getInstance();
             fstore = FirebaseFirestore.getInstance();
@@ -149,6 +149,18 @@ public class RepliesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     }
                 }
             });
+
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    DocumentReference userRef = fstore.collection("Users").document(user.getUid());
+                    int position = getAbsoluteAdapterPosition();
+                    userRef.collection("Replies").document(replies.get(position).getReplyId()).delete();
+                    replies.remove(position);
+                    repliesAdapter.notifyItemRemoved(position);
+                }
+            });
+
         }
     }
 

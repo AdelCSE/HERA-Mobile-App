@@ -280,6 +280,7 @@ public class AddPostActivity extends AppCompatActivity {
             data.put("reportsCount", 0);
             ArrayList likes = new ArrayList();
             data.put("likes", likes);
+            data.put("likesCount", 0);
 
            DocumentReference df = fstore.collection("Posts").document(postId);
            df.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
