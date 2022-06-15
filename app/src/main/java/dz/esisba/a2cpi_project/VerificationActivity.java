@@ -68,6 +68,7 @@ public class VerificationActivity extends AppCompatActivity {
         while(!b){
             if(user!=null){
                 user.sendEmailVerification();
+                b=true;
             }
         }
     }
